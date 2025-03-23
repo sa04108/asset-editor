@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace Merlin
@@ -32,20 +33,31 @@ namespace Merlin
         [SerializeField]
         private List<string> keys = new();
 
+        private List<Texture> textures = new();
+
         private void Start()
         {
             modifier = GetComponent<AssetModifier>();
             Addressables.InitializeAsync().Completed += handle =>
             {
-                foreach (var locator in Addressables.ResourceLocators)
+                foreach (var key in handle.Result.Keys)
                 {
-                    foreach (var key in locator.Keys)
+                    string keyStr = key as string;
+                    if (keyStr == null)
+                        continue;
+
+                    if (keyStr.EndsWith(".fbx") ||
+                    keyStr.EndsWith(".3ds"))
                     {
-                        string keyStr = key as string;
-                        if (keyStr != null && keyStr.EndsWith(".prefab"))
+                        keys.Add(keyStr);
+                    }
+                    else if (keyStr.EndsWith(".jpg") ||
+                    keyStr.EndsWith(".png"))
+                    {
+                        Addressables.LoadAssetAsync<Texture>(keyStr).Completed += loadHandle =>
                         {
-                            keys.Add(keyStr);
-                        }
+                            textures.Add(loadHandle.Result);
+                        };
                     }
                 }
 
@@ -238,6 +250,11 @@ namespace Merlin
             button.GetComponentInChildren<TMP_Text>().text = text;
 
             return button;
+        }
+
+        public List<Texture> GetTextures()
+        {
+            return textures;
         }
     }
 }

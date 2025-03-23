@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: DefaultGroup
   m_GUID: 988add5c52899164a8f285ae8b9299f6
   m_SerializeEntries:
+  - m_GUID: 1e10ce08254b4fe43a8310131f09b5f4
+    m_Address: Assets/AddressableAssets/__Sniper
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 45f9746490bda1a44b077caedd7f14e9
     m_Address: Assets/AddressableAssets/__WoodenTower
     m_ReadOnly: 0

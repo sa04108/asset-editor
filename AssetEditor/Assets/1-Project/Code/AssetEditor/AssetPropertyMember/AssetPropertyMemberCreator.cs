@@ -4,18 +4,24 @@ namespace Merlin
 {
     public class AssetPropertyMemberCreator : MonoBehaviour
     {
+        [SerializeField] private AssetTexturePropertyMember textureMemberPreset;
         [SerializeField] private AssetNumberPropertyMember numMemberPreset;
         [SerializeField] private AssetVectorPropertyMember vectorMemberPreset;
         [SerializeField] private AssetMatrixPropertyMember matrixMemberPreset;
-        [SerializeField] private AssetGroupPropertyMember groupMemberPreset;
+
+        [SerializeField] private AssetGridMember gridMemberPreset;
+        [SerializeField] private AssetPropertyGroupMember groupMemberPreset;
         [SerializeField] private Transform memberGroupPreset;
         [SerializeField] private FlexibleColorPicker colorPickerPreset;
 
         private void Start()
         {
+            textureMemberPreset.gameObject.SetActive(false);
             numMemberPreset.gameObject.SetActive(false);
             vectorMemberPreset.gameObject.SetActive(false);
             matrixMemberPreset.gameObject.SetActive(false);
+
+            gridMemberPreset.gameObject.SetActive(false);
             groupMemberPreset.gameObject.SetActive(false);
             memberGroupPreset.gameObject.SetActive(false);
             colorPickerPreset.gameObject.SetActive(false);
@@ -31,6 +37,23 @@ namespace Merlin
             member.Button.onClick.AddListener(() => memberGroup.gameObject.SetActive(!memberGroup.gameObject.activeSelf));
 
             return memberGroup;
+        }
+
+        public AssetGridMember CreateGridMember(Texture[] texArr, Transform parent)
+        {
+            var member = Instantiate(gridMemberPreset, parent);
+            member.Initialize(texArr);
+
+            return member;
+        }
+
+        public AssetTexturePropertyMember CreateTexturePropertyMember(Material mat, AssetGridMember textureGrid, string name, Texture value, Transform parent)
+        {
+            var member = Instantiate(textureMemberPreset, parent);
+            member.Initialize(mat, textureGrid, name, value);
+            member.gameObject.SetActive(true);
+
+            return member;
         }
 
         public AssetNumberPropertyMember CreateNumberMember(Material mat, MaterialPropertyType type, string name, float value, float min, float max, Transform parent)

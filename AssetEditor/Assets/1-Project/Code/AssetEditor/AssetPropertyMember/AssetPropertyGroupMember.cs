@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Merlin
 {
-    public class AssetGroupPropertyMember : MonoBehaviour
+    public class AssetPropertyGroupMember : MonoBehaviour
     {
         [SerializeField]
         private Button button;
