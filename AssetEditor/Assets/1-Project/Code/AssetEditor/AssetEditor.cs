@@ -120,10 +120,26 @@ namespace Merlin
                 {
                     if (handle.Result > 0)
                     {
+#if NO_XDT
                         Debug.Log($"Download size for this: {handle.Result}");
                         Addressables.DownloadDependenciesAsync(key)
                             .Completed += _ => Addressables.InstantiateAsync(key, assetParent)
                             .Completed += handle => modifier.SetFbxInstance(handle.Result);
+#else
+                        MessageBox.Show(
+                            $"Total Download Size: {handle.Result}\n" +
+                            "Do you want to download?",
+                            eMessageBoxButtons.YesNo)
+                        .Subscribe(result =>
+                        {
+                            if (result.Code == eMessageBoxResult.Yes)
+                            {
+                                Addressables.DownloadDependenciesAsync(asset)
+                                .Completed += _ => Addressables.InstantiateAsync(asset, assetParent)
+                                .Completed += handle => modifier.SetFbxInstance(handle.Result);
+                            }
+                        });
+#endif
                     }
                     else
                     {
@@ -138,6 +154,7 @@ namespace Merlin
             Addressables.CheckForCatalogUpdates()
             .Completed += handle =>
             {
+#if NO_XDT
                 if (handle.Result.Count > 0)
                 {
                     Debug.Log("Catalog Updated");
@@ -148,6 +165,29 @@ namespace Merlin
                 {
                     Debug.Log("Catalog is the latest version");
                 }
+#else
+                if (handle.Result.Count > 0)
+                {
+                    MessageBox.Show(
+                        "Asset Update Available.\n" +
+                        "Do you want to check for download?",
+                        eMessageBoxButtons.YesNo)
+                    .Subscribe(result =>
+                    {
+                        if (result.Code == eMessageBoxResult.Yes)
+                        {
+                            Addressables.UpdateCatalogs(handle.Result)
+                            .Completed += _ => CheckForDownload();
+                        }
+                    });
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Asset is the latest version.",
+                        eMessageBoxButtons.OK);
+                }
+#endif
             };
         }
 
@@ -156,6 +196,7 @@ namespace Merlin
             Addressables.GetDownloadSizeAsync(keys)
             .Completed += handle =>
             {
+#if NO_XDT
                 if (handle.Result > 0)
                 {
                     Debug.Log($"Total Download Size: {handle.Result}");
@@ -165,6 +206,28 @@ namespace Merlin
                 {
                     Debug.Log("All asset is the latest version");
                 }
+#else
+                if (handle.Result > 0)
+                {
+                    MessageBox.Show(
+                        $"Total Download Size: {handle.Result}\n" +
+                        "Do you want to download?",
+                        eMessageBoxButtons.YesNo)
+                    .Subscribe(result =>
+                    {
+                        if (result.Code == eMessageBoxResult.Yes)
+                        {
+                            Addressables.DownloadDependenciesAsync(assets, Addressables.MergeMode.Union);
+                        }
+                    });
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "All asset downloaded for current version",
+                        eMessageBoxButtons.OK);
+                }
+#endif
             };
         }
 

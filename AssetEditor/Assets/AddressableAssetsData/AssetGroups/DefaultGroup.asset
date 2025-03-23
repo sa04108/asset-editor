@@ -20,11 +20,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 55bd12522b3629f438849920a955a1aa
-    m_Address: Assets/AddressableAssets/__Sofa
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 94d62c24ca74a1d49b5dd607cb555d62, type: 2}
   m_SchemaSet:
