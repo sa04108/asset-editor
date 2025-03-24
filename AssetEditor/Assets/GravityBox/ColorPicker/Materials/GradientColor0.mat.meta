@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3e79f72564e1ef746a3f405d8b494dd1
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274993
+  packageName: Runtime Color Picker
+  packageVersion: 1.0
+  assetPath: Assets/GravityBox/ColorPicker/Materials/GradientColor0.mat
+  uploadId: 639065

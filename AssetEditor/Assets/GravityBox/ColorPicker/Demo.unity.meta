@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 822b6f8961afac441ba96f454183513a
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274993
+  packageName: Runtime Color Picker
+  packageVersion: 1.0
+  assetPath: Assets/GravityBox/ColorPicker/Demo.unity
+  uploadId: 639065

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8c18533d19d19ac498d5036e331e4d32
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274993
+  packageName: Runtime Color Picker
+  packageVersion: 1.0
+  assetPath: Assets/GravityBox/ColorPicker/Materials/HSVRing.mat
+  uploadId: 639065

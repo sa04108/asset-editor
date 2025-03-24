@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 6892d27965a581d42a99f871615a9115
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274993
+  packageName: Runtime Color Picker
+  packageVersion: 1.0
+  assetPath: Assets/GravityBox/ColorPicker/Scripts/ColorPickerSlider.cs
+  uploadId: 639065

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 9556ae99683de2843b026cdcadaf7c77
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274993
+  packageName: Runtime Color Picker
+  packageVersion: 1.0
+  assetPath: Assets/GravityBox/ColorPicker/Scripts/Editor/ColorButtonEditor.cs
+  uploadId: 639065

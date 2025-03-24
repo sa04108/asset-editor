@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ecd5cb8056dab1b469a947f7576c005a
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274993
+  packageName: Runtime Color Picker
+  packageVersion: 1.0
+  assetPath: Assets/GravityBox/ColorPicker/ColorButton.prefab
+  uploadId: 639065

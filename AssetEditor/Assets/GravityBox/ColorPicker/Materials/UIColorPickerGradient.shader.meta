@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 58642418fd41ef0438cba11af4314de9
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274993
+  packageName: Runtime Color Picker
+  packageVersion: 1.0
+  assetPath: Assets/GravityBox/ColorPicker/Materials/UIColorPickerGradient.shader
+  uploadId: 639065

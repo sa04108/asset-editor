@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 64b2a9c3c15f4ab42a855dea54594e8f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274993
+  packageName: Runtime Color Picker
+  packageVersion: 1.0
+  assetPath: Assets/GravityBox/ColorPicker/Materials/HSVBox.mat
+  uploadId: 639065

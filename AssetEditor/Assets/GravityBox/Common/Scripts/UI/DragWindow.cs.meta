@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 094d642cf8ce2ff499b9f91a900bfa59
+timeCreated: 1591946752
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274993
+  packageName: Runtime Color Picker
+  packageVersion: 1.0
+  assetPath: Assets/GravityBox/Common/Scripts/UI/DragWindow.cs
+  uploadId: 639065

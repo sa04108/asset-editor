@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 55bd09d0a8b9ff84581ead52c16cf3d7
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274993
+  packageName: Runtime Color Picker
+  packageVersion: 1.0
+  assetPath: Assets/GravityBox/ColorPicker/ColorPickerManager.asset
+  uploadId: 639065

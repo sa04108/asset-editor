@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7fbb6951e456cda49b7951990059a287
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274993
+  packageName: Runtime Color Picker
+  packageVersion: 1.0
+  assetPath: Assets/GravityBox/ColorPicker/Materials/ColorSolid.mat
+  uploadId: 639065
