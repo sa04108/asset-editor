@@ -147,6 +147,7 @@ namespace GravityBox.ColorPicker
 
         public void StopCapture() => _isCapturing = false;
 
+#if UNITY_EDITOR
         protected override void OnValidate()
         {
             if (hdrText != null)
@@ -154,5 +155,6 @@ namespace GravityBox.ColorPicker
 
             base.OnValidate();
         }
+#endif
     }
 }
