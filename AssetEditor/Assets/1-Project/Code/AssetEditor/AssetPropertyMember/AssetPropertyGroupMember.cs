@@ -26,8 +26,7 @@ namespace Merlin
         public void Initialize(Texture tex, string type, string name)
         {
             icon.sprite = TextureToSprite(tex);
-            desc.text = $"Type: {type}\n" +
-                        $"{name}";
+            desc.text = $"{type}";
         }
 
         private Sprite TextureToSprite(Texture texture)

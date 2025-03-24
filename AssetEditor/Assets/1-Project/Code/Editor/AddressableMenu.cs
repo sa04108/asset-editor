@@ -16,7 +16,7 @@ namespace Merlin
                 var settings = AddressableAssetSettingsDefaultObject.Settings;
                 var path = settings.profileSettings.GetValueById(settings.activeProfileId, settings.RemoteCatalogBuildPath.Id);
                 var projectPath = Directory.GetParent(Application.dataPath).FullName;
-                path = Path.Combine(projectPath, path).Replace("/[BuildTarget]", "");
+                path = Path.Combine(projectPath, path);
 
                 return path;
             }

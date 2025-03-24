@@ -122,6 +122,7 @@ namespace Merlin
         private void ToggleColorPick()
         {
             colorPicker.gameObject.SetActive(!colorPicker.gameObject.activeSelf);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(colorPicker.transform.parent.GetComponent<RectTransform>());
         }
     }
 }

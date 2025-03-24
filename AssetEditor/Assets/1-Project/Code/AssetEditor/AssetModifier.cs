@@ -1,12 +1,10 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Merlin
 {
     // Shader Name -> Property Name -> Property Type -> Property Value
-    using ShaderProperty = Dictionary<string, Dictionary<string, Dictionary<string, object>>>;
+    // using ShaderProperty = Dictionary<string, Dictionary<string, Dictionary<string, object>>>;
 
     public class AssetModifier : MonoBehaviour
     {
@@ -21,12 +19,13 @@ namespace Merlin
 
         [SerializeField]
         private TextAsset shaderPropJson;
-        private ShaderProperty shaderProps;
+
+        //private ShaderProperty shaderProps;
 
         private void Start()
         {
             presetCount = memberParent.transform.childCount;
-            shaderProps = JsonConvert.DeserializeObject<ShaderProperty>(shaderPropJson.text);
+            //shaderProps = JsonConvert.DeserializeObject<ShaderProperty>(shaderPropJson.text);
         }
 
         public void SetFbxInstance(GameObject go)
@@ -61,6 +60,12 @@ namespace Merlin
                         continue;
                     materialSet.Add(matHash);
 
+                    Dictionary<string, int> shaderPropIdx = new();
+                    for (int i = 0; i < mat.shader.GetPropertyCount(); i++)
+                    {
+                        shaderPropIdx.Add(mat.shader.GetPropertyName(i), i);
+                    }
+
                     var group = memberCreator.CreateGroupMember(mat.mainTexture, "Material", mat.name, memberParent);
 
                     var textureProps = mat.GetTexturePropertyNames();
@@ -74,13 +79,12 @@ namespace Merlin
                     foreach (string prop in floatProps)
                     {
                         var value = mat.GetFloat(prop);
-                        if (shaderProps.ContainsKey(mat.shader.name) &&
-                            shaderProps[mat.shader.name].ContainsKey(prop) &&
-                            shaderProps[mat.shader.name][prop].ContainsKey("Range"))
+                        if (shaderPropIdx.ContainsKey(prop) &&
+                            mat.shader.GetPropertyType(shaderPropIdx[prop]) == UnityEngine.Rendering.ShaderPropertyType.Range)
                         {
-                            Dictionary<string, float> rangeDict = GetShaderPropertyValue<float>(mat.shader.name, prop, "Range");
-                            float min = rangeDict["Min"];
-                            float max = rangeDict["Max"];
+                            Vector2 rangeVec = mat.shader.GetPropertyRangeLimits(shaderPropIdx[prop]);
+                            float min = rangeVec.x;
+                            float max = rangeVec.y;
                             memberCreator.CreateFloatMember(mat, prop, value, min, max, group);
                         }
                         else
@@ -100,9 +104,8 @@ namespace Merlin
                     foreach (string prop in vecProps)
                     {
                         var value = mat.GetVector(prop);
-                        if (shaderProps.ContainsKey(mat.shader.name) &&
-                            shaderProps[mat.shader.name].ContainsKey(prop) &&
-                            shaderProps[mat.shader.name][prop].ContainsKey("Color"))
+                        if (shaderPropIdx.ContainsKey(prop) &&
+                            mat.shader.GetPropertyType(shaderPropIdx[prop]) == UnityEngine.Rendering.ShaderPropertyType.Color)
                         {
                             memberCreator.CreateVectorMember(mat, prop, value, true, group);
                         }
@@ -130,9 +133,9 @@ namespace Merlin
             }
         }
 
-        private Dictionary<string, T> GetShaderPropertyValue<T>(string shaderName, string propName, string propType)
-        {
-            return ((JObject)shaderProps[shaderName][propName][propType]).ToObject<Dictionary<string, T>>();
-        }
+        //private Dictionary<string, T> GetShaderPropertyValue<T>(string shaderName, string propName, string propType)
+        //{
+        //    return ((JObject)shaderProps[shaderName][propName][propType]).ToObject<Dictionary<string, T>>();
+        //}
     }
 }
