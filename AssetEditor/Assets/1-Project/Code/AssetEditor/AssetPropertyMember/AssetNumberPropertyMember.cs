@@ -47,7 +47,7 @@ namespace Merlin
             this.mat = mat;
             this.type = type;
             propertyName = name;
-            title.text = $"{name}, [{type}]";
+            title.text = $"{name}";
             currentValue = value;
             inputField.SetTextWithoutNotify(value.ToString());
             inputField.image.sprite = rangeBox;
@@ -66,7 +66,7 @@ namespace Merlin
             this.mat = mat;
             this.type = type;
             propertyName = name;
-            title.text = $"{name}, [{type}]";
+            title.text = $"{name}";
             currentValue = value;
             inputField.SetTextWithoutNotify(value.ToString());
             inputField.image.sprite = numberBox;

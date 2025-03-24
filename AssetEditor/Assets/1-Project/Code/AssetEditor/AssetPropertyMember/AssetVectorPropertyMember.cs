@@ -38,7 +38,7 @@ namespace Merlin
             for (int i = 0; i < 4; i++)
             {
                 inputFieldLabels[i].text = vectorChanels[i];
-                inputFields[i].text = value[i].ToString();
+                inputFields[i].SetTextWithoutNotify(value[i].ToString());
             }
         }
 
