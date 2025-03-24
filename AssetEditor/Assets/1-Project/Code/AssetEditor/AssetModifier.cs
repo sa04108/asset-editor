@@ -72,7 +72,7 @@ namespace Merlin
                     foreach (string prop in textureProps)
                     {
                         var tex = mat.GetTexture(prop);
-                        memberCreator.CreateTexturePropertyMember(mat, texturesGrid, prop, tex, group);
+                        //memberCreator.CreateTexturePropertyMember(mat, texturesGrid, prop, tex, group);
                     }
 
                     var floatProps = mat.GetPropertyNames(MaterialPropertyType.Float);
@@ -107,11 +107,11 @@ namespace Merlin
                         if (shaderPropIdx.ContainsKey(prop) &&
                             mat.shader.GetPropertyType(shaderPropIdx[prop]) == UnityEngine.Rendering.ShaderPropertyType.Color)
                         {
-                            memberCreator.CreateVectorMember(mat, prop, value, true, group);
+                            memberCreator.CreateColorMember(mat, prop, value, group);
                         }
                         else
                         {
-                            memberCreator.CreateVectorMember(mat, prop, value, false, group);
+                            memberCreator.CreateVectorMember(mat, prop, value, group);
                         }
                     }
 

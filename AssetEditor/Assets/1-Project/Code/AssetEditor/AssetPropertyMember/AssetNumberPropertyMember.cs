@@ -10,6 +10,9 @@ namespace Merlin
         [SerializeField] private TMP_InputField inputField;
         [SerializeField] private Slider slider;
 
+        [SerializeField] private Sprite numberBox;
+        [SerializeField] private Sprite rangeBox;
+
         private Material mat;
         private string propertyName;
         private MaterialPropertyType type;
@@ -47,6 +50,7 @@ namespace Merlin
             title.text = $"{name}, [{type}]";
             currentValue = value;
             inputField.SetTextWithoutNotify(value.ToString());
+            inputField.image.sprite = rangeBox;
 
             if (type == MaterialPropertyType.Int)
                 slider.wholeNumbers = true;
@@ -54,6 +58,7 @@ namespace Merlin
             slider.value = value;
             slider.minValue = min;
             slider.maxValue = max;
+            slider.gameObject.SetActive(true);
         }
 
         public void Initialize(Material mat, MaterialPropertyType type, string name, float value)
@@ -64,6 +69,7 @@ namespace Merlin
             title.text = $"{name}, [{type}]";
             currentValue = value;
             inputField.SetTextWithoutNotify(value.ToString());
+            inputField.image.sprite = numberBox;
 
             slider.gameObject.SetActive(false);
         }

@@ -4,8 +4,9 @@ namespace Merlin
 {
     public class AssetPropertyMemberCreator : MonoBehaviour
     {
-        [SerializeField] private AssetTexturePropertyMember textureMemberPreset;
+        //[SerializeField] private AssetTexturePropertyMember textureMemberPreset;
         [SerializeField] private AssetNumberPropertyMember numMemberPreset;
+        [SerializeField] private AssetColorPropertyMember colorMemberPreset;
         [SerializeField] private AssetVectorPropertyMember vectorMemberPreset;
         [SerializeField] private AssetMatrixPropertyMember matrixMemberPreset;
 
@@ -16,8 +17,9 @@ namespace Merlin
 
         private void Start()
         {
-            textureMemberPreset.gameObject.SetActive(false);
+            //textureMemberPreset.gameObject.SetActive(false);
             numMemberPreset.gameObject.SetActive(false);
+            colorMemberPreset.gameObject.SetActive(false);
             vectorMemberPreset.gameObject.SetActive(false);
             matrixMemberPreset.gameObject.SetActive(false);
 
@@ -47,14 +49,14 @@ namespace Merlin
             return member;
         }
 
-        public AssetTexturePropertyMember CreateTexturePropertyMember(Material mat, AssetGridMember textureGrid, string name, Texture value, Transform parent)
-        {
-            var member = Instantiate(textureMemberPreset, parent);
-            member.Initialize(mat, textureGrid, name, value);
-            member.gameObject.SetActive(true);
+        //public AssetTexturePropertyMember CreateTexturePropertyMember(Material mat, AssetGridMember textureGrid, string name, Texture value, Transform parent)
+        //{
+        //    var member = Instantiate(textureMemberPreset, parent);
+        //    member.Initialize(mat, textureGrid, name, value);
+        //    member.gameObject.SetActive(true);
 
-            return member;
-        }
+        //    return member;
+        //}
 
         public AssetNumberPropertyMember CreateNumberMember(Material mat, MaterialPropertyType type, string name, float value, float min, float max, Transform parent)
         {
@@ -94,11 +96,20 @@ namespace Merlin
             return CreateNumberMember(mat, MaterialPropertyType.Int, name, value, parent);
         }
 
-        public AssetVectorPropertyMember CreateVectorMember(Material mat, string name, Vector4 value, bool isColor, Transform parent)
+        public AssetColorPropertyMember CreateColorMember(Material mat, string name, Color value, Transform parent)
+        {
+            var member = Instantiate(colorMemberPreset, parent);
+            var fcp = Instantiate(colorPickerPreset, parent);
+            member.Initialize(mat, fcp, name, value);
+            member.gameObject.SetActive(true);
+
+            return member;
+        }
+
+        public AssetVectorPropertyMember CreateVectorMember(Material mat, string name, Vector4 value, Transform parent)
         {
             var member = Instantiate(vectorMemberPreset, parent);
-            var fcp = Instantiate(colorPickerPreset, parent);
-            member.Initialize(mat, fcp, name, isColor, value);
+            member.Initialize(mat, name, value);
             member.gameObject.SetActive(true);
 
             return member;
