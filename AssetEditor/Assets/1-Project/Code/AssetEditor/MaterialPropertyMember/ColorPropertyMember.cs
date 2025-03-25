@@ -1,30 +1,17 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Merlin
 {
-    public class AssetColorPropertyMember : MonoBehaviour
+    public class ColorPropertyMember : MaterialPropertyMember<Color>
     {
-        [SerializeField] private TMP_Text title;
         [SerializeField] private Button colorIconButton;
 
-        private Material mat;
-        private string propertyName;
-        private Color currentValue;
         private FlexibleColorPicker colorPicker;
-
-        private void Start()
-        {
-        }
 
         public void Initialize(Material mat, FlexibleColorPicker fcp, string name, Color value)
         {
-            this.mat = mat;
-
-            propertyName = name;
-            title.text = $"{name}";
-            currentValue = value;
+            base.Initialize(mat, MaterialPropertyType.Vector, name, value);
 
             SetColorEditor(fcp, value);
         }

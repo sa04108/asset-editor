@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Merlin
 {
-    public class AssetTexturePropertyMember : MonoBehaviour
+    public class TexturePropertyMember : MaterialPropertyMember<Texture>
     {
         [SerializeField]
         private Button button;
@@ -17,20 +17,15 @@ namespace Merlin
         [SerializeField]
         private TMP_Text desc;
 
-        private Material mat;
-        private AssetGridMember textureGrid;
-        private string propertyName;
-        private Texture currentValue;
+        private GridMember textureGrid;
 
-        public void Initialize(Material mat, AssetGridMember textureGrid, string name, Texture tex)
+        public void Initialize(Material mat, GridMember textureGrid, string name, Texture tex)
         {
-            this.mat = mat;
+            base.Initialize(mat, MaterialPropertyType.Texture, name, tex);
+
             this.textureGrid = textureGrid;
-            propertyName = name;
-            currentValue = tex;
             icon.sprite = TextureToSprite(tex);
-            desc.text = $"Type: Texture\n" +
-                        $"{name}";
+            desc.text = $"{name}";
 
             button.onClick.AddListener(() =>
             {

@@ -39,16 +39,17 @@ SpriteAtlas:
     packedSpriteRenderDataKeys:
     - 243361103d29f6d45be0e89bc4281bf5: 21300000
     - 4f9a52f0b980b6148a30038905e8c32b: 21300000
-    - fd1cfc6100e54b3439f1e781f1424209: 21300000
     - 329234b189b4ad64fb4936c58ac729e5: 21300000
     - a9a827f2aa52ee54585c605bc50e71d6: 21300000
     - d4dfbac32a0f69f499463801ea3aa22a: 21300000
     - d1a9efc3b65911d44a0a1fe420b9464f: 21300000
+    - 07d9b9f4a995b0745a064ecffeb2fd48: 21300000
     - 180583371558a6041a2ce1776cb0dcf3: 21300000
     - 438b94f7a2277024fb48a8596ac6724d: 21300000
     - 85aa693b804e47c4ea543c7c9a2f9f03: 21300000
     - 17cb345b357defc48a2cb6d44dd906a5: 21300000
     - 16d578bb67708d542b86ccf21b889d16: 21300000
+    - 1ccc548c1d4e6fc48b9e74eefbf16dbb: 21300000
     - 7eade2fc7ef4c6948ba5cf14be42bc25: 21300000
     - 2600c6fc475c6114e8e4564c23d6c37e: 21300000
     - 3cc2db7e958c7eb4fa3988f50032a7d1: 21300000
@@ -56,32 +57,34 @@ SpriteAtlas:
   m_PackedSprites:
   - {fileID: 21300000, guid: 243361103d29f6d45be0e89bc4281bf5, type: 3}
   - {fileID: 21300000, guid: 4f9a52f0b980b6148a30038905e8c32b, type: 3}
-  - {fileID: 21300000, guid: fd1cfc6100e54b3439f1e781f1424209, type: 3}
   - {fileID: 21300000, guid: 329234b189b4ad64fb4936c58ac729e5, type: 3}
   - {fileID: 21300000, guid: a9a827f2aa52ee54585c605bc50e71d6, type: 3}
   - {fileID: 21300000, guid: d4dfbac32a0f69f499463801ea3aa22a, type: 3}
   - {fileID: 21300000, guid: d1a9efc3b65911d44a0a1fe420b9464f, type: 3}
+  - {fileID: 21300000, guid: 07d9b9f4a995b0745a064ecffeb2fd48, type: 3}
   - {fileID: 21300000, guid: 180583371558a6041a2ce1776cb0dcf3, type: 3}
   - {fileID: 21300000, guid: 438b94f7a2277024fb48a8596ac6724d, type: 3}
   - {fileID: 21300000, guid: 85aa693b804e47c4ea543c7c9a2f9f03, type: 3}
   - {fileID: 21300000, guid: 17cb345b357defc48a2cb6d44dd906a5, type: 3}
   - {fileID: 21300000, guid: 16d578bb67708d542b86ccf21b889d16, type: 3}
+  - {fileID: 21300000, guid: 1ccc548c1d4e6fc48b9e74eefbf16dbb, type: 3}
   - {fileID: 21300000, guid: 7eade2fc7ef4c6948ba5cf14be42bc25, type: 3}
   - {fileID: 21300000, guid: 2600c6fc475c6114e8e4564c23d6c37e, type: 3}
   - {fileID: 21300000, guid: 3cc2db7e958c7eb4fa3988f50032a7d1, type: 3}
   m_PackedSpriteNamesToIndex:
-  - Eyedropper
+  - EyeDropper
   - Dropdown
-  - Box
   - X
   - RangeLine
   - Magnifier
   - InspectorWindow
+  - ColorBox
   - SeperateLine
-  - Checkmark
+  - CheckMark
   - RangeEllipse
   - VectorBox
   - EnumBox
+  - BoolBox
   - NumberBox
   - RangeBox
   - SectionBackground

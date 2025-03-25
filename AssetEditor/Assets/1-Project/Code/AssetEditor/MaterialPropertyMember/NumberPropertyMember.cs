@@ -4,19 +4,13 @@ using UnityEngine.UI;
 
 namespace Merlin
 {
-    public class AssetNumberPropertyMember : MonoBehaviour
+    public class NumberPropertyMember : MaterialPropertyMember<float>
     {
-        [SerializeField] private TMP_Text title;
         [SerializeField] private TMP_InputField inputField;
         [SerializeField] private Slider slider;
 
         [SerializeField] private Sprite numberBox;
         [SerializeField] private Sprite rangeBox;
-
-        private Material mat;
-        private string propertyName;
-        private MaterialPropertyType type;
-        private float currentValue;
 
         private float CurrentValue
         {
@@ -44,11 +38,8 @@ namespace Merlin
 
         public void Initialize(Material mat, MaterialPropertyType type, string name, float value, float min, float max)
         {
-            this.mat = mat;
-            this.type = type;
-            propertyName = name;
-            title.text = $"{name}";
-            currentValue = value;
+            base.Initialize(mat, type, name, value);
+
             inputField.SetTextWithoutNotify(value.ToString());
             inputField.image.sprite = rangeBox;
 
@@ -61,13 +52,10 @@ namespace Merlin
             slider.gameObject.SetActive(true);
         }
 
-        public void Initialize(Material mat, MaterialPropertyType type, string name, float value)
+        public new void Initialize(Material mat, MaterialPropertyType type, string name, float value)
         {
-            this.mat = mat;
-            this.type = type;
-            propertyName = name;
-            title.text = $"{name}";
-            currentValue = value;
+            base.Initialize(mat, type, name, value);
+
             inputField.SetTextWithoutNotify(value.ToString());
             inputField.image.sprite = numberBox;
 

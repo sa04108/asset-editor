@@ -12,7 +12,7 @@ namespace Merlin
         private Transform memberParent;
 
         [SerializeField]
-        private AssetPropertyMemberCreator memberCreator;
+        private PropertyMemberCreator memberCreator;
 
         private int presetCount;
         private GameObject assetInstance;
@@ -36,7 +36,7 @@ namespace Merlin
             LoadMembers();
         }
 
-        private AssetGridMember LoadTexturesGrid()
+        private GridMember LoadTexturesGrid()
         {
             var textures = GetComponent<AssetEditor>().GetTextures();
             var gridMember = memberCreator.CreateGridMember(textures.ToArray(), memberParent);
@@ -48,7 +48,7 @@ namespace Merlin
         {
             Renderer[] renderers = assetInstance.GetComponentsInChildren<Renderer>();
             HashSet<int> materialSet = new();
-            AssetGridMember texturesGrid = LoadTexturesGrid();
+            GridMember texturesGrid = LoadTexturesGrid();
 
             foreach (Renderer renderer in renderers)
             {

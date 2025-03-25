@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Merlin
 {
-    public class AssetMatrixPropertyMember : MonoBehaviour
+    public class MatrixPropertyMember : MonoBehaviour
     {
         [Serializable]
         public class InputFieldsRow
@@ -34,7 +34,7 @@ namespace Merlin
         {
             this.mat = mat;
             propertyName = name;
-            title.text = $"{name}, [Vector]";
+            title.text = $"{name}";
             currentValue = value;
 
             for (int i = 0; i < inputFields.Length; i++)

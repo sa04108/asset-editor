@@ -4,15 +4,10 @@ using UnityEngine.UI;
 
 namespace Merlin
 {
-    public class AssetVectorPropertyMember : MonoBehaviour
+    public class VectorPropertyMember : MaterialPropertyMember<Vector4>
     {
-        [SerializeField] private TMP_Text title;
         [SerializeField] private TMP_Text[] inputFieldLabels;
         [SerializeField] private TMP_InputField[] inputFields;
-
-        private Material mat;
-        private string propertyName;
-        private Vector4 currentValue;
 
         private void Start()
         {
@@ -28,11 +23,7 @@ namespace Merlin
 
         public void Initialize(Material mat, string name, Vector4 value)
         {
-            this.mat = mat;
-
-            propertyName = name;
-            title.text = $"{name}";
-            currentValue = value;
+            base.Initialize(mat, MaterialPropertyType.Vector, name, value);
 
             string[] vectorChanels = { "X", "Y", "Z", "W" };
             for (int i = 0; i < 4; i++)

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Merlin
 {
-    public class AssetGridMember : MonoBehaviour
+    public class GridMember : MonoBehaviour
     {
         [SerializeField]
         private Button elementPreset;
@@ -45,7 +45,7 @@ namespace Merlin
                 this.owner = owner;
 
                 transform.SetParent(owner.transform.parent);
-                transform.SetSiblingIndex(transform.parent.childCount - 1); // ÀÌ transformÀÌ owner transform¿¡ ¿µÇâÀ» ÁÖ¹Ç·Î ¸Ç ³¡À¸·Î ¸ÕÀú º¸³¿
+                transform.SetSiblingIndex(transform.parent.childCount - 1); // ì´ transformì´ owner transformì— ì˜í–¥ì„ ì£¼ë¯€ë¡œ ë§¨ ëìœ¼ë¡œ ë¨¼ì € ë³´ëƒ„
                 transform.SetSiblingIndex(owner.transform.GetSiblingIndex() + 1);
                 gameObject.SetActive(true);
             }
