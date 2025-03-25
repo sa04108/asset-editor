@@ -16,7 +16,7 @@ namespace Merlin
 
         public static RuntimeAssetWindow GetTextureWindow(Texture[] texArr)
         {
-            var window = instance as RuntimeAssetWindow;
+            var window = (RuntimeAssetWindow)instance;
             if (window.elements.Count > 0)
             {
                 foreach (var element in window.elements)

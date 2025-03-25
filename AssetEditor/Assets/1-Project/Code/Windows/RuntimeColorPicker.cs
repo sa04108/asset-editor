@@ -5,21 +5,24 @@ namespace Merlin
 {
     public class RuntimeColorPicker : RuntimeWindow<Color>
     {
-        private static GB.ColorPickerWindow cpInstance;
+        private GB.ColorPickerWindow cpInstance;
 
         public static Color Color
         {
-            get => cpInstance.Color;
-            set => cpInstance.Color = value;
+            get => ((RuntimeColorPicker)instance).cpInstance.Color;
+            set => ((RuntimeColorPicker)instance).cpInstance.Color = value;
         }
 
         [SerializeField] private GB.ColorPickerWindow colorPicker;
 
-        protected override void Start()
+        private void Awake()
         {
-            base.Start();
-
             cpInstance = colorPicker;
+        }
+
+        private void OnEnable()
+        {
+            // ColorPicker 내부 코드에 의해 Enable마다 새로 Action을 넣어줘야 한다.
             cpInstance.onColorUpdated += color => onValueChanged.Invoke(color);
         }
     }
