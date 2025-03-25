@@ -72,7 +72,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 2600c6fc475c6114e8e4564c23d6c37e, type: 3}
   - {fileID: 21300000, guid: 3cc2db7e958c7eb4fa3988f50032a7d1, type: 3}
   m_PackedSpriteNamesToIndex:
-  - EyeDropper
+  - Eyedropper
   - Dropdown
   - X
   - RangeLine
@@ -80,7 +80,7 @@ SpriteAtlas:
   - InspectorWindow
   - ColorBox
   - SeperateLine
-  - CheckMark
+  - Checkmark
   - RangeEllipse
   - VectorBox
   - EnumBox
