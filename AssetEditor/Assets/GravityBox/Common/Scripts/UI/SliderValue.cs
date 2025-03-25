@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +17,7 @@ namespace GravityBox.UI
 
         public ValueType valueType;
         public Slider slider;
-        public InputField inputField;
+        public TMP_InputField inputField;
         public Slider.SliderEvent onValueChanged = new Slider.SliderEvent();
 
         [SerializeField]

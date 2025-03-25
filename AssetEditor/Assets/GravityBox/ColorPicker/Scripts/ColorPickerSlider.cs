@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using GravityBox.UI;
+﻿using GravityBox.UI;
+using TMPro;
+using UnityEngine;
 
 namespace GravityBox.ColorPicker
 {
@@ -17,7 +17,7 @@ namespace GravityBox.ColorPicker
         [SerializeField]
         private SliderValue slider;
         [SerializeField]
-        private Text label;
+        private TMP_Text label;
         [SerializeField]
         private Material material;
 

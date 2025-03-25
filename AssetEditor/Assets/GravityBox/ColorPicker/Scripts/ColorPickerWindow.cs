@@ -1,6 +1,5 @@
-﻿using System.Collections;
+﻿using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace GravityBox.ColorPicker
@@ -13,7 +12,7 @@ namespace GravityBox.ColorPicker
         public System.Action<Color> onColorUpdated;
 
         [SerializeField]
-        private InputField hexInputField;
+        private TMP_InputField hexInputField;
         [SerializeField]
         private Image newColor;
         [SerializeField]
