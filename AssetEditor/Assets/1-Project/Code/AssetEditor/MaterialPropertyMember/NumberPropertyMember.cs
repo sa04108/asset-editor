@@ -52,7 +52,7 @@ namespace Merlin
             slider.gameObject.SetActive(true);
         }
 
-        public new void Initialize(Material mat, MaterialPropertyType type, string name, float value)
+        public override void Initialize(Material mat, MaterialPropertyType type, string name, float value)
         {
             base.Initialize(mat, type, name, value);
 

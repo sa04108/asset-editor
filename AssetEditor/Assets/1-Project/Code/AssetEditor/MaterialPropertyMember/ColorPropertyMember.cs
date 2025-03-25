@@ -7,21 +7,15 @@ namespace Merlin
     {
         [SerializeField] private Button colorIconButton;
 
-        private FlexibleColorPicker colorPicker;
-
-        public void Initialize(Material mat, FlexibleColorPicker fcp, string name, Color value)
+        public override void Initialize(Material mat, MaterialPropertyType type, string name, Color value)
         {
             base.Initialize(mat, MaterialPropertyType.Vector, name, value);
 
-            SetColorEditor(fcp, value);
-        }
-
-        private void SetColorEditor(FlexibleColorPicker fcp, Vector4 value)
-        {
-            colorPicker = fcp;
-            colorPicker.color = value;
-            colorPicker.onColorChange.AddListener(OnColorPick);
-            colorIconButton.onClick.AddListener(ToggleColorPick);
+            colorIconButton.onClick.AddListener(() =>
+            {
+                RuntimeColorPicker.SetOwner(transform, SetColor);
+                RuntimeColorPicker.Color = currentValue;
+            });
 
             SetColor(value);
         }
@@ -32,17 +26,6 @@ namespace Merlin
             colorIconButton.image.color = color;
 
             mat.SetColor(propertyName, color);
-        }
-
-        private void OnColorPick(Color color)
-        {
-            SetColor(color);
-        }
-
-        private void ToggleColorPick()
-        {
-            colorPicker.gameObject.SetActive(!colorPicker.gameObject.activeSelf);
-            LayoutRebuilder.ForceRebuildLayoutImmediate(colorPicker.transform.parent.GetComponent<RectTransform>());
         }
     }
 }

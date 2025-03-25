@@ -4,30 +4,26 @@ namespace Merlin
 {
     public class PropertyMemberCreator : MonoBehaviour
     {
-        //[SerializeField] private TexturePropertyMember textureMemberPreset;
+        [SerializeField] private TexturePropertyMember textureMemberPreset;
         [SerializeField] private NumberPropertyMember numMemberPreset;
 
         [SerializeField] private ColorPropertyMember colorMemberPreset;
         [SerializeField] private VectorPropertyMember vectorMemberPreset;
         [SerializeField] private MatrixPropertyMember matrixMemberPreset;
 
-        [SerializeField] private GridMember gridMemberPreset;
         [SerializeField] private PropertyGroupMember groupMemberPreset;
         [SerializeField] private Transform memberGroupPreset;
-        [SerializeField] private FlexibleColorPicker colorPickerPreset;
 
         private void Start()
         {
-            //textureMemberPreset.gameObject.SetActive(false);
+            textureMemberPreset.gameObject.SetActive(false);
             numMemberPreset.gameObject.SetActive(false);
             colorMemberPreset.gameObject.SetActive(false);
             vectorMemberPreset.gameObject.SetActive(false);
             matrixMemberPreset.gameObject.SetActive(false);
 
-            gridMemberPreset.gameObject.SetActive(false);
             groupMemberPreset.gameObject.SetActive(false);
             memberGroupPreset.gameObject.SetActive(false);
-            colorPickerPreset.gameObject.SetActive(false);
         }
 
         public Transform CreateGroupMember(Texture tex, string type, string name, Transform parent)
@@ -42,22 +38,14 @@ namespace Merlin
             return memberGroup;
         }
 
-        public GridMember CreateGridMember(Texture[] texArr, Transform parent)
+        public TexturePropertyMember CreateTexturePropertyMember(Material mat, string name, Texture value, Transform parent)
         {
-            var member = Instantiate(gridMemberPreset, parent);
-            member.Initialize(texArr);
+            var member = Instantiate(textureMemberPreset, parent);
+            member.Initialize(mat, MaterialPropertyType.Texture, name, value);
+            member.gameObject.SetActive(true);
 
             return member;
         }
-
-        //public TexturePropertyMember CreateTexturePropertyMember(Material mat, GridMember textureGrid, string name, Texture value, Transform parent)
-        //{
-        //    var member = Instantiate(textureMemberPreset, parent);
-        //    member.Initialize(mat, textureGrid, name, value);
-        //    member.gameObject.SetActive(true);
-
-        //    return member;
-        //}
 
         public NumberPropertyMember CreateNumberMember(Material mat, MaterialPropertyType type, string name, float value, float min, float max, Transform parent)
         {
@@ -100,8 +88,7 @@ namespace Merlin
         public ColorPropertyMember CreateColorMember(Material mat, string name, Color value, Transform parent)
         {
             var member = Instantiate(colorMemberPreset, parent);
-            var fcp = Instantiate(colorPickerPreset, parent);
-            member.Initialize(mat, fcp, name, value);
+            member.Initialize(mat, MaterialPropertyType.Vector, name, value);
             member.gameObject.SetActive(true);
 
             return member;

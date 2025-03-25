@@ -36,19 +36,10 @@ namespace Merlin
             LoadMembers();
         }
 
-        private GridMember LoadTexturesGrid()
-        {
-            var textures = GetComponent<AssetEditor>().GetTextures();
-            var gridMember = memberCreator.CreateGridMember(textures.ToArray(), memberParent);
-
-            return gridMember;
-        }
-
         private void LoadMembers()
         {
             Renderer[] renderers = assetInstance.GetComponentsInChildren<Renderer>();
             HashSet<int> materialSet = new();
-            GridMember texturesGrid = LoadTexturesGrid();
 
             foreach (Renderer renderer in renderers)
             {
@@ -72,7 +63,7 @@ namespace Merlin
                     foreach (string prop in textureProps)
                     {
                         var tex = mat.GetTexture(prop);
-                        //memberCreator.CreateTexturePropertyMember(mat, texturesGrid, prop, tex, group);
+                        memberCreator.CreateTexturePropertyMember(mat, prop, tex, group);
                     }
 
                     var floatProps = mat.GetPropertyNames(MaterialPropertyType.Float);

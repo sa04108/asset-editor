@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,22 +13,15 @@ namespace Merlin
         [SerializeField]
         private Image icon;
 
-        [SerializeField]
-        private TMP_Text desc;
-
-        private GridMember textureGrid;
-
-        public void Initialize(Material mat, GridMember textureGrid, string name, Texture tex)
+        public override void Initialize(Material mat, MaterialPropertyType type, string name, Texture tex)
         {
-            base.Initialize(mat, MaterialPropertyType.Texture, name, tex);
+            base.Initialize(mat, type, name, tex);
 
-            this.textureGrid = textureGrid;
             icon.sprite = TextureToSprite(tex);
-            desc.text = $"{name}";
 
             button.onClick.AddListener(() =>
             {
-                textureGrid.SetOwner(transform, texture =>
+                RuntimeAssetWindow.SetOwner(transform, texture =>
                 {
                     currentValue = texture;
                     icon.sprite = TextureToSprite(texture);

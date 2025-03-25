@@ -50,15 +50,15 @@ namespace Merlin
                     {
                         keys.Add(keyStr);
                     }
-                    else if (keyStr.EndsWith(".jpg") ||
-                    keyStr.EndsWith(".png"))
-                    {
-                        Addressables.LoadAssetAsync<Texture>(keyStr).Completed += loadHandle =>
-                        {
-                            textures.Add(loadHandle.Result);
-                        };
-                    }
                 }
+
+                Addressables.LoadAssetsAsync<Texture>(handle.Result.Keys, texture =>
+                {
+                    textures.Add(texture);
+                }, Addressables.MergeMode.Union).Completed += texHandle =>
+                {
+                    RuntimeAssetWindow.GetTextureWindow(textures.ToArray());
+                };
 
                 for (int i = 0; i < keys.Count; i++)
                 {
@@ -99,7 +99,7 @@ namespace Merlin
                 cameraTransform.RotateAround(Vector3.zero, cameraTransform.right, -vertical);
             }
 
-            if (EventSystem.current.IsPointerOverGameObject())
+            if (EventSystem.current?.IsPointerOverGameObject() ?? true)
                 return;
 
             // 마우스 휠 입력을 통한 확대/축소 처리
