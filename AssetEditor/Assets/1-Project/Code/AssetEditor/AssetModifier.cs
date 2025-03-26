@@ -43,7 +43,7 @@ namespace Merlin
 
             foreach (Renderer renderer in renderers)
             {
-                foreach (Material mat in renderer.sharedMaterials)
+                foreach (Material mat in renderer.materials)
                 {
                     var matHash = mat.GetHashCode();
 
