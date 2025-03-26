@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Merlin
@@ -20,7 +19,7 @@ namespace Merlin
 
             button.onClick.AddListener(() =>
             {
-                RuntimeAssetWindow.SetOwner(transform, texture =>
+                RuntimeAssetWindow.Get<Texture>(transform, texture =>
                 {
                     icon.texture = texture;
                     mat.SetTexture(name, texture);

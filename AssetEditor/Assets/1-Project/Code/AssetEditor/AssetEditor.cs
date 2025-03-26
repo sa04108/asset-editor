@@ -10,7 +10,7 @@ namespace Merlin
 {
     public class AssetEditor : MonoBehaviour
     {
-        private AssetModifier modifier;
+        private AssetInspector modifier;
 
         [Header("Links")]
         [SerializeField]
@@ -36,7 +36,7 @@ namespace Merlin
 
         private void Start()
         {
-            modifier = GetComponent<AssetModifier>();
+            modifier = GetComponent<AssetInspector>();
             Addressables.InitializeAsync().Completed += handle =>
             {
                 foreach (var key in handle.Result.Keys)
@@ -57,7 +57,7 @@ namespace Merlin
                     textures.Add(texture);
                 }, Addressables.MergeMode.Union).Completed += texHandle =>
                 {
-                    RuntimeAssetWindow.GetTextureWindow(textures.ToArray());
+                    RuntimeAssetWindow.Get(null, textures.ToArray(), null);
                 };
 
                 for (int i = 0; i < keys.Count; i++)

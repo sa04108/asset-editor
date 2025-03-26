@@ -1,21 +1,19 @@
+using GravityBox.ColorPicker;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Merlin
 {
     public class ColorPropertyMember : MaterialPropertyMember<Color>
     {
-        [SerializeField] private Button colorIconButton;
+        [SerializeField] private ColorButton colorButton;
 
-        public override void Initialize(Material mat, MaterialPropertyType type, string name, Color value)
+        public void Initialize(Material mat, MaterialPropertyType type, string name, Color value, bool isHDR)
         {
             base.Initialize(mat, MaterialPropertyType.Vector, name, value);
 
-            colorIconButton.onClick.AddListener(() =>
-            {
-                RuntimeColorPicker.SetOwner(transform, SetColor);
-                RuntimeColorPicker.Color = currentValue;
-            });
+            colorButton.colorImage.isHDR = isHDR;
+            colorButton.color = value;
+            colorButton.onColorUpdated.AddListener(SetColor);
 
             SetColor(value);
         }
@@ -23,7 +21,6 @@ namespace Merlin
         private void SetColor(Color color)
         {
             currentValue = color;
-            colorIconButton.image.color = color;
 
             mat.SetColor(propertyName, color);
         }

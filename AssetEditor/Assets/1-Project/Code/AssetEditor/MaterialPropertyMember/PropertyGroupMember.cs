@@ -12,11 +12,11 @@ namespace Merlin
         public Button Button => button;
 
         [SerializeField]
-        private TMP_Text desc;
+        private TMP_Text title;
 
-        public void Initialize(Texture tex, string type, string name)
+        public void Initialize(string title)
         {
-            desc.text = $"{type}";
+            this.title.text = $"{title}";
         }
     }
 }

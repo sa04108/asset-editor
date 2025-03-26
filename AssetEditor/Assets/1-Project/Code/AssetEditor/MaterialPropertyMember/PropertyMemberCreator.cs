@@ -26,10 +26,10 @@ namespace Merlin
             memberGroupPreset.gameObject.SetActive(false);
         }
 
-        public Transform CreateGroupMember(Texture tex, string type, string name, Transform parent)
+        public Transform CreateGroupMember(string title, Transform parent)
         {
             var member = Instantiate(groupMemberPreset, parent);
-            member.Initialize(tex, type, name);
+            member.Initialize(title);
             member.gameObject.SetActive(true);
 
             var memberGroup = Instantiate(memberGroupPreset, parent);
@@ -85,10 +85,10 @@ namespace Merlin
             return CreateNumberMember(mat, MaterialPropertyType.Int, name, value, parent);
         }
 
-        public ColorPropertyMember CreateColorMember(Material mat, string name, Color value, Transform parent)
+        public ColorPropertyMember CreateColorMember(Material mat, string name, Color value, bool isHDR, Transform parent)
         {
             var member = Instantiate(colorMemberPreset, parent);
-            member.Initialize(mat, MaterialPropertyType.Vector, name, value);
+            member.Initialize(mat, MaterialPropertyType.Vector, name, value, isHDR);
             member.gameObject.SetActive(true);
 
             return member;

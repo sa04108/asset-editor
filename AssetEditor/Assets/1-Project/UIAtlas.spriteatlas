@@ -37,7 +37,6 @@ SpriteAtlas:
     isAtlasV2: 0
     cachedData: {fileID: 0}
     packedSpriteRenderDataKeys:
-    - 243361103d29f6d45be0e89bc4281bf5: 21300000
     - 4f9a52f0b980b6148a30038905e8c32b: 21300000
     - 329234b189b4ad64fb4936c58ac729e5: 21300000
     - a9a827f2aa52ee54585c605bc50e71d6: 21300000
@@ -54,7 +53,6 @@ SpriteAtlas:
     - 2600c6fc475c6114e8e4564c23d6c37e: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: 243361103d29f6d45be0e89bc4281bf5, type: 3}
   - {fileID: 21300000, guid: 4f9a52f0b980b6148a30038905e8c32b, type: 3}
   - {fileID: 21300000, guid: 329234b189b4ad64fb4936c58ac729e5, type: 3}
   - {fileID: 21300000, guid: a9a827f2aa52ee54585c605bc50e71d6, type: 3}
@@ -70,7 +68,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 7eade2fc7ef4c6948ba5cf14be42bc25, type: 3}
   - {fileID: 21300000, guid: 2600c6fc475c6114e8e4564c23d6c37e, type: 3}
   m_PackedSpriteNamesToIndex:
-  - EyeDropper
   - Dropdown
   - X
   - RangeLine

@@ -25,9 +25,8 @@ namespace Merlin
             texProp.gameObject.SetActive(false);
         }
 
-        public void InitializeWithTexture(Material mat, MaterialPropertyType type, string name, T value, Texture tex)
+        public void SetTextureProperty(Material mat, string name, Texture tex)
         {
-            Initialize(mat, type, name, value);
             texProp.Initialize(mat, name, tex);
 
             texProp.gameObject.SetActive(true);

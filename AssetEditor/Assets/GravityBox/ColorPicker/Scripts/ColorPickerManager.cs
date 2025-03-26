@@ -33,6 +33,7 @@ namespace GravityBox.ColorPicker
             else
                 colorPickerGameObject.SetActive(true);
 
+            sceneColorPicker.onColorUpdated = null;
             sceneColorPicker.Show(color, hasAlpha, isHDR);
             sceneColorPicker.onColorUpdated += onColorUpdated;
         }
