@@ -19,6 +19,9 @@ namespace Merlin
         private UnityEvent<Object> onValueChangedEvent = new();
 
         [SerializeField]
+        private string startType;
+
+        [SerializeField]
         private TMP_Text title;
 
         [SerializeField]
@@ -79,12 +82,13 @@ namespace Merlin
                 if (source == null)
                 {
                     source = FindAnyObjectByType<RuntimeAssetWindow>();
-                    source.gameObject.SetActive(false);
+                    source.startType = "";
                 }
 
                 var instance = Instantiate(source, source.transform.parent);
                 instance.name = $"{typeof(T).Name}Window";
                 instance.title.text = typeof(T).Name;
+                instance.transform.localPosition = Vector3.zero;
                 instance.gameObject.SetActive(true);
 
                 instances.Add(typeof(T), instance);
@@ -93,13 +97,27 @@ namespace Merlin
             return instances[typeof(T)];
         }
 
+        private void Awake()
+        {
+            if (!string.IsNullOrEmpty(startType))
+            {
+                System.Type thisType = System.Type.GetType($"{startType}, UnityEngine");
+                instances.Add(thisType, this);
+                title.text = thisType.Name;
+            }
+        }
+
         private void Subscribe<T>(Transform _owner, UnityAction<T> onValueChanged) where T : Object
         {
             owner = _owner;
             gameObject.SetActive(true);
 
             onValueChangedEvent.RemoveAllListeners();
-            onValueChangedEvent.AddListener(obj => onValueChanged?.Invoke((T)obj));
+            onValueChangedEvent.AddListener(obj =>
+            {
+                if (_owner != null)
+                    onValueChanged?.Invoke((T)obj);
+            });
         }
 
         private void SetValues<T>(T[] values) where T : Object
@@ -128,6 +146,7 @@ namespace Merlin
                     button.GetComponent<RawImage>().texture = mat.mainTexture;
                 }
 
+                button.GetComponentInChildren<TMP_Text>().text = value.name;
                 button.gameObject.SetActive(true);
 
                 button.onClick.AddListener(() =>
