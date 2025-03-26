@@ -85,10 +85,10 @@ namespace Merlin
             return CreateNumberMember(mat, MaterialPropertyType.Int, name, value, parent);
         }
 
-        public ColorPropertyMember CreateColorMember(Material mat, string name, Color value, bool isHDR, Transform parent)
+        public ColorPropertyMember CreateColorMember(Material mat, string name, Color value, bool hasAlpha, bool isHDR, Transform parent)
         {
             var member = Instantiate(colorMemberPreset, parent);
-            member.Initialize(mat, MaterialPropertyType.Vector, name, value, isHDR);
+            member.Initialize(mat, MaterialPropertyType.Vector, name, value, hasAlpha, isHDR);
             member.gameObject.SetActive(true);
 
             return member;

@@ -4,8 +4,7 @@ using UnityEngine;
 
 namespace Merlin
 {
-    // Shader Name -> Property Name -> Property Type -> Property Value
-    // using ShaderProperty = Dictionary<string, Dictionary<string, Dictionary<string, object>>>;
+    using ShaderPropertyIndex = Dictionary<string, int>;
 
     public class AssetInspector : MonoBehaviour
     {
@@ -17,15 +16,9 @@ namespace Merlin
 
         private int presetCount;
 
-        //[SerializeField]
-        //private TextAsset shaderPropJson;
-
-        //private ShaderProperty shaderProps;
-
         private void Start()
         {
             presetCount = memberParent.transform.childCount;
-            //shaderProps = JsonConvert.DeserializeObject<ShaderProperty>(shaderPropJson.text);
         }
 
         public void SetFbxInstance(GameObject go)
@@ -59,14 +52,42 @@ namespace Merlin
                 }
             }
 
-            RuntimeAssetWindow.Get(go.transform, materialSet.ToArray(), InspectMaterial);
+            RuntimeAssetWindow.Get(go.transform, materialSet.ToArray(), InspectLitMaterialProperties);
         }
 
-        private void InspectMaterial(Material mat)
+        private void InspectLitMaterialProperties(Material mat)
         {
             ClearMembers();
 
-            Dictionary<string, int> shaderPropIdx = new();
+            ShaderPropertyIndex shaderPropIdx = new();
+            for (int i = 0; i < mat.shader.GetPropertyCount(); i++)
+            {
+                shaderPropIdx.Add(mat.shader.GetPropertyName(i), i);
+            }
+
+            var group = memberCreator.CreateGroupMember("Lit Options", memberParent);
+
+            var mainTex = mat.GetTexture("_BaseMap");
+            memberCreator.CreateTexturePropertyMember(mat, "_BaseMap", mainTex, group);
+
+            var bumpText = mat.GetTexture("_DetailNormalMap");
+            memberCreator.CreateTexturePropertyMember(mat, "_DetailNormalMap", bumpText, group);
+
+            var mainColor = mat.GetColor("_BaseColor");
+            memberCreator.CreateColorMember(mat, "_BaseColor", mainColor, true, false, group);
+
+            var emxTex = mat.GetTexture("_EmissionMap");
+            memberCreator.CreateTexturePropertyMember(mat, "_EmissionMap", emxTex, group);
+
+            var emsColor = mat.GetColor("_EmissionColor");
+            memberCreator.CreateColorMember(mat, "_BaseColor", mainColor, false, true, group);
+        }
+
+        private void InspectAllMaterialProperties(Material mat)
+        {
+            ClearMembers();
+
+            ShaderPropertyIndex shaderPropIdx = new();
             for (int i = 0; i < mat.shader.GetPropertyCount(); i++)
             {
                 shaderPropIdx.Add(mat.shader.GetPropertyName(i), i);
@@ -77,6 +98,9 @@ namespace Merlin
             var textureProps = mat.GetTexturePropertyNames();
             foreach (string prop in textureProps)
             {
+                if (IsPropertyHideInInspector(mat, shaderPropIdx, prop))
+                    continue;
+
                 var tex = mat.GetTexture(prop);
                 memberCreator.CreateTexturePropertyMember(mat, prop, tex, group);
             }
@@ -84,6 +108,9 @@ namespace Merlin
             var floatProps = mat.GetPropertyNames(MaterialPropertyType.Float);
             foreach (string prop in floatProps)
             {
+                if (IsPropertyHideInInspector(mat, shaderPropIdx, prop))
+                    continue;
+
                 var value = mat.GetFloat(prop);
                 if (shaderPropIdx.ContainsKey(prop) &&
                     mat.shader.GetPropertyType(shaderPropIdx[prop]) == UnityEngine.Rendering.ShaderPropertyType.Range)
@@ -102,6 +129,9 @@ namespace Merlin
             var intProps = mat.GetPropertyNames(MaterialPropertyType.Int);
             foreach (string prop in intProps)
             {
+                if (IsPropertyHideInInspector(mat, shaderPropIdx, prop))
+                    continue;
+
                 var value = mat.GetInteger(prop);
                 memberCreator.CreateIntMember(mat, prop, value, group);
             }
@@ -109,12 +139,15 @@ namespace Merlin
             var vecProps = mat.GetPropertyNames(MaterialPropertyType.Vector);
             foreach (string prop in vecProps)
             {
+                if (IsPropertyHideInInspector(mat, shaderPropIdx, prop))
+                    continue;
+
                 var value = mat.GetVector(prop);
                 if (shaderPropIdx.ContainsKey(prop) &&
                     mat.shader.GetPropertyType(shaderPropIdx[prop]) == UnityEngine.Rendering.ShaderPropertyType.Color)
                 {
                     bool isHDR = mat.shader.GetPropertyFlags(shaderPropIdx[prop]) == UnityEngine.Rendering.ShaderPropertyFlags.HDR;
-                    memberCreator.CreateColorMember(mat, prop, value, isHDR, group);
+                    memberCreator.CreateColorMember(mat, prop, value, true, isHDR, group);
                 }
                 else
                 {
@@ -125,14 +158,18 @@ namespace Merlin
             var matrixProps = mat.GetPropertyNames(MaterialPropertyType.Matrix);
             foreach (string prop in matrixProps)
             {
+                if (IsPropertyHideInInspector(mat, shaderPropIdx, prop))
+                    continue;
+
                 var value = mat.GetMatrix(prop);
                 memberCreator.CreateMatrixMember(mat, prop, value, group);
             }
         }
 
-        //private Dictionary<string, T> GetShaderPropertyValue<T>(string shaderName, string propName, string propType)
-        //{
-        //    return ((JObject)shaderProps[shaderName][propName][propType]).ToObject<Dictionary<string, T>>();
-        //}
+        private bool IsPropertyHideInInspector(Material mat, ShaderPropertyIndex dict, string prop)
+        {
+            return dict.ContainsKey(prop) &&
+                mat.shader.GetPropertyFlags(dict[prop]) == UnityEngine.Rendering.ShaderPropertyFlags.HideInInspector;
+        }
     }
 }

@@ -7,10 +7,11 @@ namespace Merlin
     {
         [SerializeField] private ColorButton colorButton;
 
-        public void Initialize(Material mat, MaterialPropertyType type, string name, Color value, bool isHDR)
+        public void Initialize(Material mat, MaterialPropertyType type, string name, Color value, bool hasAlpha, bool isHDR)
         {
             base.Initialize(mat, MaterialPropertyType.Vector, name, value);
 
+            colorButton.colorImage.hasAlpha = hasAlpha;
             colorButton.colorImage.isHDR = isHDR;
             colorButton.color = value;
             colorButton.onColorUpdated.AddListener(SetColor);
