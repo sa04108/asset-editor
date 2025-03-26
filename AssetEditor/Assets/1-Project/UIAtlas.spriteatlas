@@ -52,7 +52,6 @@ SpriteAtlas:
     - 1ccc548c1d4e6fc48b9e74eefbf16dbb: 21300000
     - 7eade2fc7ef4c6948ba5cf14be42bc25: 21300000
     - 2600c6fc475c6114e8e4564c23d6c37e: 21300000
-    - 3cc2db7e958c7eb4fa3988f50032a7d1: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 243361103d29f6d45be0e89bc4281bf5, type: 3}
@@ -70,9 +69,8 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1ccc548c1d4e6fc48b9e74eefbf16dbb, type: 3}
   - {fileID: 21300000, guid: 7eade2fc7ef4c6948ba5cf14be42bc25, type: 3}
   - {fileID: 21300000, guid: 2600c6fc475c6114e8e4564c23d6c37e, type: 3}
-  - {fileID: 21300000, guid: 3cc2db7e958c7eb4fa3988f50032a7d1, type: 3}
   m_PackedSpriteNamesToIndex:
-  - Eyedropper
+  - EyeDropper
   - Dropdown
   - X
   - RangeLine
@@ -80,14 +78,13 @@ SpriteAtlas:
   - InspectorWindow
   - ColorBox
   - SeperateLine
-  - Checkmark
+  - CheckMark
   - RangeEllipse
   - VectorBox
   - EnumBox
   - BoolBox
   - NumberBox
   - RangeBox
-  - SectionBackground
   m_RenderDataMap: {}
   m_Tag: UIAtlas
   m_IsVariant: 0

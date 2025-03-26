@@ -5,7 +5,7 @@ namespace Merlin
 {
     public abstract class MaterialPropertyMember<T> : MonoBehaviour
     {
-        [SerializeField] protected TexturePropertyMember texMember;
+        [SerializeField] protected TextureProperty texProp;
         [SerializeField] protected TMP_Text title;
 
         protected Material mat;
@@ -22,15 +22,15 @@ namespace Merlin
             propertyName = name;
             currentValue = value;
 
-            texMember.gameObject.SetActive(false);
+            texProp.gameObject.SetActive(false);
         }
 
         public void InitializeWithTexture(Material mat, MaterialPropertyType type, string name, T value, Texture tex)
         {
             Initialize(mat, type, name, value);
-            texMember.Initialize(mat, MaterialPropertyType.Texture, name, tex);
+            texProp.Initialize(mat, name, tex);
 
-            texMember.gameObject.SetActive(true);
+            texProp.gameObject.SetActive(true);
         }
     }
 }
