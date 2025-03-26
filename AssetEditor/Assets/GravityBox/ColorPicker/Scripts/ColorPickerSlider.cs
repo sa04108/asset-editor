@@ -6,7 +6,9 @@ namespace GravityBox.ColorPicker
 {
     public class ColorPickerSlider : MonoBehaviour
     {
-        public enum ColorMode { RGBA, RGBA01, HSV }
+        public enum ColorMode
+        { RGBA, RGBA01, HSV }
+
         public ColorMode colorMode = ColorMode.HSV;
 
         [SerializeField]
@@ -14,10 +16,13 @@ namespace GravityBox.ColorPicker
 
         [SerializeField]
         private ColorObject colorObject;
+
         [SerializeField]
         private SliderValue slider;
+
         [SerializeField]
         private TMP_Text label;
+
         [SerializeField]
         private Material material;
 
@@ -26,9 +31,14 @@ namespace GravityBox.ColorPicker
         private string[] RGBkeywords = new string[] { "_RGB", "_RGB", "_RGB" };
         private string[] HSVkeywords = new string[] { "_LINE", "_SAT", "_" };
 
+        private void Awake()
+        {
+            material = new Material(material);
+        }
+
         private void OnEnable()
         {
-            UpdateControls(force:true);
+            UpdateControls(force: true);
             SwitchMode(colorMode);
 
             colorObject.onColorChanged += OnColorUpdated;
@@ -80,12 +90,14 @@ namespace GravityBox.ColorPicker
                     slider.maxValue = 255;
                     label.text = RGBlabels[colorChannel].ToString();
                     break;
+
                 case ColorMode.RGBA01:
                     slider.characterLimit = 4;
                     slider.valueType = SliderValue.ValueType.Float;
                     slider.maxValue = 1;
                     label.text = RGBlabels[colorChannel].ToString();
                     break;
+
                 case ColorMode.HSV:
                     slider.characterLimit = 3;
                     slider.valueType = SliderValue.ValueType.Integer;
@@ -94,7 +106,7 @@ namespace GravityBox.ColorPicker
                     break;
             }
             SwitchMaterialMode(mode);
-            UpdateControls(force:true);
+            UpdateControls(force: true);
         }
 
         //slider background uses material with shader to display and update
@@ -109,10 +121,12 @@ namespace GravityBox.ColorPicker
                     material.DisableKeyword(HSVkeywords[colorChannel]);
                     material.EnableKeyword(RGBkeywords[colorChannel]);
                     break;
+
                 case ColorMode.RGBA01:
                     material.DisableKeyword(HSVkeywords[colorChannel]);
                     material.EnableKeyword(RGBkeywords[colorChannel]);
                     break;
+
                 case ColorMode.HSV:
                     material.DisableKeyword(RGBkeywords[colorChannel]);
                     material.EnableKeyword(HSVkeywords[colorChannel]);
@@ -121,6 +135,7 @@ namespace GravityBox.ColorPicker
         }
 
         public void OnColorModeChanged(int mode) => SwitchMode((ColorMode)mode);
+
         private void OnSliderValueChanged(float value) => SetColorChannelValue(value);
 
         private void SetColorChannelValue(float value)

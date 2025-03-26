@@ -11,10 +11,12 @@ namespace GravityBox.ColorPicker
     /// </summary>
     public class ColorPickerHSV : MonoBehaviour, IPointerDownHandler, IDragHandler
     {
-        public enum Mode { ValueH, ValueSV }
+        public enum Mode
+        { ValueH, ValueSV }
 
         [SerializeField]
         private Mode mode = Mode.ValueH;
+
         [SerializeField]
         private ColorObject colorObject;
 
@@ -48,6 +50,11 @@ namespace GravityBox.ColorPicker
             }
         }
 
+        private void Awake()
+        {
+            rawImage.material = new Material(rawImage.material);
+        }
+
         private void OnEnable()
         {
             OnColorUpdated();
@@ -76,6 +83,7 @@ namespace GravityBox.ColorPicker
                         value += 1f;
                     hsv.x = value;
                     break;
+
                 case Mode.ValueSV:
                     position = GetRelativeBoxPosition(eventData.position);
                     hsv.y = position.x;
@@ -129,7 +137,7 @@ namespace GravityBox.ColorPicker
 
         //colorObject does auto convertion of current color to HSV RGBA etc
         //alpha channel which is shared between color modes
-        void OnColorUpdated() 
+        void OnColorUpdated()
         {
             rawImage.material.SetVector("_HSV", colorObject.GetHSV());
         }
