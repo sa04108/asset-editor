@@ -104,7 +104,7 @@ namespace Merlin
             AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
             if (settings == null)
             {
-                Debug.LogError("Addressable Asset Settings를 찾을 수 없습니다. 먼저 Addressables 설정을 생성해주세요.");
+                Debug.LogError("Couldn't find [Addressable Asset Settings]. Initialize it first.");
                 return;
             }
 
@@ -133,7 +133,7 @@ namespace Merlin
                     if (entry == null)
                     {
                         settings.CreateOrMoveEntry(guid, assetGroup);
-                        Debug.Log($"'{directory}'가 자동으로 Addressable로 지정되었습니다.");
+                        Debug.Log($"'{directory}'is automatically assgined as Addressable Asset.");
                     }
                 }
             }
