@@ -15,7 +15,7 @@ namespace Merlin
         #endregion Static Fields
 
         private Transform owner;
-        private UnityEvent<Object> onValueChangedEvent = new();
+        private UnityEvent<Object> onItemSelectedEvent = new();
 
         [SerializeField]
         private string startType;
@@ -31,7 +31,7 @@ namespace Merlin
 
         private List<AssetWindowItem> items = new();
 
-        public static AssetWindow Get<T>(Transform subscriber, UnityAction<T> onValueChanged) where T : Object
+        public static AssetWindow Show<T>(Transform subscriber, UnityAction<T> onItemSelected) where T : Object
         {
             var instance = GetInstance<T>();
 
@@ -47,12 +47,12 @@ namespace Merlin
                 return instance;
             }
 
-            instance.Subscribe(subscriber, onValueChanged);
+            instance.Subscribe(subscriber, onItemSelected);
 
             return instance;
         }
 
-        public static AssetWindow Get<T>(Transform subscriber, T[] values, UnityAction<T> onValueChanged) where T : Object
+        public static AssetWindow Show<T>(Transform subscriber, T[] values, UnityAction<T> onItemSelected) where T : Object
         {
             var instance = GetInstance<T>();
 
@@ -68,7 +68,7 @@ namespace Merlin
                 return instance;
             }
 
-            instance.Subscribe(subscriber, onValueChanged);
+            instance.Subscribe(subscriber, onItemSelected);
             instance.SetValues(values);
 
             return instance;
@@ -102,20 +102,19 @@ namespace Merlin
             {
                 System.Type thisType = System.Type.GetType($"{startType}, UnityEngine");
                 instances.Add(thisType, this);
-                title.text = thisType.Name;
             }
         }
 
-        private void Subscribe<T>(Transform subscriber, UnityAction<T> onValueChanged) where T : Object
+        private void Subscribe<T>(Transform subscriber, UnityAction<T> onItemSelected) where T : Object
         {
             owner = subscriber;
             gameObject.SetActive(true);
 
-            onValueChangedEvent.RemoveAllListeners();
-            onValueChangedEvent.AddListener(obj =>
+            onItemSelectedEvent.RemoveAllListeners();
+            onItemSelectedEvent.AddListener(obj =>
             {
                 if (subscriber != null)
-                    onValueChanged?.Invoke((T)obj);
+                    onItemSelected?.Invoke((T)obj);
             });
         }
 
@@ -150,7 +149,7 @@ namespace Merlin
 
                 item.OnClick.AddListener(() =>
                 {
-                    onValueChangedEvent.Invoke(value);
+                    onItemSelectedEvent.Invoke(value);
                 });
             }
         }
@@ -158,7 +157,7 @@ namespace Merlin
         private void OnDisable()
         {
             owner = null;
-            onValueChangedEvent.RemoveAllListeners();
+            onItemSelectedEvent.RemoveAllListeners();
         }
     }
 }

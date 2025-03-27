@@ -67,22 +67,30 @@ namespace Merlin
             if (type == MaterialPropertyType.Float &&
                 float.TryParse(value, out float fResult))
             {
-                fResult = Mathf.Clamp(fResult, slider.minValue, slider.maxValue);
+                if (slider.gameObject.activeSelf)
+                {
+                    fResult = Mathf.Clamp(fResult, slider.minValue, slider.maxValue);
+                    slider.SetValueWithoutNotify(fResult);
+                }
+
+                inputField.SetTextWithoutNotify(fResult.ToString());
                 CurrentValue = fResult;
-                inputField.SetTextWithoutNotify(CurrentValue.ToString());
-                slider.SetValueWithoutNotify(CurrentValue);
             }
             else if (type == MaterialPropertyType.Int &&
                 int.TryParse(value, out int iResult))
             {
-                iResult = Mathf.Clamp(iResult, (int)slider.minValue, (int)slider.maxValue);
+                if (slider.gameObject.activeSelf)
+                {
+                    iResult = Mathf.Clamp(iResult, (int)slider.minValue, (int)slider.maxValue);
+                    slider.SetValueWithoutNotify(iResult);
+                }
+
+                inputField.SetTextWithoutNotify(iResult.ToString());
                 CurrentValue = iResult;
-                inputField.SetTextWithoutNotify(CurrentValue.ToString());
-                slider.SetValueWithoutNotify(CurrentValue);
             }
             else // 빈 값 입력 포함
             {
-                inputField.SetTextWithoutNotify(inputField.text);
+                inputField.SetTextWithoutNotify(CurrentValue.ToString());
             }
         }
 

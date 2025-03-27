@@ -93,6 +93,12 @@ namespace Merlin
             Menu.SetChecked(autoAssignBundleMenu, currentState);
         }
 
+        public override int GetPostprocessOrder()
+        {
+            // 0번은 FBX Import Process에서 사용
+            return 1;
+        }
+
         // AssetImport시 번들 자동 지정
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {

@@ -19,7 +19,7 @@ namespace Merlin
 
             OnClick.AddListener(() =>
             {
-                AssetWindow.Get<Texture>(transform, texture =>
+                AssetWindow.Show<Texture>(transform, texture =>
                 {
                     icon.texture = texture;
                     mat.SetTexture(name, texture);
