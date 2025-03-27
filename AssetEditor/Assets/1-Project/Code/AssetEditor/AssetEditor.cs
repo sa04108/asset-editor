@@ -57,7 +57,7 @@ namespace Merlin
                     textures.Add(texture);
                 }, Addressables.MergeMode.Union).Completed += texHandle =>
                 {
-                    RuntimeAssetWindow.Get(transform, textures.ToArray(), null);
+                    AssetWindow.Get(transform, textures.ToArray(), null);
                 };
 
                 for (int i = 0; i < keys.Count; i++)

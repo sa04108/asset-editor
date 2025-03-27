@@ -2,21 +2,21 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace Merlin
 {
-    public class RuntimeAssetWindow : MonoBehaviour
+    public class AssetWindow : MonoBehaviour
     {
         #region Static Fields
 
-        private static RuntimeAssetWindow source;
-        private static Dictionary<System.Type, RuntimeAssetWindow> instances = new();
+        private static AssetWindow source;
+        private static Dictionary<System.Type, AssetWindow> instances = new();
 
         #endregion Static Fields
 
         private Transform owner;
         private UnityEvent<Object> onValueChangedEvent = new();
+        private UnityEvent onUnsubscribeEvent = new();
 
         [SerializeField]
         private string startType;
@@ -25,39 +25,39 @@ namespace Merlin
         private TMP_Text title;
 
         [SerializeField]
-        private Button elementPreset;
+        private AssetWindowItem itemPreset;
 
         [SerializeField]
-        private Transform elementParent;
+        private Transform itemParent;
 
-        private List<Button> elements = new();
+        private List<AssetWindowItem> items = new();
 
-        public static RuntimeAssetWindow Get<T>(Transform _owner, UnityAction<T> onValueChanged) where T : Object
+        public static AssetWindow Get<T>(Transform subscriber, UnityAction<T> onValueChanged, UnityAction onUnsubscribe = null) where T : Object
         {
             var instance = GetInstance<T>();
 
-            if (_owner != null && instance.owner == _owner)
+            if (subscriber != null && instance.owner == subscriber)
             {
                 instance.gameObject.SetActive(!instance.gameObject.activeSelf);
                 return instance;
             }
 
-            if (instance.elements.Count == 0)
+            if (instance.items.Count == 0)
             {
                 Debug.LogWarning("You must assign assets before open asset window.");
                 return instance;
             }
 
-            instance.Subscribe(_owner, onValueChanged);
+            instance.Subscribe(subscriber, onValueChanged, onUnsubscribe);
 
             return instance;
         }
 
-        public static RuntimeAssetWindow Get<T>(Transform _owner, T[] values, UnityAction<T> onValueChanged) where T : Object
+        public static AssetWindow Get<T>(Transform subscriber, T[] values, UnityAction<T> onValueChanged, UnityAction onUnsubscribe = null) where T : Object
         {
             var instance = GetInstance<T>();
 
-            if (_owner != null && instance.owner == _owner)
+            if (subscriber != null && instance.owner == subscriber)
             {
                 instance.gameObject.SetActive(!instance.gameObject.activeSelf);
                 return instance;
@@ -69,19 +69,19 @@ namespace Merlin
                 return instance;
             }
 
-            instance.Subscribe(_owner, onValueChanged);
+            instance.Subscribe(subscriber, onValueChanged, onUnsubscribe);
             instance.SetValues(values);
 
             return instance;
         }
 
-        private static RuntimeAssetWindow GetInstance<T>()
+        private static AssetWindow GetInstance<T>()
         {
             if (!instances.ContainsKey(typeof(T)))
             {
                 if (source == null)
                 {
-                    source = FindAnyObjectByType<RuntimeAssetWindow>();
+                    source = FindAnyObjectByType<AssetWindow>();
                     source.startType = "";
                 }
 
@@ -107,49 +107,56 @@ namespace Merlin
             }
         }
 
-        private void Subscribe<T>(Transform _owner, UnityAction<T> onValueChanged) where T : Object
+        private void Subscribe<T>(Transform subscriber, UnityAction<T> onValueChanged, UnityAction onUnsubscribe) where T : Object
         {
-            owner = _owner;
+            onUnsubscribeEvent.Invoke();
+            onUnsubscribeEvent.RemoveAllListeners();
+            if (onUnsubscribe != null)
+            {
+                onUnsubscribeEvent.AddListener(onUnsubscribe);
+            }
+
+            owner = subscriber;
             gameObject.SetActive(true);
 
             onValueChangedEvent.RemoveAllListeners();
             onValueChangedEvent.AddListener(obj =>
             {
-                if (_owner != null)
+                if (subscriber != null)
                     onValueChanged?.Invoke((T)obj);
             });
         }
 
         private void SetValues<T>(T[] values) where T : Object
         {
-            if (elements.Count > 0)
+            if (items.Count > 0)
             {
-                for (int i = elements.Count - 1; i >= 0; i--)
+                for (int i = items.Count - 1; i >= 0; i--)
                 {
-                    Destroy(elements[i].gameObject);
+                    Destroy(items[i].gameObject);
                 }
 
-                elements.Clear();
+                items.Clear();
             }
 
             foreach (T value in values)
             {
-                var button = Instantiate(elementPreset, elementParent);
-                elements.Add(button);
+                var item = Instantiate(itemPreset, itemParent);
+                items.Add(item);
 
                 if (value is Texture tex)
                 {
-                    button.GetComponent<RawImage>().texture = tex;
+                    item.Icon.texture = tex;
                 }
                 else if (value is Material mat)
                 {
-                    button.GetComponent<RawImage>().texture = mat.mainTexture;
+                    item.Icon.texture = mat.mainTexture;
                 }
 
-                button.GetComponentInChildren<TMP_Text>().text = value.name;
-                button.gameObject.SetActive(true);
+                item.Label.text = value.name;
+                item.gameObject.SetActive(true);
 
-                button.onClick.AddListener(() =>
+                item.OnClick.AddListener(() =>
                 {
                     onValueChangedEvent.Invoke(value);
                 });
