@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Merlin
 {
-    public class TextureProperty : MonoBehaviour, IPointerDownHandler, ISelectHandler
+    public class TextureProperty : MonoBehaviour, IPointerDownHandler, IDeselectHandler
     {
         [SerializeField] private RawImage icon;
         [SerializeField] private GameObject selectionEffect;
@@ -23,29 +23,21 @@ namespace Merlin
                 {
                     icon.texture = texture;
                     mat.SetTexture(name, texture);
-                },
-                OnUnsubscribe);
+                });
             });
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
             EventSystem.current.SetSelectedGameObject(gameObject);
+            selectionEffect.SetActive(true);
 
             OnClick.Invoke();
         }
 
-        public void OnSelect(BaseEventData eventData)
+        public void OnDeselect(BaseEventData eventData)
         {
-            selectionEffect.SetActive(true);
-        }
-
-        private void OnUnsubscribe()
-        {
-            if (gameObject != null)
-            {
-                selectionEffect.SetActive(false);
-            }
+            selectionEffect.SetActive(false);
         }
     }
 }

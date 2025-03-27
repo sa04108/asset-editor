@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Merlin
 {
-    public class AssetWindowItem : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUpHandler, ISelectHandler, IDeselectHandler
+    public class AssetWindowItem : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUpHandler, IDeselectHandler
     {
         [SerializeField] private ScrollRect scrollRect;
         [SerializeField] private RawImage icon;
@@ -26,6 +26,7 @@ namespace Merlin
         public void OnPointerDown(PointerEventData eventData)
         {
             EventSystem.current.SetSelectedGameObject(gameObject);
+            selectionEffect.SetActive(true);
 
             scrollRect.enabled = false;
             OnClick.Invoke();
@@ -34,11 +35,6 @@ namespace Merlin
         public void OnPointerUp(PointerEventData eventData)
         {
             scrollRect.enabled = true;
-        }
-
-        public void OnSelect(BaseEventData eventData)
-        {
-            selectionEffect.SetActive(true);
         }
 
         public void OnDeselect(BaseEventData eventData)

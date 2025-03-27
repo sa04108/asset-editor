@@ -52,7 +52,7 @@ namespace Merlin
                 }
             }
 
-            AssetWindow.Get(go.transform, materialSet.ToArray(), InspectLitMaterialProperties);
+            AssetWindow.Get(go.transform, materialSet.ToArray(), InspectAllMaterialProperties);
         }
 
         private void InspectLitMaterialProperties(Material mat)

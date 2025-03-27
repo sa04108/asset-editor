@@ -16,7 +16,6 @@ namespace Merlin
 
         private Transform owner;
         private UnityEvent<Object> onValueChangedEvent = new();
-        private UnityEvent onUnsubscribeEvent = new();
 
         [SerializeField]
         private string startType;
@@ -32,13 +31,13 @@ namespace Merlin
 
         private List<AssetWindowItem> items = new();
 
-        public static AssetWindow Get<T>(Transform subscriber, UnityAction<T> onValueChanged, UnityAction onUnsubscribe = null) where T : Object
+        public static AssetWindow Get<T>(Transform subscriber, UnityAction<T> onValueChanged) where T : Object
         {
             var instance = GetInstance<T>();
 
             if (subscriber != null && instance.owner == subscriber)
             {
-                instance.gameObject.SetActive(!instance.gameObject.activeSelf);
+                instance.gameObject.SetActive(true);
                 return instance;
             }
 
@@ -48,18 +47,18 @@ namespace Merlin
                 return instance;
             }
 
-            instance.Subscribe(subscriber, onValueChanged, onUnsubscribe);
+            instance.Subscribe(subscriber, onValueChanged);
 
             return instance;
         }
 
-        public static AssetWindow Get<T>(Transform subscriber, T[] values, UnityAction<T> onValueChanged, UnityAction onUnsubscribe = null) where T : Object
+        public static AssetWindow Get<T>(Transform subscriber, T[] values, UnityAction<T> onValueChanged) where T : Object
         {
             var instance = GetInstance<T>();
 
             if (subscriber != null && instance.owner == subscriber)
             {
-                instance.gameObject.SetActive(!instance.gameObject.activeSelf);
+                instance.gameObject.SetActive(true);
                 return instance;
             }
 
@@ -69,7 +68,7 @@ namespace Merlin
                 return instance;
             }
 
-            instance.Subscribe(subscriber, onValueChanged, onUnsubscribe);
+            instance.Subscribe(subscriber, onValueChanged);
             instance.SetValues(values);
 
             return instance;
@@ -107,15 +106,8 @@ namespace Merlin
             }
         }
 
-        private void Subscribe<T>(Transform subscriber, UnityAction<T> onValueChanged, UnityAction onUnsubscribe) where T : Object
+        private void Subscribe<T>(Transform subscriber, UnityAction<T> onValueChanged) where T : Object
         {
-            onUnsubscribeEvent.Invoke();
-            onUnsubscribeEvent.RemoveAllListeners();
-            if (onUnsubscribe != null)
-            {
-                onUnsubscribeEvent.AddListener(onUnsubscribe);
-            }
-
             owner = subscriber;
             gameObject.SetActive(true);
 
@@ -161,6 +153,12 @@ namespace Merlin
                     onValueChangedEvent.Invoke(value);
                 });
             }
+        }
+
+        private void OnDisable()
+        {
+            owner = null;
+            onValueChangedEvent.RemoveAllListeners();
         }
     }
 }
