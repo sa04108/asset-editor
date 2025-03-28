@@ -16,9 +16,9 @@ namespace Merlin
 
     public enum eShaderRenderFace
     {
-        Front = 2,
-        Back = 1,
-        Both = 0
+        Both,
+        Back,
+        Front
     }
 
     public enum eShaderTextureMap
@@ -29,6 +29,14 @@ namespace Merlin
         OcclusionMap,
         EmissionMap,
         DetailMaskMap
+    }
+
+    public enum eEmissionGlobalIllumination
+    {
+        NoEmission,
+        Realtime,
+        Baked,
+        None
     }
 
     public class MaterialPropertyState
@@ -191,25 +199,27 @@ namespace Merlin
             }
         }
 
-        public void SetEmission(Material mat, bool useEmission, MaterialGlobalIlluminationFlags gi = MaterialGlobalIlluminationFlags.EmissiveIsBlack)
+        public void SetEmission(Material mat, eEmissionGlobalIllumination mode)
         {
-            if (!useEmission)
+            switch (mode)
             {
-                mat.DisableKeyword("_EMISSION");
-                mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack;
-                return;
+                case eEmissionGlobalIllumination.NoEmission:
+                    mat.DisableKeyword("_EMISSION");
+                    mat.globalIlluminationFlags = (MaterialGlobalIlluminationFlags)4;
+                    break;
+                case eEmissionGlobalIllumination.Realtime:
+                    mat.EnableKeyword("_EMISSION");
+                    mat.globalIlluminationFlags = (MaterialGlobalIlluminationFlags)1;
+                    break;
+                case eEmissionGlobalIllumination.Baked:
+                    mat.DisableKeyword("_EMISSION");
+                    mat.globalIlluminationFlags = (MaterialGlobalIlluminationFlags)6;
+                    break;
+                case eEmissionGlobalIllumination.None:
+                    mat.EnableKeyword("_EMISSION");
+                    mat.globalIlluminationFlags = 0;
+                    break;
             }
-
-            if (gi == MaterialGlobalIlluminationFlags.BakedEmissive)
-            {
-                mat.DisableKeyword("_EMISSION");
-                mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack |
-                                                MaterialGlobalIlluminationFlags.BakedEmissive;
-                return;
-            }
-
-            mat.EnableKeyword("_EMISSION");
-            mat.globalIlluminationFlags = gi;
         }
     }
 }

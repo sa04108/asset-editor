@@ -52,7 +52,15 @@ namespace Merlin
                 }
             }
 
-            AssetWindow.Show(go.transform, materialSet.ToArray(), InspectLitMaterialProperties);
+            AssetWindow.Show(go.transform, materialSet.ToArray(), InspectMaterialProperties);
+        }
+
+        private void InspectMaterialProperties(Material mat)
+        {
+            if (mat.shader.name == "Universal Render Pipeline/Lit")
+                InspectLitMaterialProperties(mat);
+            else
+                InspectAllMaterialProperties(mat);
         }
 
         private void InspectLitMaterialProperties(Material mat)
@@ -85,8 +93,8 @@ namespace Merlin
                 .OnValueChanged(value => propertyState.SetAlphaClipping(mat, value));
 
             var alphaCutoff = mat.GetFloat("_Cutoff");
-            Vector2 rangeVec = mat.shader.GetPropertyRangeLimits(shaderPropIdx["_Cutoff"]);
-            memberCreator.CreateFloatMember(mat, "Alpha Cutoff", alphaCutoff, rangeVec.x, rangeVec.y, group)
+            Vector2 rangeCutoff = mat.shader.GetPropertyRangeLimits(shaderPropIdx["_Cutoff"]);
+            memberCreator.CreateFloatMember(mat, "Alpha Cutoff", alphaCutoff, rangeCutoff.x, rangeCutoff.y, group)
                 .OnValueChanged(value => propertyState.SetAlphaCutoff(mat, value));
 
             var receiveShadows = mat.GetInt("_ReceiveShadows");
@@ -94,22 +102,41 @@ namespace Merlin
                 .OnValueChanged(value => propertyState.SetReceiveShadows(mat, value));
 
             var mainTex = mat.GetTexture("_BaseMap");
-            memberCreator.CreateTexturePropertyMember(mat, "BaseMap", mainTex, group)
+            memberCreator.CreateTexturePropertyMember(mat, "Base Map", mainTex, group)
                 .OnValueChanged(value => propertyState.SetTextureMap(mat, eShaderTextureMap.BaseMap, value));
 
-            var bumpText = mat.GetTexture("_DetailNormalMap");
-            memberCreator.CreateTexturePropertyMember(mat, "NormalMap", bumpText, group)
+            var metallicTex = mat.GetTexture("_MetallicGlossMap");
+            memberCreator.CreateTexturePropertyMember(mat, "Metallic Map", metallicTex, group);
+
+            var metallicDegree = mat.GetFloat("_Metallic");
+            Vector2 rangeMetallic = mat.shader.GetPropertyRangeLimits(shaderPropIdx["_Metallic"]);
+            memberCreator.CreateFloatMember(mat, "_Metallic", metallicDegree, rangeMetallic.x, rangeMetallic.y, group);
+
+            var smoothness = mat.GetFloat("_Smoothness");
+            Vector2 rangeSmoothness = mat.shader.GetPropertyRangeLimits(shaderPropIdx["_Smoothness"]);
+            memberCreator.CreateFloatMember(mat, "_Smoothness", smoothness, rangeSmoothness.x, rangeSmoothness.y, group);
+
+            var bumpText = mat.GetTexture("_BumpMap");
+            memberCreator.CreateTexturePropertyMember(mat, "Normal Map", bumpText, group)
                 .OnValueChanged(value => propertyState.SetTextureMap(mat, eShaderTextureMap.NormalMap, value));
 
             var mainColor = mat.GetColor("_BaseColor");
             memberCreator.CreateColorMember(mat, "_BaseColor", mainColor, true, false, group);
 
-            var emxTex = mat.GetTexture("_EmissionMap");
-            memberCreator.CreateTexturePropertyMember(mat, "Emission Map", emxTex, group)
+            var maskTex = mat.GetTexture("_DetailMask");
+            memberCreator.CreateTexturePropertyMember(mat, "_DetailMask", maskTex, group)
+                .OnValueChanged(value => propertyState.SetTextureMap(mat, eShaderTextureMap.DetailMaskMap, value));
+
+            var emsGIMode = mat.globalIlluminationFlags;
+            memberCreator.CreateEnumMember(mat, "Emission Global Illumination", typeof(eEmissionGlobalIllumination), (int)emsGIMode, group)
+                .OnValueChanged(value => propertyState.SetEmission(mat, (eEmissionGlobalIllumination)value));
+
+            var emsTex = mat.GetTexture("_EmissionMap");
+            memberCreator.CreateTexturePropertyMember(mat, "Emission Map", emsTex, group)
                 .OnValueChanged(value => propertyState.SetTextureMap(mat, eShaderTextureMap.EmissionMap, value));
 
             var emsColor = mat.GetColor("_EmissionColor");
-            memberCreator.CreateColorMember(mat, "_BaseColor", mainColor, false, true, group);
+            memberCreator.CreateColorMember(mat, "_EmissionColor", mainColor, false, true, group);
         }
 
         private void InspectAllMaterialProperties(Material mat)
