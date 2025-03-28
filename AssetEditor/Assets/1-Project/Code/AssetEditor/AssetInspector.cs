@@ -52,7 +52,7 @@ namespace Merlin
                 }
             }
 
-            AssetWindow.Show(go.transform, materialSet.ToArray(), InspectAllMaterialProperties);
+            AssetWindow.Show(go.transform, materialSet.ToArray(), InspectLitMaterialProperties);
         }
 
         private void InspectLitMaterialProperties(Material mat)
@@ -66,6 +66,25 @@ namespace Merlin
             }
 
             var group = memberCreator.CreateGroupMember("Lit Options", memberParent);
+
+            var workflowMode = mat.GetInt("_WorkflowMode");
+            memberCreator.CreateEnumMember(mat, "_WorkflowMode", typeof(eShaderWorkflowMode), workflowMode, group);
+
+            var surfaceType = mat.GetInt("_Surface");
+            memberCreator.CreateEnumMember(mat, "_Surface", typeof(eShaderSurfaceType), surfaceType, group);
+
+            var renderFace = mat.GetInt("_Cull");
+            memberCreator.CreateEnumMember(mat, "_Cull", typeof(eShaderRenderFace), renderFace, group);
+
+            var alphaCliping = mat.GetInt("_AlphaClip");
+            memberCreator.CreateBoolMember(mat, "_AlphaClip", alphaCliping == 1 ? true : false, group);
+
+            var alphaCutoff = mat.GetFloat("_Cutoff");
+            Vector2 rangeVec = mat.shader.GetPropertyRangeLimits(shaderPropIdx["_Cutoff"]);
+            memberCreator.CreateFloatMember(mat, "_Cutoff", alphaCutoff, rangeVec.x, rangeVec.y, group);
+
+            var receiveShadows = mat.GetInt("_ReceiveShadows");
+            memberCreator.CreateBoolMember(mat, "_ReceiveShadows", receiveShadows == 1 ? true : false, group);
 
             var mainTex = mat.GetTexture("_BaseMap");
             memberCreator.CreateTexturePropertyMember(mat, "_BaseMap", mainTex, group);

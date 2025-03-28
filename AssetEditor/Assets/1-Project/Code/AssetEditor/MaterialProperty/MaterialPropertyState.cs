@@ -31,6 +31,16 @@ namespace Merlin
         DetailMaskMap
     }
 
+    public class MaterialPropertyAttribute
+    {
+        public eShaderWorkflowMode WorkflowMode;
+        public eShaderSurfaceType SurfaceType;
+        public eShaderRenderFace RenderFace;
+        public bool AlphaCliping;
+        public float AlphaCutoff;
+        public bool ReceiveShadows;
+    }
+
     public class MaterialPropertyState
     {
         public MaterialPropertyState()

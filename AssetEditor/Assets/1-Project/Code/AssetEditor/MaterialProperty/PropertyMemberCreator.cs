@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Merlin
@@ -10,6 +11,8 @@ namespace Merlin
         [SerializeField] private ColorPropertyMember colorMemberPreset;
         [SerializeField] private VectorPropertyMember vectorMemberPreset;
         [SerializeField] private MatrixPropertyMember matrixMemberPreset;
+        [SerializeField] private BoolPropertyMember boolMemberPreset;
+        [SerializeField] private EnumPropertyMember enumMemberPreset;
 
         [SerializeField] private PropertyGroupMember groupMemberPreset;
         [SerializeField] private Transform memberGroupPreset;
@@ -21,6 +24,8 @@ namespace Merlin
             colorMemberPreset.gameObject.SetActive(false);
             vectorMemberPreset.gameObject.SetActive(false);
             matrixMemberPreset.gameObject.SetActive(false);
+            boolMemberPreset.gameObject.SetActive(false);
+            enumMemberPreset.gameObject.SetActive(false);
 
             groupMemberPreset.gameObject.SetActive(false);
             memberGroupPreset.gameObject.SetActive(false);
@@ -42,7 +47,7 @@ namespace Merlin
         public TexturePropertyMember CreateTexturePropertyMember(Material mat, string name, Texture value, Transform parent)
         {
             var member = Instantiate(textureMemberPreset, parent);
-            member.Initialize(mat, MaterialPropertyType.Texture, name, value);
+            member.Initialize(mat, name, value);
             member.gameObject.SetActive(true);
 
             return member;
@@ -89,7 +94,7 @@ namespace Merlin
         public ColorPropertyMember CreateColorMember(Material mat, string name, Color value, bool hasAlpha, bool isHDR, Transform parent)
         {
             var member = Instantiate(colorMemberPreset, parent);
-            member.Initialize(mat, MaterialPropertyType.Vector, name, value, hasAlpha, isHDR);
+            member.Initialize(mat, name, value, hasAlpha, isHDR);
             member.gameObject.SetActive(true);
 
             return member;
@@ -108,6 +113,24 @@ namespace Merlin
         {
             var member = Instantiate(matrixMemberPreset, parent);
             member.Initialize(mat, name, value);
+            member.gameObject.SetActive(true);
+
+            return member;
+        }
+
+        public BoolPropertyMember CreateBoolMember(Material mat, string name, bool value, Transform parent)
+        {
+            var member = Instantiate(boolMemberPreset, parent);
+            member.Initialize(mat, name, value);
+            member.gameObject.SetActive(true);
+
+            return member;
+        }
+
+        public EnumPropertyMember CreateEnumMember(Material mat, string name, Type enumType, int value, Transform parent)
+        {
+            var member = Instantiate(enumMemberPreset, parent);
+            member.Initialize(mat, name, enumType, value);
             member.gameObject.SetActive(true);
 
             return member;

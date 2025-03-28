@@ -9,16 +9,14 @@ namespace Merlin
         [SerializeField] protected TMP_Text title;
 
         protected Material mat;
-        protected MaterialPropertyType type;
         protected string propertyName;
         protected T currentValue;
 
-        public virtual void Initialize(Material mat, MaterialPropertyType type, string name, T value)
+        protected void Initialize(Material mat, string name, T value)
         {
             title.text = $"{name}";
 
             this.mat = mat;
-            this.type = type;
             propertyName = name;
             currentValue = value;
 

@@ -20,9 +20,9 @@ namespace Merlin
             }
         }
 
-        public void Initialize(Material mat, string name, Vector4 value)
+        public new void Initialize(Material mat, string name, Vector4 value)
         {
-            base.Initialize(mat, MaterialPropertyType.Vector, name, value);
+            base.Initialize(mat, name, value);
 
             string[] vectorChanels = { "X", "Y", "Z", "W" };
             for (int i = 0; i < 4; i++)

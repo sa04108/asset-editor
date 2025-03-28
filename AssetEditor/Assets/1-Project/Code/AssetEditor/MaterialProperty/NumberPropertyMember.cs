@@ -12,6 +12,8 @@ namespace Merlin
         [SerializeField] private Sprite numberBox;
         [SerializeField] private Sprite rangeBox;
 
+        MaterialPropertyType type;
+
         private float CurrentValue
         {
             get => currentValue;
@@ -38,8 +40,9 @@ namespace Merlin
 
         public void Initialize(Material mat, MaterialPropertyType type, string name, float value, float min, float max)
         {
-            base.Initialize(mat, type, name, value);
+            base.Initialize(mat, name, value);
 
+            this.type = type;
             inputField.SetTextWithoutNotify(value.ToString());
             inputField.image.sprite = rangeBox;
 
@@ -52,10 +55,11 @@ namespace Merlin
             slider.gameObject.SetActive(true);
         }
 
-        public override void Initialize(Material mat, MaterialPropertyType type, string name, float value)
+        public void Initialize(Material mat, MaterialPropertyType type, string name, float value)
         {
-            base.Initialize(mat, type, name, value);
+            base.Initialize(mat, name, value);
 
+            this.type = type;
             inputField.SetTextWithoutNotify(value.ToString());
             inputField.image.sprite = numberBox;
 
