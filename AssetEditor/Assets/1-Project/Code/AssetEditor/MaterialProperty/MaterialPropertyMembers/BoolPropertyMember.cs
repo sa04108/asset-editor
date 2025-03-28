@@ -19,8 +19,8 @@ namespace Merlin
         private void OnValueChanged()
         {
             checkMark.SetActive(!checkMark.activeSelf);
-            currentValue = checkMark.activeSelf;
-            mat.SetInt(propertyName, currentValue ? 1 : 0);
+            CurrentValue = checkMark.activeSelf;
+            mat.SetInt(propertyName, CurrentValue ? 1 : 0);
         }
     }
 }

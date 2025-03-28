@@ -25,8 +25,8 @@ namespace Merlin
 
         private void OnValueChanged(int value)
         {
-            currentValue = value;
-            mat.SetInt(propertyName, currentValue);
+            CurrentValue = value;
+            mat.SetInt(propertyName, CurrentValue);
         }
     }
 }

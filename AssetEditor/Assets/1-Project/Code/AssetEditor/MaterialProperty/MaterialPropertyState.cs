@@ -31,16 +31,6 @@ namespace Merlin
         DetailMaskMap
     }
 
-    public class MaterialPropertyAttribute
-    {
-        public eShaderWorkflowMode WorkflowMode;
-        public eShaderSurfaceType SurfaceType;
-        public eShaderRenderFace RenderFace;
-        public bool AlphaCliping;
-        public float AlphaCutoff;
-        public bool ReceiveShadows;
-    }
-
     public class MaterialPropertyState
     {
         public MaterialPropertyState()
@@ -112,10 +102,8 @@ namespace Merlin
             }
         }
 
-        public void SetAlphaClipping(Material mat, bool alphaClipping, float threshold = 0.5f)
+        public void SetAlphaClipping(Material mat, bool alphaClipping)
         {
-            mat.SetFloat("_Cutoff", threshold);
-
             if (alphaClipping)
             {
                 // is surface type Opaque?
@@ -141,6 +129,11 @@ namespace Merlin
                 mat.renderQueue = 2000;
                 mat.SetInt("_AlphaClip", 0);
             }
+        }
+
+        public void SetAlphaCutoff(Material mat, float threshold = 0.5f)
+        {
+            mat.SetFloat("_Cutoff", threshold);
         }
 
         public void SetReceiveShadows(Material mat, bool receiveShadows)

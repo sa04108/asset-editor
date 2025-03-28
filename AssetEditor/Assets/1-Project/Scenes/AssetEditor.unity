@@ -8994,7 +8994,7 @@ GameObject:
   - component: {fileID: 875439510}
   - component: {fileID: 875439509}
   m_Layer: 5
-  m_Name: CheckBox
+  m_Name: CheckButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15463,6 +15463,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   texProp: {fileID: 901375311}
   title: {fileID: 901375310}
+  checkButton: {fileID: 875439509}
   checkMark: {fileID: 1122645062}
 --- !u!1 &1614919602
 GameObject:

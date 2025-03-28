@@ -36,14 +36,16 @@ namespace Merlin
         {
             if (float.TryParse(value, out float fResult))
             {
-                currentValue[idx] = fResult;
+                Vector4 currVec = CurrentValue;
+                currVec[idx] = fResult;
+                CurrentValue = currVec;
                 inputField.SetTextWithoutNotify(fResult.ToString());
 
-                mat.SetVector(title.text, currentValue);
+                mat.SetVector(title.text, CurrentValue);
             }
             else // 빈 값 입력 포함
             {
-                inputField.SetTextWithoutNotify(currentValue[idx].ToString());
+                inputField.SetTextWithoutNotify(CurrentValue[idx].ToString());
             }
         }
     }

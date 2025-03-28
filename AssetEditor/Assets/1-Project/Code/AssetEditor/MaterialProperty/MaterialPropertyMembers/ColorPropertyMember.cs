@@ -15,13 +15,11 @@ namespace Merlin
             colorButton.colorImage.isHDR = isHDR;
             colorButton.color = value;
             colorButton.onColorUpdated.AddListener(SetColor);
-
-            SetColor(value);
         }
 
         private void SetColor(Color color)
         {
-            currentValue = color;
+            CurrentValue = color;
 
             mat.SetColor(propertyName, color);
         }

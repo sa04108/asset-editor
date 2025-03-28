@@ -14,24 +14,6 @@ namespace Merlin
 
         MaterialPropertyType type;
 
-        private float CurrentValue
-        {
-            get => currentValue;
-            set
-            {
-                currentValue = value;
-
-                if (type == MaterialPropertyType.Float)
-                {
-                    mat.SetFloat(propertyName, value);
-                }
-                else if (type == MaterialPropertyType.Int)
-                {
-                    mat.SetInteger(propertyName, (int)value);
-                }
-            }
-        }
-
         private void Start()
         {
             inputField.onEndEdit.AddListener(OnInputValueChanged);
@@ -78,7 +60,7 @@ namespace Merlin
                 }
 
                 inputField.SetTextWithoutNotify(fResult.ToString());
-                CurrentValue = fResult;
+                SetValue(fResult);
             }
             else if (type == MaterialPropertyType.Int &&
                 int.TryParse(value, out int iResult))
@@ -90,7 +72,7 @@ namespace Merlin
                 }
 
                 inputField.SetTextWithoutNotify(iResult.ToString());
-                CurrentValue = iResult;
+                SetValue(iResult);
             }
             else // 빈 값 입력 포함
             {
@@ -98,10 +80,24 @@ namespace Merlin
             }
         }
 
-        public void OnSliderValueChanged(float value)
+        private void OnSliderValueChanged(float value)
+        {
+            SetValue(value);
+            inputField.SetTextWithoutNotify(CurrentValue.ToString());
+        }
+
+        private void SetValue(float value)
         {
             CurrentValue = value;
-            inputField.SetTextWithoutNotify(CurrentValue.ToString());
+
+            if (type == MaterialPropertyType.Float)
+            {
+                mat.SetFloat(propertyName, value);
+            }
+            else if (type == MaterialPropertyType.Int)
+            {
+                mat.SetInteger(propertyName, (int)value);
+            }
         }
     }
 }

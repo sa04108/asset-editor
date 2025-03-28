@@ -66,37 +66,47 @@ namespace Merlin
             }
 
             var group = memberCreator.CreateGroupMember("Lit Options", memberParent);
+            var propertyState = new MaterialPropertyState();
 
             var workflowMode = mat.GetInt("_WorkflowMode");
-            memberCreator.CreateEnumMember(mat, "_WorkflowMode", typeof(eShaderWorkflowMode), workflowMode, group);
+            memberCreator.CreateEnumMember(mat, "Workflow Mode", typeof(eShaderWorkflowMode), workflowMode, group)
+                .OnValueChanged(value => propertyState.SetWorkflowMode(mat, (eShaderWorkflowMode)value));
 
             var surfaceType = mat.GetInt("_Surface");
-            memberCreator.CreateEnumMember(mat, "_Surface", typeof(eShaderSurfaceType), surfaceType, group);
+            memberCreator.CreateEnumMember(mat, "Surface Type", typeof(eShaderSurfaceType), surfaceType, group)
+                .OnValueChanged(value => propertyState.SetSurfaceType(mat, (eShaderSurfaceType)value));
 
             var renderFace = mat.GetInt("_Cull");
-            memberCreator.CreateEnumMember(mat, "_Cull", typeof(eShaderRenderFace), renderFace, group);
+            memberCreator.CreateEnumMember(mat, "Render Face", typeof(eShaderRenderFace), renderFace, group)
+                .OnValueChanged(value => propertyState.SetRenderFace(mat, (eShaderRenderFace)value));
 
             var alphaCliping = mat.GetInt("_AlphaClip");
-            memberCreator.CreateBoolMember(mat, "_AlphaClip", alphaCliping == 1 ? true : false, group);
+            memberCreator.CreateBoolMember(mat, "Alpha Clip", alphaCliping == 1 ? true : false, group)
+                .OnValueChanged(value => propertyState.SetAlphaClipping(mat, value));
 
             var alphaCutoff = mat.GetFloat("_Cutoff");
             Vector2 rangeVec = mat.shader.GetPropertyRangeLimits(shaderPropIdx["_Cutoff"]);
-            memberCreator.CreateFloatMember(mat, "_Cutoff", alphaCutoff, rangeVec.x, rangeVec.y, group);
+            memberCreator.CreateFloatMember(mat, "Alpha Cutoff", alphaCutoff, rangeVec.x, rangeVec.y, group)
+                .OnValueChanged(value => propertyState.SetAlphaCutoff(mat, value));
 
             var receiveShadows = mat.GetInt("_ReceiveShadows");
-            memberCreator.CreateBoolMember(mat, "_ReceiveShadows", receiveShadows == 1 ? true : false, group);
+            memberCreator.CreateBoolMember(mat, "Receive Shadows", receiveShadows == 1 ? true : false, group)
+                .OnValueChanged(value => propertyState.SetReceiveShadows(mat, value));
 
             var mainTex = mat.GetTexture("_BaseMap");
-            memberCreator.CreateTexturePropertyMember(mat, "_BaseMap", mainTex, group);
+            memberCreator.CreateTexturePropertyMember(mat, "BaseMap", mainTex, group)
+                .OnValueChanged(value => propertyState.SetTextureMap(mat, eShaderTextureMap.BaseMap, value));
 
             var bumpText = mat.GetTexture("_DetailNormalMap");
-            memberCreator.CreateTexturePropertyMember(mat, "_DetailNormalMap", bumpText, group);
+            memberCreator.CreateTexturePropertyMember(mat, "NormalMap", bumpText, group)
+                .OnValueChanged(value => propertyState.SetTextureMap(mat, eShaderTextureMap.NormalMap, value));
 
             var mainColor = mat.GetColor("_BaseColor");
             memberCreator.CreateColorMember(mat, "_BaseColor", mainColor, true, false, group);
 
             var emxTex = mat.GetTexture("_EmissionMap");
-            memberCreator.CreateTexturePropertyMember(mat, "_EmissionMap", emxTex, group);
+            memberCreator.CreateTexturePropertyMember(mat, "Emission Map", emxTex, group)
+                .OnValueChanged(value => propertyState.SetTextureMap(mat, eShaderTextureMap.EmissionMap, value));
 
             var emsColor = mat.GetColor("_EmissionColor");
             memberCreator.CreateColorMember(mat, "_BaseColor", mainColor, false, true, group);

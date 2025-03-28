@@ -1,5 +1,7 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Merlin
 {
@@ -10,7 +12,18 @@ namespace Merlin
 
         protected Material mat;
         protected string propertyName;
-        protected T currentValue;
+
+        private T currentValue;
+        protected T CurrentValue
+        {
+            get => currentValue;
+            set
+            {
+                currentValue = value;
+                onValueChanged?.Invoke(currentValue);
+            }
+        }
+        private UnityEvent<T> onValueChanged;
 
         protected void Initialize(Material mat, string name, T value)
         {
@@ -28,6 +41,12 @@ namespace Merlin
             texProp.Initialize(mat, name, tex);
 
             texProp.gameObject.SetActive(true);
+        }
+
+        public void OnValueChanged(UnityAction<T> onValueChanged)
+        {
+            this.onValueChanged = new();
+            this.onValueChanged.AddListener(onValueChanged);
         }
     }
 }
