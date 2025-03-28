@@ -1,13 +1,25 @@
+using System;
 using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Build;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace Merlin
 {
+    public enum eAssetBuildExitCode
+    {
+        Success = 100,
+        Argument = 101,
+        InvalidOperation = 102,
+        FileIO = 103,
+        NullRef = 104,
+        Other = 199
+    }
+
     public class AddressableMenu : AssetPostprocessor
     {
         private static string BuildPath
@@ -15,26 +27,51 @@ namespace Merlin
             get
             {
                 var settings = AddressableAssetSettingsDefaultObject.Settings;
-                var path = settings.profileSettings.GetValueById(settings.activeProfileId, settings.RemoteCatalogBuildPath.Id);
-                var projectPath = Directory.GetParent(Application.dataPath).FullName;
-                path = Path.Combine(projectPath, path);
+                var path = settings.profileSettings.GetValueById(settings.activeProfileId, settings.RemoteCatalogBuildPath.Id) + '/';
 
                 return path;
             }
         }
 
-        public static void RunBuildPipeline()
-        {
-            AssetDatabase.Refresh();
-            Debug.Log("Assets imported");
-            Build();
-            Debug.Log("Assets build completed");
-        }
-
         [MenuItem("Addressables/Build", false, 0)]
-        public static void Build()
+        public static int Build()
         {
-            AddressableAssetSettings.BuildPlayerContent();
+            AddressablesPlayerBuildResult buildResult = new();
+            eAssetBuildExitCode exitCode = eAssetBuildExitCode.Success;
+
+            try
+            {
+                AddressableAssetSettings.BuildPlayerContent(out buildResult);
+                Debug.Log("[Addressables] Assets build completed");
+                EditorUtility.RevealInFinder(BuildPath);
+            }
+            catch (ArgumentException)
+            {
+                Debug.LogError(buildResult.Error);
+                exitCode = eAssetBuildExitCode.Argument;
+            }
+            catch (InvalidOperationException)
+            {
+                Debug.LogError(buildResult.Error);
+                exitCode = eAssetBuildExitCode.InvalidOperation;
+            }
+            catch (IOException)
+            {
+                Debug.LogError(buildResult.Error);
+                exitCode = eAssetBuildExitCode.FileIO;
+            }
+            catch (NullReferenceException)
+            {
+                Debug.LogError(buildResult.Error);
+                exitCode = eAssetBuildExitCode.NullRef;
+            }
+            catch (Exception)
+            {
+                Debug.LogError(buildResult.Error);
+                exitCode = eAssetBuildExitCode.Other;
+            }
+
+            return (int)exitCode;
         }
 
         [MenuItem("Addressables/Clean Build", false, 0)]
@@ -63,14 +100,9 @@ namespace Merlin
         [MenuItem("Addressables/Open Build File Path", false, 100)]
         public static void OpenFilePath()
         {
-            var path = BuildPath;
-
-#if UNITY_EDITOR_WIN
+            var path = AddressableAssetSettingsDefaultObject.Settings.AssetPath;
             Debug.Log($"Open path {path}");
-            System.Diagnostics.Process.Start("explorer.exe", path);
-#else
-            Debug.Log($"Not implemented unless platform is Windows");
-#endif
+            EditorUtility.RevealInFinder(path);
         }
 
         private const string autoAssignBundleMenu = "Addressables/Assign Bundle Automatically";
