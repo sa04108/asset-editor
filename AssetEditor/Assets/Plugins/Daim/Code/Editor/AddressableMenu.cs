@@ -27,7 +27,7 @@ namespace Merlin
             get
             {
                 var settings = AddressableAssetSettingsDefaultObject.Settings;
-                var path = settings.profileSettings.GetValueById(settings.activeProfileId, settings.RemoteCatalogBuildPath.Id) + "\\";
+                var path = settings.profileSettings.GetValueById(settings.activeProfileId, settings.RemoteCatalogBuildPath.Id).Replace("/[BuildTarget]", "\\");
 
                 return path;
             }
