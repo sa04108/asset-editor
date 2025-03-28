@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
@@ -114,7 +115,6 @@ namespace Merlin
                 return;
             }
 
-            // 자동 할당을 위한 그룹을 찾거나 생성
             AddressableAssetGroup assetGroup = settings.DefaultGroup;
             if (assetGroup == null)
             {
@@ -125,23 +125,35 @@ namespace Merlin
             foreach (string assetPath in importedAssets)
             {
                 // 에셋 경로의 상위 폴더 이름 확인
-                string directory = Path.GetDirectoryName(assetPath);
-                if (string.IsNullOrEmpty(directory))
+                string assetFolder = Path.GetDirectoryName(assetPath);
+                if (string.IsNullOrEmpty(assetFolder))
                     continue;
 
                 // 마지막 폴더 이름 추출
-                string folderName = new DirectoryInfo(directory).Name;
+                string folderName = new DirectoryInfo(assetFolder).Name;
                 if (folderName.StartsWith("__"))
                 {
-                    string guid = AssetDatabase.AssetPathToGUID(directory);
-                    // 이미 Addressable로 지정된 폴더인지 확인
-                    var entry = settings.FindAssetEntry(guid);
-                    if (entry == null)
-                    {
-                        settings.CreateOrMoveEntry(guid, assetGroup);
-                        Debug.Log($"'{directory}'is automatically assgined as Addressable Asset.");
-                    }
+                    SetDirectoryAsAddressable(assetFolder, assetGroup);
                 }
+
+                string materialForder = Directory.GetDirectories(assetFolder, "Materials", SearchOption.TopDirectoryOnly).FirstOrDefault();
+                if (!string.IsNullOrEmpty(materialForder))
+                {
+                    SetDirectoryAsAddressable(materialForder, assetGroup);
+                }
+            }
+        }
+
+        private static void SetDirectoryAsAddressable(string dir, AddressableAssetGroup group)
+        {
+            AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+            string guid = AssetDatabase.AssetPathToGUID(dir);
+            // 이미 Addressable로 지정된 폴더인지 확인
+            var entry = settings.FindAssetEntry(guid);
+            if (entry == null)
+            {
+                settings.CreateOrMoveEntry(guid, group);
+                Debug.Log($"'{dir}'is automatically assgined as Addressable Asset.");
             }
         }
     }

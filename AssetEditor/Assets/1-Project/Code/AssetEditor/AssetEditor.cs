@@ -139,10 +139,10 @@ namespace Merlin
             }
 
             Addressables.LoadAssetsAsync<GameObject>(modelKeys, null, Addressables.MergeMode.Union)
-            .Completed += handle =>
+            .Completed += _ =>
             {
-                var goList = handle.Result.ToList();
-                AssetWindow.Show(transform, handle.Result.ToArray(), go =>
+                var goList = _.Result.ToList();
+                AssetWindow.Show(transform, _.Result.ToArray(), go =>
                 {
                     for (int i = assetParent.childCount - 1; i >= 0; i--)
                     {
@@ -154,9 +154,9 @@ namespace Merlin
                     Camera.main.transform.LookAt(assetPivot);
 
                     Addressables.LoadAssetsAsync<Texture>(texKeys[goList.IndexOf(go)], null, Addressables.MergeMode.Union)
-                    .Completed += texHandle =>
+                    .Completed += _ =>
                     {
-                        var textures = texHandle.Result.ToArray();
+                        var textures = _.Result.ToArray();
                         AssetWindow.Show(go.transform, textures, null);
                         inspector.SetModelInstance(go, textures);
                     };
@@ -180,13 +180,13 @@ namespace Merlin
         private void CheckForUpdate(IEnumerable<object> keys)
         {
             Addressables.CheckForCatalogUpdates()
-            .Completed += handle =>
+            .Completed += _ =>
             {
 #if NO_XDT
-                if (handle.Result.Count > 0)
+                if (_.Result.Count > 0)
                 {
                     Debug.Log("Catalog Updated");
-                    Addressables.UpdateCatalogs(handle.Result)
+                    Addressables.UpdateCatalogs(_.Result)
                     .Completed += _ => CheckForDownload(keys);
                 }
                 else
@@ -222,12 +222,12 @@ namespace Merlin
         private void CheckForDownload(IEnumerable<object> keys)
         {
             Addressables.GetDownloadSizeAsync(keys)
-            .Completed += handle =>
+            .Completed += _ =>
             {
 #if NO_XDT
-                if (handle.Result > 0)
+                if (_.Result > 0)
                 {
-                    Debug.Log($"Total Download Size: {handle.Result}");
+                    Debug.Log($"Total Download Size: {_.Result}");
                     Addressables.DownloadDependenciesAsync(keys, Addressables.MergeMode.Union);
                 }
                 else
