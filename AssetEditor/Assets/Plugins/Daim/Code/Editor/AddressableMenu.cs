@@ -170,12 +170,12 @@ namespace Merlin
                 if (folderName.StartsWith("__"))
                 {
                     SetDirectoryAsAddressable(assetFolder, assetGroup);
-                }
 
-                string materialForder = Directory.GetDirectories(assetFolder, "Materials", SearchOption.TopDirectoryOnly).FirstOrDefault();
-                if (!string.IsNullOrEmpty(materialForder))
-                {
-                    SetDirectoryAsAddressable(materialForder, assetGroup);
+                    string materialForder = Directory.GetDirectories(assetFolder, "Materials", SearchOption.TopDirectoryOnly).FirstOrDefault();
+                    if (!string.IsNullOrEmpty(materialForder))
+                    {
+                        SetDirectoryAsAddressable(materialForder, assetGroup);
+                    }
                 }
             }
         }
