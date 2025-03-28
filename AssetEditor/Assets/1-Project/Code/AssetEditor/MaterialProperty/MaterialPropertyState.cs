@@ -1,57 +1,61 @@
-﻿using Newtonsoft.Json;
-using System.IO;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Merlin
 {
-    public enum eMaterialWorkflowMode
+    public enum eShaderWorkflowMode
     {
-        Specular = 0,
-        Metallic = 1
+        Specular,
+        Metallic
     }
 
-    public enum eMaterialSurfaceType
+    public enum eShaderSurfaceType
     {
-        Opaque = 0,
-        Transparent = 1
+        Opaque,
+        Transparent
     }
 
-    public class MaterialPropertyConfig
+    public enum eShaderRenderFace
     {
-        public eMaterialWorkflowMode WorkFlowMode;
-        public eMaterialSurfaceType SurfaceType;
+        Front = 2,
+        Back = 1,
+        Both = 0
+    }
+
+    public enum eShaderTextureMap
+    {
+        BaseMap,
+        MetallicMap,
+        NormalMap,
+        OcclusionMap,
+        EmissionMap,
+        DetailMaskMap
     }
 
     public class MaterialPropertyState
     {
-        private MaterialPropertyConfig config;
-
         public MaterialPropertyState()
         {
-            config = new();
         }
 
-        public void SetWorkflowMode(Material mat, eMaterialWorkflowMode mode)
+        public void SetWorkflowMode(Material mat, eShaderWorkflowMode mode)
         {
-            config.WorkFlowMode = mode;
-            mat.SetFloat("_WorkflowMode", (float)mode);
+            mat.SetInt("_WorkflowMode", (int)mode);
 
-            if (mode == eMaterialWorkflowMode.Specular)
+            if (mode == eShaderWorkflowMode.Specular)
             {
                 mat.EnableKeyword("_SPECULAR_SETUP");
             }
-            else if (mode == eMaterialWorkflowMode.Metallic)
+            else if (mode == eShaderWorkflowMode.Metallic)
             {
                 mat.DisableKeyword("_SPECULAR_SETUP");
             }
         }
 
-        public void SetSurfaceType(Material mat, eMaterialSurfaceType mode)
+        public void SetSurfaceType(Material mat, eShaderSurfaceType mode)
         {
-            config.SurfaceType = mode;
-            mat.SetFloat("_Surface", (float)mode);
+            mat.SetInt("_Surface", (int)mode);
 
-            if (mode == eMaterialSurfaceType.Opaque)
+            if (mode == eShaderSurfaceType.Opaque)
             {
                 mat.SetOverrideTag("RenderType", "Opaque");
                 mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
@@ -61,11 +65,12 @@ namespace Merlin
                 mat.SetShaderPassEnabled("DepthOnly", true);
                 mat.SetShaderPassEnabled("SHADOWCASTER", true);
 
-                mat.SetFloat("_DstBlend", 0);
-                mat.SetFloat("_DstBlendAlpha", 0);
-                mat.SetFloat("_ZWrite", 1);
+                mat.SetInt("_DstBlend", 0);
+                mat.SetInt("_DstBlendAlpha", 0);
+                mat.SetInt("_Surface", 0);
+                mat.SetInt("_ZWrite", 1);
             }
-            else if (mode == eMaterialSurfaceType.Transparent)
+            else if (mode == eShaderSurfaceType.Transparent)
             {
                 mat.SetOverrideTag("RenderType", "Transparent");
                 mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
@@ -75,16 +80,133 @@ namespace Merlin
                 mat.SetShaderPassEnabled("DepthOnly", false);
                 mat.SetShaderPassEnabled("SHADOWCASTER", false);
 
-                mat.SetFloat("_DstBlend", 10);
-                mat.SetFloat("_DstBlendAlpha", 10);
-                mat.SetFloat("_ZWrite", 0);
+                mat.SetInt("_DstBlend", 10);
+                mat.SetInt("_DstBlendAlpha", 10);
+                mat.SetInt("_Surface", 1);
+                mat.SetInt("_ZWrite", 0);
             }
         }
 
-        public void ExtractJson(string path)
+        public void SetRenderFace(Material mat, eShaderRenderFace mode)
         {
-            string json = JsonConvert.SerializeObject(config, Formatting.Indented);
-            File.WriteAllText(path, json);
+            mat.SetInt("_Cull", (int)mode);
+
+            if (mode == eShaderRenderFace.Both ||
+                mode == eShaderRenderFace.Back)
+            {
+                mat.doubleSidedGI = true;
+            }
+            else if (mode == eShaderRenderFace.Front)
+            {
+                mat.doubleSidedGI = false;
+            }
+        }
+
+        public void SetAlphaClipping(Material mat, bool alphaClipping, float threshold = 0.5f)
+        {
+            mat.SetFloat("_Cutoff", threshold);
+
+            if (alphaClipping)
+            {
+                // is surface type Opaque?
+                if (mat.GetInt("_Surface") == 0)
+                {
+                    mat.SetOverrideTag("RenderType", "TransparentCutout");
+                    mat.SetInt("_AlphaToMask", 1);
+                }
+
+                mat.EnableKeyword("_ALPHATEST_ON");
+                mat.renderQueue = 2450;
+                mat.SetInt("_AlphaClip", 1);
+            }
+            else
+            {
+                if (mat.GetInt("_Surface") == 0)
+                {
+                    mat.SetOverrideTag("RenderType", "Opaque");
+                    mat.SetInt("_AlphaToMask", 0);
+                }
+
+                mat.DisableKeyword("_ALPHATEST_ON");
+                mat.renderQueue = 2000;
+                mat.SetInt("_AlphaClip", 0);
+            }
+        }
+
+        public void SetReceiveShadows(Material mat, bool receiveShadows)
+        {
+            mat.SetInt("_ReceiveShadows", receiveShadows ? 1 : 0);
+
+            if (receiveShadows)
+            {
+                mat.DisableKeyword("_RECEIVE_SHADOWS_OFF");
+            }
+            else
+            {
+                mat.EnableKeyword("_RECEIVE_SHADOWS_OFF");
+            }
+        }
+
+        public void SetTextureMap(Material mat, eShaderTextureMap map, Texture tex = null)
+        {
+            switch (map)
+            {
+                case eShaderTextureMap.BaseMap:
+                    mat.SetTexture("_BaseMap", tex);
+                    mat.SetTexture("_MainTex", tex);
+                    break;
+
+                case eShaderTextureMap.MetallicMap:
+                    mat.SetTexture("_MetallicGlossMap", tex);
+
+                    if (tex != null)
+                        mat.EnableKeyword("_METALLICSPECGLOSSMAP");
+                    else
+                        mat.DisableKeyword("_METALLICSPECGLOSSMAP");
+                    break;
+
+                case eShaderTextureMap.NormalMap:
+                    mat.SetTexture("_BumpMap", tex);
+                    break;
+
+                case eShaderTextureMap.OcclusionMap:
+                    mat.SetTexture("_OcclusionMap", tex);
+
+                    if (tex != null)
+                        mat.EnableKeyword("_OCCLUSIONMAP");
+                    else
+                        mat.DisableKeyword("_OCCLUSIONMAP");
+                    break;
+
+                case eShaderTextureMap.EmissionMap:
+                    mat.SetTexture("_EmissionMap", tex);
+                    break;
+
+                case eShaderTextureMap.DetailMaskMap:
+                    mat.SetTexture("_DetailMask", tex);
+                    break;
+            }
+        }
+
+        public void SetEmission(Material mat, bool useEmission, MaterialGlobalIlluminationFlags gi = MaterialGlobalIlluminationFlags.EmissiveIsBlack)
+        {
+            if (!useEmission)
+            {
+                mat.DisableKeyword("_EMISSION");
+                mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack;
+                return;
+            }
+
+            if (gi == MaterialGlobalIlluminationFlags.BakedEmissive)
+            {
+                mat.DisableKeyword("_EMISSION");
+                mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack |
+                                                MaterialGlobalIlluminationFlags.BakedEmissive;
+                return;
+            }
+
+            mat.EnableKeyword("_EMISSION");
+            mat.globalIlluminationFlags = gi;
         }
     }
 }

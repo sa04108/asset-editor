@@ -26,7 +26,7 @@ namespace Merlin
             memberGroupPreset.gameObject.SetActive(false);
         }
 
-        public Transform CreateGroupMember(string title, Transform parent)
+        public Transform CreateGroupMember(string title, Transform parent, bool foldOnStart = false)
         {
             var member = Instantiate(groupMemberPreset, parent);
             member.Initialize(title);
@@ -34,6 +34,7 @@ namespace Merlin
 
             var memberGroup = Instantiate(memberGroupPreset, parent);
             member.Button.onClick.AddListener(() => memberGroup.gameObject.SetActive(!memberGroup.gameObject.activeSelf));
+            memberGroup.gameObject.SetActive(!foldOnStart);
 
             return memberGroup;
         }
