@@ -74,6 +74,12 @@ namespace Merlin
             return instance;
         }
 
+        public static void Hide<T>()
+        {
+            var instance = GetInstance<T>();
+            instance.gameObject.SetActive(false);
+        }
+
         private static AssetWindow GetInstance<T>()
         {
             if (!instances.ContainsKey(typeof(T)))
