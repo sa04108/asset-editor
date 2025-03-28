@@ -27,7 +27,7 @@ namespace Merlin
             get
             {
                 var settings = AddressableAssetSettingsDefaultObject.Settings;
-                var path = settings.profileSettings.GetValueById(settings.activeProfileId, settings.RemoteCatalogBuildPath.Id) + '/';
+                var path = settings.profileSettings.GetValueById(settings.activeProfileId, settings.RemoteCatalogBuildPath.Id) + "\\";
 
                 return path;
             }
@@ -43,7 +43,12 @@ namespace Merlin
             {
                 AddressableAssetSettings.BuildPlayerContent(out buildResult);
                 Debug.Log("[Addressables] Assets build completed");
-                EditorUtility.RevealInFinder(BuildPath);
+#if PLATFORM_STANDALONE_WIN
+                var projectPath = Directory.GetParent(Application.dataPath).FullName;
+                var path = Path.Combine(projectPath, BuildPath);
+                System.Diagnostics.Process.Start("explorer.exe", path);
+                Debug.Log($"[Addressables] Load File Path {path}");
+#endif
             }
             catch (ArgumentException)
             {
@@ -100,9 +105,8 @@ namespace Merlin
         [MenuItem("Addressables/Open Build File Path", false, 100)]
         public static void OpenFilePath()
         {
-            var path = AddressableAssetSettingsDefaultObject.Settings.AssetPath;
-            Debug.Log($"Open path {path}");
-            EditorUtility.RevealInFinder(path);
+            Debug.Log($"Open path {BuildPath}");
+            EditorUtility.RevealInFinder(BuildPath);
         }
 
         private const string autoAssignBundleMenu = "Addressables/Assign Bundle Automatically";

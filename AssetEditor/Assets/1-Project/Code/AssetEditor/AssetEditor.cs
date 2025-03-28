@@ -33,12 +33,14 @@ namespace Merlin
         [SerializeField]
         private float zoomSpeed = 10.0f;
 
+        private Button downloadButton;
+
         private void Start()
         {
             inspector = GetComponent<AssetInspector>();
-            Addressables.InitializeAsync().Completed += handle =>
+            Addressables.InitializeAsync().Completed += _ =>
             {
-                IResourceLocator locator = handle.Result;
+                IResourceLocator locator = _.Result;
 
                 CreateButton($"Models")
                     .onClick.AddListener(() => LoadModels(locator.Keys));
@@ -46,8 +48,8 @@ namespace Merlin
                 CreateButton($"Check For Update")
                     .onClick.AddListener(() => CheckForUpdate(locator.Keys));
 
-                CreateButton($"Check For Download")
-                    .onClick.AddListener(() => CheckForDownload(locator.Keys));
+                downloadButton = CreateButton($"Check For Download");
+                downloadButton.onClick.AddListener(() => CheckForDownload(locator.Keys));
             };
         }
 
@@ -187,7 +189,12 @@ namespace Merlin
                 {
                     Debug.Log("Catalog Updated");
                     Addressables.UpdateCatalogs(_.Result)
-                    .Completed += _ => CheckForDownload(keys);
+                    .Completed += _ =>
+                    {
+                        var keys = _.Result.SelectMany(locator => locator.Keys);
+                        downloadButton.onClick.RemoveAllListeners();
+                        downloadButton.onClick.AddListener(() => CheckForDownload(keys));
+                    };
                 }
                 else
                 {
@@ -228,7 +235,6 @@ namespace Merlin
                 if (_.Result > 0)
                 {
                     Debug.Log($"Total Download Size: {_.Result}");
-                    Addressables.DownloadDependenciesAsync(keys, Addressables.MergeMode.Union);
                 }
                 else
                 {
