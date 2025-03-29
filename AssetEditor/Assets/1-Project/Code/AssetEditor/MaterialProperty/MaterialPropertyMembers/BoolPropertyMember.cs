@@ -22,5 +22,12 @@ namespace Merlin
             CurrentValue = checkMark.activeSelf;
             mat.SetInt(propertyName, CurrentValue ? 1 : 0);
         }
+
+        public override void ResetProperty()
+        {
+            base.ResetProperty();
+
+            checkMark.SetActive(CurrentValue);
+        }
     }
 }

@@ -1,6 +1,7 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Merlin
 {
@@ -14,11 +15,21 @@ namespace Merlin
         [SerializeField]
         private PropertyMemberCreator memberCreator;
 
+        [SerializeField]
+        private Button saveButton;
+
+        [SerializeField]
+        private Button resetButton;
+
+        private AssetModifier modifier;
+        private IMaterialPropertyMember[] materialProperties;
         private int presetCount;
 
         private void Start()
         {
             presetCount = memberParent.transform.childCount;
+            saveButton.onClick.AddListener(SaveAsset);
+            resetButton.onClick.AddListener(ResetAsset);
         }
 
         public void SetModelInstance(GameObject go, Texture[] textures)
@@ -37,22 +48,8 @@ namespace Merlin
 
         private void LoadMembers(GameObject go)
         {
-            Renderer[] renderers = go.GetComponentsInChildren<Renderer>();
-            HashSet<Material> materialSet = new();
-
-            foreach (Renderer renderer in renderers)
-            {
-                foreach (Material mat in renderer.sharedMaterials)
-                {
-                    var matHash = mat.GetHashCode();
-
-                    if (materialSet.Contains(mat))
-                        continue;
-                    materialSet.Add(mat);
-                }
-            }
-
-            AssetWindow.Show(go.transform, materialSet.ToArray(), InspectMaterialProperties);
+            modifier = new(go);
+            AssetWindow.Show(go.transform, modifier.GetSharedMaterials(), InspectMaterialProperties);
         }
 
         private void InspectMaterialProperties(Material mat)
@@ -61,6 +58,8 @@ namespace Merlin
                 InspectLitMaterialProperties(mat);
             else
                 InspectAllMaterialProperties(mat);
+
+            materialProperties = memberParent.GetComponentsInChildren<IMaterialPropertyMember>();
         }
 
         private void InspectLitMaterialProperties(Material mat)
@@ -211,6 +210,18 @@ namespace Merlin
         {
             return dict.ContainsKey(prop) &&
                 mat.shader.GetPropertyFlags(dict[prop]) == UnityEngine.Rendering.ShaderPropertyFlags.HideInInspector;
+        }
+
+        public void SaveAsset()
+        {
+            // API를 사용하여 서버로 전송
+            modifier?.Save();
+        }
+
+        public void ResetAsset()
+        {
+            modifier?.Reset();
+            materialProperties?.ToList().ForEach(prop => prop.ResetProperty());
         }
     }
 }

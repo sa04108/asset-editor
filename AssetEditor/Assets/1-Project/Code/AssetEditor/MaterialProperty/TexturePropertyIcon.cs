@@ -5,26 +5,22 @@ using UnityEngine.UI;
 
 namespace Merlin
 {
-    public class TextureProperty : MonoBehaviour, IPointerDownHandler, IDeselectHandler
+    public class TexturePropertyIcon : MonoBehaviour, IPointerDownHandler, IDeselectHandler
     {
         [SerializeField] private RawImage icon;
         [SerializeField] private GameObject selectionEffect;
 
         [HideInInspector]
-        private UnityEvent OnClick = new();
+        public UnityEvent OnClick = new();
 
-        public void Initialize(Material mat, string name, Texture tex)
+        public void Initialize(Texture tex)
+        {
+            SetTextureIcon(tex);
+        }
+
+        public void SetTextureIcon(Texture tex)
         {
             icon.texture = tex;
-
-            OnClick.AddListener(() =>
-            {
-                AssetWindow.Show<Texture>(transform, texture =>
-                {
-                    icon.texture = texture;
-                    mat.SetTexture(name, texture);
-                });
-            });
         }
 
         public void OnPointerDown(PointerEventData eventData)

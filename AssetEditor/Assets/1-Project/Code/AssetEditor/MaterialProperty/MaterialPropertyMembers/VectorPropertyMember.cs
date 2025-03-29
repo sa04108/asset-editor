@@ -48,5 +48,15 @@ namespace Merlin
                 inputField.SetTextWithoutNotify(CurrentValue[idx].ToString());
             }
         }
+
+        public override void ResetProperty()
+        {
+            base.ResetProperty();
+
+            for (int i = 0; i < 4; i++)
+            {
+                inputFields[i].SetTextWithoutNotify(CurrentValue[i].ToString());
+            }
+        }
     }
 }

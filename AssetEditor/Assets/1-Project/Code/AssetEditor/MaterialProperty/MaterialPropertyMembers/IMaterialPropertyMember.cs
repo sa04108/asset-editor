@@ -1,0 +1,4 @@
+interface IMaterialPropertyMember
+{
+    void ResetProperty();
+}

@@ -28,5 +28,12 @@ namespace Merlin
             CurrentValue = value;
             mat.SetInt(propertyName, CurrentValue);
         }
+
+        public override void ResetProperty()
+        {
+            base.ResetProperty();
+
+            dropDown.SetValueWithoutNotify(CurrentValue);
+        }
     }
 }

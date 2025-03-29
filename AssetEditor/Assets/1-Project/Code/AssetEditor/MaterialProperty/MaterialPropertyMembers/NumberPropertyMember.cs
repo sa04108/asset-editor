@@ -99,5 +99,13 @@ namespace Merlin
                 mat.SetInteger(propertyName, (int)value);
             }
         }
+
+        public override void ResetProperty()
+        {
+            base.ResetProperty();
+
+            slider.SetValueWithoutNotify(CurrentValue);
+            inputField.SetTextWithoutNotify(CurrentValue.ToString());
+        }
     }
 }

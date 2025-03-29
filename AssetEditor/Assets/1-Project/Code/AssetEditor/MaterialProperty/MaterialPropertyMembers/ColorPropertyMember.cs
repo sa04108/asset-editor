@@ -23,5 +23,14 @@ namespace Merlin
 
             mat.SetColor(propertyName, color);
         }
+
+        public override void ResetProperty()
+        {
+            base.ResetProperty();
+
+            colorButton.onColorUpdated.RemoveAllListeners();
+            colorButton.color = CurrentValue;
+            colorButton.onColorUpdated.AddListener(SetColor);
+        }
     }
 }
