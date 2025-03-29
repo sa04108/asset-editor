@@ -108,8 +108,7 @@ namespace Merlin
                 if (keyStr == null)
                     continue;
 
-                if (keyStr.EndsWith(".fbx") ||
-                keyStr.EndsWith(".3ds"))
+                if (keyStr.EndsWith(".prefab"))
                 {
                     modelKeys.Add(keyStr);
                 }

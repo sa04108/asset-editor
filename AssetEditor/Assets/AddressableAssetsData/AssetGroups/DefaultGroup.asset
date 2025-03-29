@@ -20,8 +20,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ffdcc803d501b6498ee6d920cb58939
+    m_Address: Assets/AddressableAssets/__WoodenTower/Materials
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 45f9746490bda1a44b077caedd7f14e9
     m_Address: Assets/AddressableAssets/__WoodenTower
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ae7902e69864f145863e1a2252555cf
+    m_Address: Assets/AddressableAssets/__Wolf/Materials
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b89b49d535f0e946b4b07d2eca242af
+    m_Address: Assets/AddressableAssets/__Wolf
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a13d7040c362dc941b9c82d0c56e31b9
+    m_Address: Assets/AddressableAssets/__Sniper/Materials
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
