@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Merlin
@@ -8,9 +9,9 @@ namespace Merlin
         [SerializeField] private Button checkButton;
         [SerializeField] private GameObject checkMark;
 
-        public new void Initialize(Material mat, string name, bool value)
+        public new void Initialize(string label, Material mat, bool value, string propName, UnityAction<bool> onValueChanged)
         {
-            base.Initialize(mat, name, value);
+            base.Initialize(label, mat, value, propName, onValueChanged);
 
             checkMark.SetActive(value);
             checkButton.onClick.AddListener(OnValueChanged);

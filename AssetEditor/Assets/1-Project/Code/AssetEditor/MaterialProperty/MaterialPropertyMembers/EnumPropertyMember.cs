@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Merlin
 {
@@ -8,9 +9,9 @@ namespace Merlin
     {
         [SerializeField] private TMP_Dropdown dropDown;
 
-        public void Initialize(Material mat, string name, Type enumType, int value)
+        public void Initialize(string label, Material mat, Type enumType, int value, string propName, UnityAction<int> onValueChanged)
         {
-            base.Initialize(mat, name, value);
+            base.Initialize(label, mat, value, propName, onValueChanged);
 
             dropDown.options = new();
             var values = Enum.GetNames(enumType);

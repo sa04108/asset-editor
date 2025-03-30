@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Merlin
 {
@@ -44,93 +45,93 @@ namespace Merlin
             return memberGroup;
         }
 
-        public TexturePropertyMember CreateTexturePropertyMember(Material mat, string name, Texture value, Transform parent)
+        public TexturePropertyMember CreateTexturePropertyMember(string label, Material mat, Texture value, Transform parent, string propName, UnityAction<Texture> onValueChanged = null)
         {
             var member = Instantiate(textureMemberPreset, parent);
-            member.Initialize(mat, name, value);
+            member.Initialize(label, mat, value, propName, onValueChanged);
             member.gameObject.SetActive(true);
 
             return member;
         }
 
-        public NumberPropertyMember CreateNumberMember(Material mat, MaterialPropertyType type, string name, float value, float min, float max, Transform parent)
+        private NumberPropertyMember CreateNumberMember(string label, Material mat, MaterialPropertyType type, float value, float min, float max, Transform parent, string propName, UnityAction<float> onValueChanged)
         {
             var member = Instantiate(numMemberPreset, parent);
-            member.Initialize(mat, type, name, value, min, max);
+            member.Initialize(label, mat, type, value, min, max, propName, onValueChanged);
             member.gameObject.SetActive(true);
 
             return member;
         }
 
-        public NumberPropertyMember CreateNumberMember(Material mat, MaterialPropertyType type, string name, float value, Transform parent)
+        private NumberPropertyMember CreateNumberMember(string label, Material mat, MaterialPropertyType type, float value, Transform parent, string propName, UnityAction<float> onValueChanged)
         {
             var member = Instantiate(numMemberPreset, parent);
-            member.Initialize(mat, type, name, value);
+            member.Initialize(label, mat, type, value, propName, onValueChanged);
             member.gameObject.SetActive(true);
 
             return member;
         }
 
-        public NumberPropertyMember CreateFloatMember(Material mat, string name, float value, float min, float max, Transform parent)
+        public NumberPropertyMember CreateFloatMember(string label, Material mat, float value, float min, float max, Transform parent, string propName, UnityAction<float> onValueChanged = null)
         {
-            return CreateNumberMember(mat, MaterialPropertyType.Float, name, value, min, max, parent);
+            return CreateNumberMember(label, mat, MaterialPropertyType.Float, value, min, max, parent, propName, onValueChanged);
         }
 
-        public NumberPropertyMember CreateFloatMember(Material mat, string name, float value, Transform parent)
+        public NumberPropertyMember CreateFloatMember(string label, Material mat, float value, Transform parent, string propName, UnityAction<float> onValueChanged = null)
         {
-            return CreateNumberMember(mat, MaterialPropertyType.Float, name, value, parent);
+            return CreateNumberMember(label, mat, MaterialPropertyType.Float, value, parent, propName, onValueChanged);
         }
 
-        public NumberPropertyMember CreateIntMember(Material mat, string name, int value, int min, int max, Transform parent)
+        public NumberPropertyMember CreateIntMember(string label, Material mat, int value, int min, int max, Transform parent, string propName, UnityAction<float> onValueChanged = null)
         {
-            return CreateNumberMember(mat, MaterialPropertyType.Int, name, value, min, max, parent);
+            return CreateNumberMember(label, mat, MaterialPropertyType.Int, value, min, max, parent, propName, onValueChanged);
         }
 
-        public NumberPropertyMember CreateIntMember(Material mat, string name, int value, Transform parent)
+        public NumberPropertyMember CreateIntMember(string label, Material mat, int value, Transform parent, string propName, UnityAction<float> onValueChanged = null)
         {
-            return CreateNumberMember(mat, MaterialPropertyType.Int, name, value, parent);
+            return CreateNumberMember(label, mat, MaterialPropertyType.Int, value, parent, propName, onValueChanged);
         }
 
-        public ColorPropertyMember CreateColorMember(Material mat, string name, Color value, bool hasAlpha, bool isHDR, Transform parent)
+        public ColorPropertyMember CreateColorMember(string label, Material mat, Color value, bool hasAlpha, bool isHDR, Transform parent, string propName, UnityAction<Color> onValueChanged = null)
         {
             var member = Instantiate(colorMemberPreset, parent);
-            member.Initialize(mat, name, value, hasAlpha, isHDR);
+            member.Initialize(label, mat, value, hasAlpha, isHDR, propName, onValueChanged);
             member.gameObject.SetActive(true);
 
             return member;
         }
 
-        public VectorPropertyMember CreateVectorMember(Material mat, string name, Vector4 value, Transform parent)
+        public VectorPropertyMember CreateVectorMember(string label, Material mat, Vector4 value, Transform parent, string propName, UnityAction<Vector4> onValueChanged = null)
         {
             var member = Instantiate(vectorMemberPreset, parent);
-            member.Initialize(mat, name, value);
+            member.Initialize(label, mat, value, propName, onValueChanged);
             member.gameObject.SetActive(true);
 
             return member;
         }
 
-        public MatrixPropertyMember CreateMatrixMember(Material mat, string name, Matrix4x4 value, Transform parent)
+        public MatrixPropertyMember CreateMatrixMember(string label, Material mat, Matrix4x4 value, Transform parent, string propName)
         {
             var member = Instantiate(matrixMemberPreset, parent);
-            member.Initialize(mat, name, value);
+            member.Initialize(mat, propName, value);
             member.gameObject.SetActive(true);
 
             return member;
         }
 
-        public BoolPropertyMember CreateBoolMember(Material mat, string name, bool value, Transform parent)
+        public BoolPropertyMember CreateBoolMember(string label, Material mat, bool value, Transform parent, string propName, UnityAction<bool> onValueChanged = null)
         {
             var member = Instantiate(boolMemberPreset, parent);
-            member.Initialize(mat, name, value);
+            member.Initialize(label, mat, value, propName, onValueChanged);
             member.gameObject.SetActive(true);
 
             return member;
         }
 
-        public EnumPropertyMember CreateEnumMember(Material mat, string name, Type enumType, int value, Transform parent)
+        public EnumPropertyMember CreateEnumMember(string label, Material mat, Type enumType, int value, Transform parent, string propName, UnityAction<int> onValueChanged = null)
         {
             var member = Instantiate(enumMemberPreset, parent);
-            member.Initialize(mat, name, enumType, value);
+            member.Initialize(label, mat, enumType, value, propName, onValueChanged);
             member.gameObject.SetActive(true);
 
             return member;

@@ -39,9 +39,9 @@ namespace Merlin
         None
     }
 
-    public class MaterialPropertyState
+    public class LitShaderModifier
     {
-        public MaterialPropertyState()
+        public LitShaderModifier()
         {
         }
 

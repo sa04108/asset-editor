@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Merlin
@@ -20,9 +21,9 @@ namespace Merlin
             slider.onValueChanged.AddListener(OnSliderValueChanged);
         }
 
-        public void Initialize(Material mat, MaterialPropertyType type, string name, float value, float min, float max)
+        public void Initialize(string label, Material mat, MaterialPropertyType type, float value, float min, float max, string propName, UnityAction<float> onValueChanged)
         {
-            base.Initialize(mat, name, value);
+            base.Initialize(label, mat, value, propName, onValueChanged);
 
             this.type = type;
             inputField.SetTextWithoutNotify(value.ToString());
@@ -37,9 +38,9 @@ namespace Merlin
             slider.gameObject.SetActive(true);
         }
 
-        public void Initialize(Material mat, MaterialPropertyType type, string name, float value)
+        public void Initialize(string label, Material mat, MaterialPropertyType type, float value, string propName, UnityAction<float> onValueChanged)
         {
-            base.Initialize(mat, name, value);
+            base.Initialize(label, mat, value, propName, onValueChanged);
 
             this.type = type;
             inputField.SetTextWithoutNotify(value.ToString());

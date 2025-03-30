@@ -1,5 +1,6 @@
 using GravityBox.ColorPicker;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Merlin
 {
@@ -7,9 +8,9 @@ namespace Merlin
     {
         [SerializeField] private ColorButton colorButton;
 
-        public void Initialize(Material mat, string name, Color value, bool hasAlpha, bool isHDR)
+        public void Initialize(string label, Material mat, Color value, bool hasAlpha, bool isHDR, string propName, UnityAction<Color> onValueChanged)
         {
-            base.Initialize(mat, name, value);
+            base.Initialize(label, mat, value, propName, onValueChanged);
 
             colorButton.colorImage.hasAlpha = hasAlpha;
             colorButton.colorImage.isHDR = isHDR;

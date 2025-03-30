@@ -7,10 +7,11 @@ namespace Merlin
     public abstract class MaterialPropertyMember<T> : MonoBehaviour, IMaterialPropertyMember
     {
         [SerializeField] protected TexturePropertyIcon texProp;
-        [SerializeField] protected TMP_Text title;
+        [SerializeField] protected TMP_Text label;
 
         protected Material mat;
         protected string propertyName;
+        private UnityEvent<T> onValueChanged;
 
         private T originalValue;
         private T currentValue;
@@ -23,24 +24,22 @@ namespace Merlin
                 onValueChanged?.Invoke(currentValue);
             }
         }
-        private UnityEvent<T> onValueChanged;
 
-        protected void Initialize(Material mat, string name, T value)
+        protected void Initialize(string label, Material mat, T value, string propName, UnityAction<T> onValueChanged)
         {
-            title.text = $"{name}";
-
+            this.label.text = $"{label}";
             this.mat = mat;
-            propertyName = name;
             originalValue = value;
             currentValue = value;
+            propertyName = propName;
+
+            if (onValueChanged != null)
+            {
+                this.onValueChanged = new();
+                this.onValueChanged.AddListener(onValueChanged);
+            }
 
             texProp.gameObject.SetActive(false);
-        }
-
-        public void OnValueChanged(UnityAction<T> onValueChanged)
-        {
-            this.onValueChanged = new();
-            this.onValueChanged.AddListener(onValueChanged);
         }
 
         public virtual void ResetProperty()

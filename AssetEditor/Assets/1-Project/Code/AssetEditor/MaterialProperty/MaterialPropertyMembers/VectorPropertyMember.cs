@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Merlin
 {
@@ -20,9 +21,9 @@ namespace Merlin
             }
         }
 
-        public new void Initialize(Material mat, string name, Vector4 value)
+        public new void Initialize(string label, Material mat, Vector4 value, string propName, UnityAction<Vector4> onValueChanged)
         {
-            base.Initialize(mat, name, value);
+            base.Initialize(label, mat, value, propName, onValueChanged);
 
             string[] vectorChanels = { "X", "Y", "Z", "W" };
             for (int i = 0; i < 4; i++)
@@ -41,7 +42,7 @@ namespace Merlin
                 CurrentValue = currVec;
                 inputField.SetTextWithoutNotify(fResult.ToString());
 
-                mat.SetVector(title.text, CurrentValue);
+                mat.SetVector(propertyName, CurrentValue);
             }
             else // 빈 값 입력 포함
             {
