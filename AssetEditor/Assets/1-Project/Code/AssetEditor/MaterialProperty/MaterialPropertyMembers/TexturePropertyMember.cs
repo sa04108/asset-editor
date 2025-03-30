@@ -1,13 +1,12 @@
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Merlin
 {
     public class TexturePropertyMember : MaterialPropertyMember<Texture>
     {
-        public new void Initialize(string label, Material mat, Texture value, string propName, UnityAction<Texture> onValueChanged)
+        public new void Initialize(string label, Material mat, Texture value, string propName)
         {
-            base.Initialize(label, mat, value, propName, onValueChanged);
+            base.Initialize(label, mat, value, propName);
 
             texProp.Initialize(value);
             texProp.OnClick.AddListener(() =>
@@ -23,9 +22,9 @@ namespace Merlin
             texProp.gameObject.SetActive(true);
         }
 
-        public override void ResetProperty()
+        public override void UpdateUI()
         {
-            base.ResetProperty();
+            base.UpdateUI();
 
             texProp.SetTextureIcon(CurrentValue);
         }

@@ -7045,6 +7045,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   texProp: {fileID: 206588677}
   label: {fileID: 206588676}
+  OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
   inputFieldLabels:
   - {fileID: 593857262}
   - {fileID: 1299620796}
@@ -9205,6 +9208,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   texProp: {fileID: 146550225}
   label: {fileID: 146550224}
+  OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
   dropDown: {fileID: 64350224}
 --- !u!1 &863196862
 GameObject:
@@ -12497,6 +12503,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   texProp: {fileID: 949904974}
   label: {fileID: 949904973}
+  OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
   inputField: {fileID: 208937978}
   slider: {fileID: 677285841}
   numberBox: {fileID: 21300000, guid: 7eade2fc7ef4c6948ba5cf14be42bc25, type: 3}
@@ -14898,7 +14907,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
+    m_Left: 2
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
@@ -15981,6 +15990,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   texProp: {fileID: 901375311}
   label: {fileID: 901375310}
+  OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
   checkButton: {fileID: 875439509}
   checkMark: {fileID: 1122645062}
 --- !u!1 &1614919602
@@ -17921,6 +17933,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   texProp: {fileID: 2070038373}
   label: {fileID: 2070038372}
+  OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
   colorButton: {fileID: 1623451894}
 --- !u!1 &1784290242
 GameObject:
@@ -18852,6 +18867,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   texProp: {fileID: 5051113894410152598}
   label: {fileID: 1898529748}
+  OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2016177219
 GameObject:
   m_ObjectHideFlags: 0

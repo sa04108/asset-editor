@@ -11,7 +11,9 @@ namespace Merlin
 
         protected Material mat;
         protected string propertyName;
-        private UnityEvent<T> onValueChanged;
+
+        [HideInInspector]
+        public UnityEvent<T> OnValueChanged;
 
         private T originalValue;
         private T currentValue;
@@ -21,11 +23,11 @@ namespace Merlin
             set
             {
                 currentValue = value;
-                onValueChanged?.Invoke(currentValue);
+                OnValueChanged.Invoke(currentValue);
             }
         }
 
-        protected void Initialize(string label, Material mat, T value, string propName, UnityAction<T> onValueChanged)
+        protected void Initialize(string label, Material mat, T value, string propName)
         {
             this.label.text = $"{label}";
             this.mat = mat;
@@ -33,16 +35,10 @@ namespace Merlin
             currentValue = value;
             propertyName = propName;
 
-            if (onValueChanged != null)
-            {
-                this.onValueChanged = new();
-                this.onValueChanged.AddListener(onValueChanged);
-            }
-
             texProp.gameObject.SetActive(false);
         }
 
-        public virtual void ResetProperty()
+        public virtual void UpdateUI()
         {
             currentValue = originalValue;
         }

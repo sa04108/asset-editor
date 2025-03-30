@@ -1,4 +1,4 @@
 interface IMaterialPropertyMember
 {
-    void ResetProperty();
+    void UpdateUI();
 }

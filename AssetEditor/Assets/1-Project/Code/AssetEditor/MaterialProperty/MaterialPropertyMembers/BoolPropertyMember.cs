@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Merlin
@@ -9,24 +8,24 @@ namespace Merlin
         [SerializeField] private Button checkButton;
         [SerializeField] private GameObject checkMark;
 
-        public new void Initialize(string label, Material mat, bool value, string propName, UnityAction<bool> onValueChanged)
+        public new void Initialize(string label, Material mat, bool value, string propName)
         {
-            base.Initialize(label, mat, value, propName, onValueChanged);
+            base.Initialize(label, mat, value, propName);
 
             checkMark.SetActive(value);
-            checkButton.onClick.AddListener(OnValueChanged);
+            checkButton.onClick.AddListener(OnClick);
         }
 
-        private void OnValueChanged()
+        private void OnClick()
         {
             checkMark.SetActive(!checkMark.activeSelf);
             CurrentValue = checkMark.activeSelf;
             mat.SetInt(propertyName, CurrentValue ? 1 : 0);
         }
 
-        public override void ResetProperty()
+        public override void UpdateUI()
         {
-            base.ResetProperty();
+            base.UpdateUI();
 
             checkMark.SetActive(CurrentValue);
         }

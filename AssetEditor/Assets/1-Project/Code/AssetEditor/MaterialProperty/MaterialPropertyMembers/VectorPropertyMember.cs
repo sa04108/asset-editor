@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Merlin
 {
@@ -21,9 +20,9 @@ namespace Merlin
             }
         }
 
-        public new void Initialize(string label, Material mat, Vector4 value, string propName, UnityAction<Vector4> onValueChanged)
+        public new void Initialize(string label, Material mat, Vector4 value, string propName)
         {
-            base.Initialize(label, mat, value, propName, onValueChanged);
+            base.Initialize(label, mat, value, propName);
 
             string[] vectorChanels = { "X", "Y", "Z", "W" };
             for (int i = 0; i < 4; i++)
@@ -50,9 +49,9 @@ namespace Merlin
             }
         }
 
-        public override void ResetProperty()
+        public override void UpdateUI()
         {
-            base.ResetProperty();
+            base.UpdateUI();
 
             for (int i = 0; i < 4; i++)
             {

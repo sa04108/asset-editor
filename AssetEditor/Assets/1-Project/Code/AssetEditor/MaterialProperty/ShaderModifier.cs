@@ -14,6 +14,14 @@ namespace Merlin
         Transparent
     }
 
+    public enum eBlendMode
+    {
+        Alpha,
+        Premultiply,
+        Additive,
+        Multiply
+    }
+
     public enum eShaderRenderFace
     {
         Both,
@@ -66,32 +74,74 @@ namespace Merlin
             if (mode == eShaderSurfaceType.Opaque)
             {
                 mat.SetOverrideTag("RenderType", "Opaque");
-                mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
                 mat.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                mat.DisableKeyword("_ALPHAMODULATE_ON");
                 mat.renderQueue = 2000;
+
+                mat.SetInt("_ZWrite", 1);
+                mat.SetInt("_DstBlend", 0);
+                mat.SetInt("_DstBlendAlpha", 0);
+                mat.SetInt("_SrcBlend", 1);
+                mat.SetInt("_SrcBlendAlpha", 1);
 
                 mat.SetShaderPassEnabled("DepthOnly", true);
                 mat.SetShaderPassEnabled("SHADOWCASTER", true);
-
-                mat.SetInt("_DstBlend", 0);
-                mat.SetInt("_DstBlendAlpha", 0);
-                mat.SetInt("_Surface", 0);
-                mat.SetInt("_ZWrite", 1);
             }
             else if (mode == eShaderSurfaceType.Transparent)
             {
                 mat.SetOverrideTag("RenderType", "Transparent");
-                mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
                 mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
                 mat.renderQueue = 3000;
+
+                mat.SetInt("_ZWrite", 0);
 
                 mat.SetShaderPassEnabled("DepthOnly", false);
                 mat.SetShaderPassEnabled("SHADOWCASTER", false);
 
+                SetBlend(mat, (eBlendMode)mat.GetInt("_Blend"));
+            }
+        }
+
+        public void SetBlend(Material mat, eBlendMode mode)
+        {
+            mat.SetInt("_Blend", (int)mode);
+
+            if (mode == eBlendMode.Alpha)
+            {
+                mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                mat.DisableKeyword("_ALPHAMODULATE_ON");
                 mat.SetInt("_DstBlend", 10);
                 mat.SetInt("_DstBlendAlpha", 10);
-                mat.SetInt("_Surface", 1);
-                mat.SetInt("_ZWrite", 0);
+                mat.SetInt("_SrcBlend", 1);
+                mat.SetInt("_SrcBlendAlpha", 1);
+            }
+            else if (mode == eBlendMode.Premultiply)
+            {
+                mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                mat.DisableKeyword("_ALPHAMODULATE_ON");
+                mat.SetInt("_DstBlend", 10);
+                mat.SetInt("_DstBlendAlpha", 10);
+                mat.SetInt("_SrcBlend", 1);
+                mat.SetInt("_SrcBlendAlpha", 1);
+            }
+            else if (mode == eBlendMode.Additive)
+            {
+                mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                mat.DisableKeyword("_ALPHAMODULATE_ON");
+                mat.SetInt("_DstBlend", 1);
+                mat.SetInt("_DstBlendAlpha", 1);
+                mat.SetInt("_SrcBlend", 1);
+                mat.SetInt("_SrcBlendAlpha", 1);
+            }
+            else if (mode == eBlendMode.Multiply)
+            {
+                mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                mat.EnableKeyword("_ALPHAMODULATE_ON");
+                mat.SetInt("_DstBlend", 0);
+                mat.SetInt("_DstBlendAlpha", 1);
+                mat.SetInt("_SrcBlend", 2);
+                mat.SetInt("_SrcBlendAlpha", 0);
             }
         }
 
