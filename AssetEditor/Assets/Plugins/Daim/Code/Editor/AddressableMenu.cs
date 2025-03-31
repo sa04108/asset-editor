@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Build;
@@ -43,6 +44,14 @@ namespace Merlin
             {
                 AddressableAssetSettings.BuildPlayerContent(out buildResult);
                 Debug.Log("[Addressables] Assets build completed");
+                Debug.Log($"[Addressables] Build duration: {buildResult.Duration}");
+                Debug.Log($"[Addressables] Location count: {buildResult.LocationCount}");
+                StringBuilder sb = new("[Addressables] Bundle List\n");
+                foreach (var bundleResult in buildResult.AssetBundleBuildResults)
+                {
+                    sb.AppendLine(bundleResult.FilePath);
+                }
+                Debug.Log(sb);
 #if PLATFORM_STANDALONE_WIN
                 var projectPath = Directory.GetParent(Application.dataPath).FullName;
                 var path = Path.Combine(projectPath, BuildPath);
