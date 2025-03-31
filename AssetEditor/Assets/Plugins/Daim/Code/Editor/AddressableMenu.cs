@@ -13,7 +13,7 @@ namespace Merlin
 {
     public enum eAssetBuildExitCode
     {
-        Success = 100,
+        Success = 0,
         Argument = 101,
         InvalidOperation = 102,
         FileIO = 103,
@@ -61,27 +61,27 @@ namespace Merlin
             }
             catch (ArgumentException)
             {
-                Debug.LogError(buildResult.Error);
+                Debug.LogError($"[Addressables] {buildResult.Error}");
                 exitCode = eAssetBuildExitCode.Argument;
             }
             catch (InvalidOperationException)
             {
-                Debug.LogError(buildResult.Error);
+                Debug.LogError($"[Addressables] {buildResult.Error}");
                 exitCode = eAssetBuildExitCode.InvalidOperation;
             }
             catch (IOException)
             {
-                Debug.LogError(buildResult.Error);
+                Debug.LogError($"[Addressables] {buildResult.Error}");
                 exitCode = eAssetBuildExitCode.FileIO;
             }
             catch (NullReferenceException)
             {
-                Debug.LogError(buildResult.Error);
+                Debug.LogError($"[Addressables] {buildResult.Error}");
                 exitCode = eAssetBuildExitCode.NullRef;
             }
             catch (Exception)
             {
-                Debug.LogError(buildResult.Error);
+                Debug.LogError($"[Addressables] {buildResult.Error}");
                 exitCode = eAssetBuildExitCode.Other;
             }
 
