@@ -183,7 +183,6 @@ namespace Merlin
             Addressables.CheckForCatalogUpdates()
             .Completed += _ =>
             {
-#if NO_XDT
                 if (_.Result.Count > 0)
                 {
                     Debug.Log("Catalog Updated");
@@ -199,29 +198,6 @@ namespace Merlin
                 {
                     Debug.Log("Catalog is the latest version");
                 }
-#else
-                if (handle.Result.Count > 0)
-                {
-                    MessageBox.Show(
-                        "Asset Update Available.\n" +
-                        "Do you want to check for download?",
-                        eMessageBoxButtons.YesNo)
-                    .Subscribe(result =>
-                    {
-                        if (result.Code == eMessageBoxResult.Yes)
-                        {
-                            Addressables.UpdateCatalogs(handle.Result)
-                            .Completed += _ => CheckForDownload(keys);
-                        }
-                    });
-                }
-                else
-                {
-                    MessageBox.Show(
-                        "Asset is the latest version.",
-                        eMessageBoxButtons.OK);
-                }
-#endif
             };
         }
 
@@ -230,7 +206,6 @@ namespace Merlin
             Addressables.GetDownloadSizeAsync(keys)
             .Completed += _ =>
             {
-#if NO_XDT
                 if (_.Result > 0)
                 {
                     Debug.Log($"Total Download Size: {_.Result}");
@@ -239,28 +214,6 @@ namespace Merlin
                 {
                     Debug.Log("All asset is the latest version");
                 }
-#else
-                if (handle.Result > 0)
-                {
-                    MessageBox.Show(
-                        $"Total Download Size: {handle.Result}\n" +
-                        "Do you want to download?",
-                        eMessageBoxButtons.YesNo)
-                    .Subscribe(result =>
-                    {
-                        if (result.Code == eMessageBoxResult.Yes)
-                        {
-                            Addressables.DownloadDependenciesAsync(keys, Addressables.MergeMode.Union);
-                        }
-                    });
-                }
-                else
-                {
-                    MessageBox.Show(
-                        "All asset downloaded for current version",
-                        eMessageBoxButtons.OK);
-                }
-#endif
             };
         }
 

@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 988add5c52899164a8f285ae8b9299f6
   m_currentHash:
     serializedVersion: 2
-    Hash: 0564e2a7af2fdbc9f73cdbad79963462
+    Hash: 00000000000000000000000000000000
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 1
   m_CatalogRequestsTimeout: 0
@@ -70,13 +70,13 @@ MonoBehaviour:
       m_ProfileName: Default
       m_Values:
       - m_Id: 15e85724d771c9d4a813a4cba763d68f
-        m_Value: '[UnityEngine.Application.streamingAssetsPath]/[BuildTarget]'
+        m_Value: 'Assets\StreamingAssets\[BuildTarget]'
       - m_Id: 231abf4b46e38774698a329d0466c7a0
-        m_Value: '[UnityEngine.Application.streamingAssetsPath]/[BuildTarget]'
+        m_Value: 'Assets\StreamingAssets\[BuildTarget]'
       - m_Id: 26ddc05464d65534cadf8cb18b8d9fa0
         m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
       - m_Id: 686e6816c85a60a4eaa126f8f2f44381
-        m_Value: 'ServerData/[BuildTarget]'
+        m_Value: 'ServerData\[BuildTarget]'
       - m_Id: 77386215af26d2346b806e512af4e1b7
         m_Value: 'https://addressable4merlin.s3.ap-northeast-2.amazonaws.com/Assets/[BuildTarget]'
     m_ProfileEntryNames:
