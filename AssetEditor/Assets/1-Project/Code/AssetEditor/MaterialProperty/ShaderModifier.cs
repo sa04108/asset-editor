@@ -2,12 +2,6 @@ using UnityEngine;
 
 namespace Merlin
 {
-    public enum eShaderWorkflowMode
-    {
-        Specular,
-        Metallic
-    }
-
     public enum eShaderSurfaceType
     {
         Opaque,
@@ -18,15 +12,13 @@ namespace Merlin
     {
         Alpha,
         Premultiply,
-        Additive,
-        Multiply
+        Additive
     }
 
     public enum eShaderRenderFace
     {
-        Both,
-        Back,
-        Front
+        Front,
+        Back
     }
 
     public enum eShaderTextureMap
@@ -47,116 +39,85 @@ namespace Merlin
         None
     }
 
-    public class LitShaderModifier
+    public class HDRPLitShaderModifier
     {
-        public LitShaderModifier()
-        {
-        }
-
-        public void SetWorkflowMode(Material mat, eShaderWorkflowMode mode)
-        {
-            mat.SetInt("_WorkflowMode", (int)mode);
-
-            if (mode == eShaderWorkflowMode.Specular)
-            {
-                mat.EnableKeyword("_SPECULAR_SETUP");
-            }
-            else if (mode == eShaderWorkflowMode.Metallic)
-            {
-                mat.DisableKeyword("_SPECULAR_SETUP");
-            }
-        }
-
         public void SetSurfaceType(Material mat, eShaderSurfaceType mode)
         {
             mat.SetInt("_Surface", (int)mode);
 
             if (mode == eShaderSurfaceType.Opaque)
             {
-                mat.SetOverrideTag("RenderType", "Opaque");
+                mat.SetOverrideTag("RenderType", null);
+                mat.DisableKeyword("_ENABLE_FOG_ON_TRANSPARENT");
                 mat.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
-                mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                mat.DisableKeyword("_ALPHAMODULATE_ON");
-                mat.renderQueue = 2000;
+                mat.renderQueue = 2225;
 
-                mat.SetInt("_ZWrite", 1);
+                mat.SetInt("_AlphaDstBlend", 0);
                 mat.SetInt("_DstBlend", 0);
-                mat.SetInt("_DstBlendAlpha", 0);
-                mat.SetInt("_SrcBlend", 1);
-                mat.SetInt("_SrcBlendAlpha", 1);
-
-                mat.SetShaderPassEnabled("DepthOnly", true);
-                mat.SetShaderPassEnabled("SHADOWCASTER", true);
+                mat.SetInt("_DstBlend2", 0);
+                mat.SetInt("_StencilRefDepth", 8);
+                mat.SetInt("_StencilRefGBuffer", 10);
+                mat.SetInt("_StencilRefMV", 40);
+                mat.SetInt("_ZTestDepthEqualForOpaque", 3);
+                mat.SetInt("_ZWrite", 1);
             }
             else if (mode == eShaderSurfaceType.Transparent)
             {
                 mat.SetOverrideTag("RenderType", "Transparent");
+                mat.EnableKeyword("_ENABLE_FOG_ON_TRANSPARENT");
                 mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
                 mat.renderQueue = 3000;
 
+                mat.SetInt("_DstBlend2", 10);
+                mat.SetInt("_StencilRefDepth", 0);
+                mat.SetInt("_StencilRefGBuffer", 2);
+                mat.SetInt("_StencilRefMV", 32);
+                mat.SetInt("_ZTestDepthEqualForOpaque", 4);
                 mat.SetInt("_ZWrite", 0);
 
-                mat.SetShaderPassEnabled("DepthOnly", false);
-                mat.SetShaderPassEnabled("SHADOWCASTER", false);
-
-                SetBlend(mat, (eBlendMode)mat.GetInt("_Blend"));
+                SetBlendMode(mat, (eBlendMode)mat.GetInt("_BlendMode"));
             }
         }
 
-        public void SetBlend(Material mat, eBlendMode mode)
+        public void SetBlendMode(Material mat, eBlendMode mode)
         {
-            mat.SetInt("_Blend", (int)mode);
+            mat.SetInt("_BlendMode", (int)mode);
 
             if (mode == eBlendMode.Alpha)
             {
-                mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-                mat.DisableKeyword("_ALPHAMODULATE_ON");
+                mat.SetInt("_BlendMode", 0);
+                mat.SetInt("_AlphaDstBlend", 10);
                 mat.SetInt("_DstBlend", 10);
-                mat.SetInt("_DstBlendAlpha", 10);
-                mat.SetInt("_SrcBlend", 1);
-                mat.SetInt("_SrcBlendAlpha", 1);
             }
             else if (mode == eBlendMode.Premultiply)
             {
-                mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                mat.DisableKeyword("_ALPHAMODULATE_ON");
-                mat.SetInt("_DstBlend", 10);
-                mat.SetInt("_DstBlendAlpha", 10);
-                mat.SetInt("_SrcBlend", 1);
-                mat.SetInt("_SrcBlendAlpha", 1);
+                mat.SetInt("_BlendMode", 1);
+                mat.SetInt("_AlphaDstBlend", 1);
+                mat.SetInt("_DstBlend", 1);
             }
             else if (mode == eBlendMode.Additive)
             {
-                mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-                mat.DisableKeyword("_ALPHAMODULATE_ON");
-                mat.SetInt("_DstBlend", 1);
-                mat.SetInt("_DstBlendAlpha", 1);
-                mat.SetInt("_SrcBlend", 1);
-                mat.SetInt("_SrcBlendAlpha", 1);
-            }
-            else if (mode == eBlendMode.Multiply)
-            {
-                mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                mat.EnableKeyword("_ALPHAMODULATE_ON");
-                mat.SetInt("_DstBlend", 0);
-                mat.SetInt("_DstBlendAlpha", 1);
-                mat.SetInt("_SrcBlend", 2);
-                mat.SetInt("_SrcBlendAlpha", 0);
+                mat.SetInt("_BlendMode", 4);
+                mat.SetInt("_AlphaDstBlend", 10);
+                mat.SetInt("_DstBlend", 10);
             }
         }
 
         public void SetRenderFace(Material mat, eShaderRenderFace mode)
         {
-            mat.SetInt("_Cull", (int)mode);
-
-            if (mode == eShaderRenderFace.Both ||
-                mode == eShaderRenderFace.Back)
+            if (mode == eShaderRenderFace.Front)
             {
-                mat.doubleSidedGI = true;
+                mat.SetInt("_CullMode", 1);
+                mat.SetInt("_CullModeForward", 1);
+                mat.SetInt("_OpaqueCullMode", 1);
+                mat.SetInt("_TransparentCullMode", 1);
             }
-            else if (mode == eShaderRenderFace.Front)
+            else if (mode == eShaderRenderFace.Back)
             {
-                mat.doubleSidedGI = false;
+                mat.SetInt("_CullMode", 2);
+                mat.SetInt("_CullModeForward", 2);
+                mat.SetInt("_OpaqueCullMode", 2);
+                mat.SetInt("_TransparentCullMode", 2);
             }
         }
 
@@ -257,14 +218,17 @@ namespace Merlin
                     mat.DisableKeyword("_EMISSION");
                     mat.globalIlluminationFlags = (MaterialGlobalIlluminationFlags)4;
                     break;
+
                 case eEmissionGlobalIllumination.Realtime:
                     mat.EnableKeyword("_EMISSION");
                     mat.globalIlluminationFlags = (MaterialGlobalIlluminationFlags)1;
                     break;
+
                 case eEmissionGlobalIllumination.Baked:
                     mat.DisableKeyword("_EMISSION");
                     mat.globalIlluminationFlags = (MaterialGlobalIlluminationFlags)6;
                     break;
+
                 case eEmissionGlobalIllumination.None:
                     mat.EnableKeyword("_EMISSION");
                     mat.globalIlluminationFlags = 0;
