@@ -54,7 +54,7 @@ namespace Merlin
 
         private void InspectMaterialProperties(Material mat)
         {
-            if (mat.shader.name == "HDRP/Lit")
+            if (mat.shader.name == "Universal Render Pipeline/Lit")
                 InspectLitMaterialProperties(mat);
             else
                 InspectAllMaterialProperties(mat);
@@ -73,7 +73,11 @@ namespace Merlin
             }
 
             var group = memberCreator.CreateGroupMember("Lit Options", memberParent);
-            var shaderModifier = new HDRPLitShaderModifier();
+            var shaderModifier = new URPLitShaderModifier();
+
+            var workflowMode = mat.GetInt("_WorkflowMode");
+            memberCreator.CreateEnumMember("Workflow Mode", mat, typeof(eShaderWorkflowMode), workflowMode, group, "")
+                .OnValueChanged.AddListener(value => shaderModifier.SetWorkflowMode(mat, (eShaderWorkflowMode)value));
 
             var surfaceType = mat.GetInt("_Surface");
             var surfaceMember = memberCreator.CreateEnumMember("Surface Type", mat, typeof(eShaderSurfaceType), surfaceType, group, "");
@@ -90,7 +94,7 @@ namespace Merlin
             memberCreator.CreateEnumMember("Blending Mode", mat, typeof(eBlendMode), blend, blendGroup, "")
                 .OnValueChanged.AddListener(value => shaderModifier.SetBlendMode(mat, (eBlendMode)value));
 
-            var renderFace = mat.GetInt("_CullMode") - 1;
+            var renderFace = mat.GetInt("_Cull");
             memberCreator.CreateEnumMember("Render Face", mat, typeof(eShaderRenderFace), renderFace, group, "")
                 .OnValueChanged.AddListener(value => shaderModifier.SetRenderFace(mat, (eShaderRenderFace)value));
 
