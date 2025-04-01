@@ -9,6 +9,7 @@ namespace Merlin
             base.Initialize(label, mat, value, propName);
 
             texProp.Initialize(value);
+            texProp.OnClick.RemoveAllListeners();
             texProp.OnClick.AddListener(() =>
             {
                 AssetWindow.Show<Texture>(transform, tex =>

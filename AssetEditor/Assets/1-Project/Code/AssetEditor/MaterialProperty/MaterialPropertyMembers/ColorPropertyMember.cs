@@ -11,6 +11,7 @@ namespace Merlin
         {
             base.Initialize(label, mat, value, propName);
 
+            colorButton.onColorUpdated.RemoveAllListeners();
             colorButton.colorImage.hasAlpha = hasAlpha;
             colorButton.colorImage.isHDR = isHDR;
             colorButton.color = value;

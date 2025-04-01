@@ -17,6 +17,7 @@ namespace Merlin
 
         private T originalValue;
         private T currentValue;
+
         protected T CurrentValue
         {
             get => currentValue;
@@ -35,6 +36,7 @@ namespace Merlin
             currentValue = value;
             propertyName = propName;
 
+            OnValueChanged.RemoveAllListeners();
             texProp.gameObject.SetActive(false);
         }
 

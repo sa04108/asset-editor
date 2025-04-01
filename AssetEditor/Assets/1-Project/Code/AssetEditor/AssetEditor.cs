@@ -159,7 +159,7 @@ namespace Merlin
                     {
                         var textures = _.Result.ToArray();
                         AssetWindow.Show(go.transform, textures, null);
-                        inspector.SetModelInstance(go, textures);
+                        inspector.LoadModels(go);
                     };
                 });
             };

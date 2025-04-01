@@ -8,12 +8,16 @@ namespace Merlin
         [SerializeField] private Button checkButton;
         [SerializeField] private GameObject checkMark;
 
+        private void Start()
+        {
+            checkButton.onClick.AddListener(OnClick);
+        }
+
         public new void Initialize(string label, Material mat, bool value, string propName)
         {
             base.Initialize(label, mat, value, propName);
 
             checkMark.SetActive(value);
-            checkButton.onClick.AddListener(OnClick);
         }
 
         private void OnClick()
