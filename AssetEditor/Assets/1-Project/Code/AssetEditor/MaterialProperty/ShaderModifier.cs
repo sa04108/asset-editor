@@ -41,7 +41,6 @@ namespace Merlin
 
     public enum eEmissionGlobalIllumination
     {
-        NoEmission,
         Realtime,
         Baked,
         None
@@ -249,15 +248,32 @@ namespace Merlin
             }
         }
 
-        public void SetEmission(Material mat, eEmissionGlobalIllumination mode)
+        public void SetEmission(Material mat, bool enable)
+        {
+            if (enable)
+            {
+                MaterialGlobalIlluminationFlags giFlag = mat.globalIlluminationFlags;
+                eEmissionGlobalIllumination emsMode;
+                if (giFlag == (MaterialGlobalIlluminationFlags)1)
+                    emsMode = eEmissionGlobalIllumination.Realtime;
+                else if (giFlag == (MaterialGlobalIlluminationFlags)6)
+                    emsMode = eEmissionGlobalIllumination.Baked;
+                else
+                    emsMode = eEmissionGlobalIllumination.None;
+
+                SetEmissionMode(mat, emsMode);
+            }
+            else
+            {
+                mat.DisableKeyword("_EMISSION");
+                mat.globalIlluminationFlags = (MaterialGlobalIlluminationFlags)4;
+            }
+        }
+
+        public void SetEmissionMode(Material mat, eEmissionGlobalIllumination mode)
         {
             switch (mode)
             {
-                case eEmissionGlobalIllumination.NoEmission:
-                    mat.DisableKeyword("_EMISSION");
-                    mat.globalIlluminationFlags = (MaterialGlobalIlluminationFlags)4;
-                    break;
-
                 case eEmissionGlobalIllumination.Realtime:
                     mat.EnableKeyword("_EMISSION");
                     mat.globalIlluminationFlags = (MaterialGlobalIlluminationFlags)1;

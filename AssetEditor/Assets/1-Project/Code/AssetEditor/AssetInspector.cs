@@ -137,16 +137,27 @@ namespace Merlin
             memberCreator.CreateTexturePropertyMember("Mask", mat, maskTex, group, "")
                 .OnValueChanged.AddListener(value => shaderModifier.SetTextureMap(mat, eShaderTextureMap.DetailMaskMap, value));
 
+            var emsEnable = mat.globalIlluminationFlags != (MaterialGlobalIlluminationFlags)4;
+            var emsEnableMember = memberCreator.CreateBoolMember("Emission", mat, emsEnable, group, "");
+            emsEnableMember.OnValueChanged.AddListener(value => shaderModifier.SetEmission(mat, value));
+
+            var emsGroup = memberCreator.CreateGroup(group, emsEnable);
+            emsEnableMember.OnValueChanged.AddListener(value =>
+            {
+                emsGroup.gameObject.SetActive(value);
+                LayoutRebuilder.ForceRebuildLayoutImmediate(group.GetComponent<RectTransform>());
+            });
+
             var emsGIFlag = mat.globalIlluminationFlags;
-            memberCreator.CreateEnumMember("Emission Global Illumination", mat, typeof(eEmissionGlobalIllumination), (int)emsGIFlag, group, "")
-                .OnValueChanged.AddListener(value => shaderModifier.SetEmission(mat, (eEmissionGlobalIllumination)value));
+            memberCreator.CreateEnumMember("Emission Global Illumination", mat, typeof(eEmissionGlobalIllumination), (int)emsGIFlag, emsGroup, "")
+                .OnValueChanged.AddListener(value => shaderModifier.SetEmissionMode(mat, (eEmissionGlobalIllumination)value));
 
             var emsTex = mat.GetTexture("_EmissionMap");
-            memberCreator.CreateTexturePropertyMember("Emission Map", mat, emsTex, group, "")
+            memberCreator.CreateTexturePropertyMember("Emission Map", mat, emsTex, emsGroup, "")
                 .OnValueChanged.AddListener(value => shaderModifier.SetTextureMap(mat, eShaderTextureMap.EmissionMap, value));
 
             var emsColor = mat.GetColor("_EmissionColor");
-            memberCreator.CreateColorMember("Emission Color", mat, mainColor, false, true, group, "_EmissionColor");
+            memberCreator.CreateColorMember("Emission Color", mat, mainColor, false, true, emsGroup, "_EmissionColor");
         }
 
         private void InspectAllMaterialProperties(Material mat)
