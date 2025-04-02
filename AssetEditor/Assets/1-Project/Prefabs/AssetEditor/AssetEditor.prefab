@@ -1655,7 +1655,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Models
+  m_text: Model
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3142,7 +3142,7 @@ GameObject:
   - component: {fileID: 2036888192210957859}
   - component: {fileID: 3562503546939084656}
   m_Layer: 5
-  m_Name: ModelsWindow
+  m_Name: ModelWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3182,7 +3182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f70652351fb5924888e659519b53e5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableOnStart: 1
+  fixPosition: 1
   startType: UnityEngine.GameObject
   title: {fileID: 7541351282710273866}
   itemPreset: {fileID: 6138185313728035074}
@@ -3214,7 +3214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca1470d0cf4fa36418bac902f9764aeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoHide: 0
+  autoClose: 0
   closeButton: {fileID: 6548624402227676305}
   graphicRaycaster: {fileID: 432762759051230975}
   windowObject: {fileID: 4560518374381373925}
@@ -4139,7 +4139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f70652351fb5924888e659519b53e5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableOnStart: 1
+  fixPosition: 1
   startType: UnityEngine.Material
   title: {fileID: 7149502319366660668}
   itemPreset: {fileID: 1582703201643415334}
@@ -4171,7 +4171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca1470d0cf4fa36418bac902f9764aeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoHide: 1
+  autoClose: 1
   closeButton: {fileID: 4238609198478939229}
   graphicRaycaster: {fileID: 432762759051230975}
   windowObject: {fileID: 7493181299697537648}

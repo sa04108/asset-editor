@@ -1,9 +1,9 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Merlin
 {
-    public class WindowDragger : UIBehaviour, IBeginDragHandler, IDragHandler
+    public class WindowDragger : UIBehaviour, IPointerDownHandler, IDragHandler
     {
         [Header("Resources")]
         [SerializeField] private RectTransform dragArea;
@@ -16,17 +16,26 @@ namespace Merlin
         private Vector2 originalLocalPointerPosition;
         private Vector3 originalPanelLocalPosition;
 
-        public new void Start()
+        protected override void Awake()
         {
+            base.Awake();
+
             if (dragArea == null)
             {
                 try
                 {
-                    var canvas = FindObjectsByType<Canvas>(FindObjectsSortMode.None)[0];
+                    var canvas = GetComponentInParent<Canvas>();
                     dragArea = canvas.GetComponent<RectTransform>();
                 }
                 catch { Debug.LogError("<b>[Movable Window]</b> Drag Area has not been assigned."); }
             }
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            ClampToArea();
         }
 
         private RectTransform DragObjectInternal
@@ -52,7 +61,7 @@ namespace Merlin
             }
         }
 
-        public void OnBeginDrag(PointerEventData data)
+        public void OnPointerDown(PointerEventData data)
         {
             originalPanelLocalPosition = DragObjectInternal.localPosition;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(DragAreaInternal, data.position, data.pressEventCamera, out originalLocalPointerPosition);

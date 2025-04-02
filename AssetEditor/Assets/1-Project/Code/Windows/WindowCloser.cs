@@ -9,7 +9,7 @@ namespace Merlin
     public class WindowCloser : MonoBehaviour
     {
         [SerializeField]
-        private bool autoHide = true;
+        private bool autoClose;
 
         [SerializeField]
         private Button closeButton;
@@ -22,21 +22,24 @@ namespace Merlin
 
         private void Awake()
         {
+            if (graphicRaycaster == null)
+                graphicRaycaster = GetComponentInParent<GraphicRaycaster>();
+
             if (windowObject == null)
                 windowObject = gameObject;
 
             closeButton.onClick.AddListener(Close);
 
-            var clickAction = new InputAction(type: InputActionType.Button, binding: "<Mouse>/leftButton");
-            clickAction.performed += OnClick;
-            clickAction.Enable();
+            if (autoClose)
+            {
+                var clickAction = new InputAction(type: InputActionType.Button, binding: "<Mouse>/leftButton");
+                clickAction.performed += CloseOnClickOutside;
+                clickAction.Enable();
+            }
         }
 
-        private void OnClick(InputAction.CallbackContext context)
+        private void CloseOnClickOutside(InputAction.CallbackContext context)
         {
-            if (!autoHide)
-                return;
-
             Vector2 clickPosition = Mouse.current.position.ReadValue();
 
             // 클릭 위치를 기준으로 PointerEventData 생성

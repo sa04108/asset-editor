@@ -158,7 +158,8 @@ namespace Merlin
                     .Completed += _ =>
                     {
                         var textures = _.Result.ToArray();
-                        inspector.LoadModels(go, textures);
+                        inspector.LoadModels(go);
+                        AssetWindow.Set(textures);
                     };
                 });
             };

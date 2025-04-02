@@ -9,6 +9,7 @@ namespace Merlin
     {
         #region Static Fields
 
+        private static Transform windowParent;
         private static AssetWindow source;
         private static Dictionary<System.Type, AssetWindow> instances = new();
 
@@ -19,11 +20,12 @@ namespace Merlin
 
         [Header("Options")]
         [SerializeField]
-        private bool disableOnStart = false;
+        private bool fixPosition;
 
         [SerializeField]
         private string startType;
 
+        [Header("Links")]
         [SerializeField]
         private TMP_Text title;
 
@@ -52,6 +54,7 @@ namespace Merlin
             }
 
             instance.Subscribe(subscriber, onItemSelected);
+            instance.OnShow();
 
             return instance;
         }
@@ -74,6 +77,22 @@ namespace Merlin
 
             instance.Subscribe(subscriber, onItemSelected);
             instance.SetValues(values);
+            instance.OnShow();
+
+            return instance;
+        }
+
+        public static AssetWindow Set<T>(T[] values) where T : Object
+        {
+            var instance = GetInstance<T>();
+
+            if (values.Length == 0)
+            {
+                Debug.LogWarning("Assets to be shown are empty.");
+                return instance;
+            }
+
+            instance.SetValues(values);
 
             return instance;
         }
@@ -90,15 +109,12 @@ namespace Merlin
             {
                 if (source == null)
                 {
-                    source = FindAnyObjectByType<AssetWindow>();
-                    source.startType = "";
+                    source = Resources.Load<AssetWindow>("AssetWindow");
                 }
 
-                var instance = Instantiate(source, source.transform.parent);
+                var instance = Instantiate(source, windowParent);
                 instance.name = $"{typeof(T).Name}Window";
                 instance.title.text = typeof(T).Name;
-                instance.transform.localPosition = Vector3.zero;
-                instance.gameObject.SetActive(true);
 
                 instances.Add(typeof(T), instance);
             }
@@ -112,16 +128,27 @@ namespace Merlin
             {
                 System.Type thisType = System.Type.GetType($"{startType}, UnityEngine");
                 instances.Add(thisType, this);
-
-                if (disableOnStart)
-                    gameObject.SetActive(false);
             }
+
+            if (windowParent == null)
+                windowParent = transform.parent;
+
+            gameObject.SetActive(false);
+        }
+
+        private void OnShow()
+        {
+            transform.SetAsLastSibling();
+
+            if (!fixPosition)
+                transform.position = Input.mousePosition;
+
+            gameObject.SetActive(true);
         }
 
         private void Subscribe<T>(Transform subscriber, UnityAction<T> onItemSelected) where T : Object
         {
             owner = subscriber;
-            gameObject.SetActive(true);
 
             onItemSelectedEvent.RemoveAllListeners();
             onItemSelectedEvent.AddListener(obj =>
