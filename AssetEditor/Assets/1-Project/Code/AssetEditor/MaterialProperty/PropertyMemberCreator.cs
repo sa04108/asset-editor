@@ -6,7 +6,7 @@ namespace Merlin
 {
     public class PropertyMemberCreator : MonoBehaviour
     {
-        [SerializeField] private TexturePropertyMember textureMemberPreset;
+        //[SerializeField] private TexturePropertyMember textureMemberPreset;
         [SerializeField] private NumberPropertyMember numMemberPreset;
 
         [SerializeField] private ColorPropertyMember colorMemberPreset;
@@ -23,7 +23,7 @@ namespace Merlin
 
         private void Start()
         {
-            textureMemberPreset.gameObject.SetActive(false);
+            //textureMemberPreset.gameObject.SetActive(false);
             numMemberPreset.gameObject.SetActive(false);
             colorMemberPreset.gameObject.SetActive(false);
             vectorMemberPreset.gameObject.SetActive(false);
@@ -95,14 +95,14 @@ namespace Merlin
             return memberGroup.transform;
         }
 
-        public TexturePropertyMember CreateTexturePropertyMember(string label, Material mat, Texture value, Transform parent, string propName)
-        {
-            var member = BindOrInstantiate(textureMemberPreset.transform, parent).GetComponent<TexturePropertyMember>();
-            member.Initialize(label, mat, value, propName);
-            member.gameObject.SetActive(true);
+        //public TexturePropertyMember CreateTexturePropertyMember(string label, Material mat, Texture value, Transform parent, string propName)
+        //{
+        //    var member = BindOrInstantiate(textureMemberPreset.transform, parent).GetComponent<TexturePropertyMember>();
+        //    member.Initialize(label, mat, value, propName);
+        //    member.gameObject.SetActive(true);
 
-            return member;
-        }
+        //    return member;
+        //}
 
         private NumberPropertyMember CreateNumberMember(string label, Material mat, MaterialPropertyType type, float value, float min, float max, Transform parent, string propName)
         {

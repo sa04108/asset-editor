@@ -6,7 +6,7 @@ namespace Merlin
 {
     public class AssetModifier
     {
-        Dictionary<Material, Material> matDict = new();
+        private Dictionary<Material, Material> matDict = new();
 
         public AssetModifier(GameObject go)
         {

@@ -13,6 +13,9 @@ namespace Merlin
     {
         private AssetInspector inspector;
 
+        [SerializeField]
+        private string assetPath;
+
         [Header("Links")]
         [SerializeField]
         private Transform assetParent;
@@ -42,14 +45,14 @@ namespace Merlin
             {
                 IResourceLocator locator = _.Result;
 
-                CreateButton($"Models")
-                    .onClick.AddListener(() => LoadModels(locator.Keys));
+                CreateButton($"Load")
+                    .onClick.AddListener(() => LoadModel());
 
-                CreateButton($"Check For Update")
-                    .onClick.AddListener(() => CheckForUpdate(locator.Keys));
+                //CreateButton($"Check For Update")
+                //    .onClick.AddListener(() => CheckForUpdate(locator.Keys));
 
-                downloadButton = CreateButton($"Check For Download");
-                downloadButton.onClick.AddListener(() => CheckForDownload(locator.Keys));
+                //downloadButton = CreateButton($"Check For Download");
+                //downloadButton.onClick.AddListener(() => CheckForDownload(locator.Keys));
             };
         }
 
@@ -97,71 +100,22 @@ namespace Merlin
             }
         }
 
-        private void LoadModels(IEnumerable<object> keys)
+        private void LoadModel()
         {
-            List<string> modelKeys = new();
-            List<List<string>> texKeys = new();
-
-            foreach (var key in keys)
-            {
-                string keyStr = key as string;
-                if (keyStr == null)
-                    continue;
-
-                if (keyStr.EndsWith(".prefab"))
-                {
-                    modelKeys.Add(keyStr);
-                }
-            }
-
-            foreach (var model in modelKeys)
-            {
-                string bundleName = GetBundleNameFromPath(model);
-                if (bundleName == null)
-                    continue;
-
-                List<string> texList = new();
-
-                foreach (var key in keys)
-                {
-                    string keyStr = key as string;
-                    if (keyStr == null)
-                        continue;
-
-                    if (!keyStr.Contains(bundleName))
-                        continue;
-
-                    if (keyStr.ToLower().EndsWith(".jpg") ||
-                        keyStr.ToLower().EndsWith(".png"))
-                        texList.Add(keyStr);
-                }
-
-                texKeys.Add(texList);
-            }
-
-            Addressables.LoadAssetsAsync<GameObject>(modelKeys, null, Addressables.MergeMode.Union)
+            Addressables.LoadAssetAsync<GameObject>(assetPath)
             .Completed += _ =>
             {
-                var goList = _.Result.ToList();
-                AssetWindow.Show(transform, _.Result.ToArray(), go =>
+                var go = _.Result;
+                for (int i = assetParent.childCount - 1; i >= 0; i--)
                 {
-                    for (int i = assetParent.childCount - 1; i >= 0; i--)
-                    {
-                        Destroy(assetParent.GetChild(i).gameObject);
-                    }
+                    Destroy(assetParent.GetChild(i).gameObject);
+                }
 
-                    var instance = Instantiate(go, assetParent);
-                    assetPivot = instance.transform.position;
-                    Camera.main.transform.LookAt(assetPivot);
+                var instance = Instantiate(go, assetParent);
+                assetPivot = instance.transform.position;
+                Camera.main.transform.LookAt(assetPivot);
 
-                    Addressables.LoadAssetsAsync<Texture>(texKeys[goList.IndexOf(go)], null, Addressables.MergeMode.Union)
-                    .Completed += _ =>
-                    {
-                        var textures = _.Result.ToArray();
-                        inspector.LoadModels(go);
-                        AssetWindow.Set(textures);
-                    };
-                });
+                inspector.LoadModel(go);
             };
         }
 

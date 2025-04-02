@@ -311,7 +311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca1470d0cf4fa36418bac902f9764aeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoHide: 1
+  autoClose: 1
   closeButton: {fileID: 5074108952514444793}
   graphicRaycaster: {fileID: 542129955171528177}
   windowObject: {fileID: 7034695414992644378}
