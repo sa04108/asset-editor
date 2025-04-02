@@ -53,7 +53,7 @@ namespace Merlin
             };
         }
 
-        void Update()
+        private void Update()
         {
             OnMouseInput();
         }
@@ -158,8 +158,7 @@ namespace Merlin
                     .Completed += _ =>
                     {
                         var textures = _.Result.ToArray();
-                        AssetWindow.Show(go.transform, textures, null);
-                        inspector.LoadModels(go);
+                        inspector.LoadModels(go, textures);
                     };
                 });
             };

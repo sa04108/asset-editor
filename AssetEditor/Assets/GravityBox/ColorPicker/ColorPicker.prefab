@@ -164,8 +164,8 @@ GameObject:
   - component: {fileID: 2239444771234620670}
   - component: {fileID: 542129955171528177}
   - component: {fileID: 7034695415344620126}
-  - component: {fileID: 4126619639365174243}
   - component: {fileID: 6286716940029238186}
+  - component: {fileID: 6185555591559728857}
   m_Layer: 5
   m_Name: ColorPicker
   m_TagString: Untagged
@@ -284,20 +284,6 @@ MonoBehaviour:
   colorObject: {fileID: 11400000, guid: 9bc31438743f3e14d971057fd911b60f, type: 2}
   alpha: {fileID: 7034695414503341868}
   hdrSettings: {fileID: 7034695414714739380}
---- !u!114 &4126619639365174243
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1289064834997724}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cc12461a9a518f429d803198beed603, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  closeAction: 0
-  windowObject: {fileID: 1289064834997724}
 --- !u!114 &6286716940029238186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -313,6 +299,22 @@ MonoBehaviour:
   dragArea: {fileID: 224927338707183120}
   dragObject: {fileID: 7034695414992644379}
   topOnDrag: 1
+--- !u!114 &6185555591559728857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1289064834997724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca1470d0cf4fa36418bac902f9764aeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoHide: 1
+  closeButton: {fileID: 5074108952514444793}
+  graphicRaycaster: {fileID: 542129955171528177}
+  windowObject: {fileID: 7034695414992644378}
 --- !u!1 &1416055046246622
 GameObject:
   m_ObjectHideFlags: 0
@@ -5231,19 +5233,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4412399349221761100}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4126619639365174243}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: Close
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &6263125756415651878
 GameObject:
   m_ObjectHideFlags: 0

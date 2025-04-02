@@ -39,10 +39,14 @@ namespace Merlin
             }
         }
 
-        public void LoadModels(GameObject go)
+        public void LoadModels(GameObject go, Texture[] textures)
         {
             modifier = new(go);
-            AssetWindow.Show(go.transform, modifier.GetSharedMaterials(), InspectMaterialProperties);
+            AssetWindow.Show(go.transform, modifier.GetSharedMaterials(), mat =>
+            {
+                InspectMaterialProperties(mat);
+                AssetWindow.Show(go.transform, textures, null);
+            });
         }
 
         private void InspectMaterialProperties(Material mat)

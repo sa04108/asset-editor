@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,6 +16,10 @@ namespace Merlin
 
         private Transform owner;
         private UnityEvent<Object> onItemSelectedEvent = new();
+
+        [Header("Options")]
+        [SerializeField]
+        private bool disableOnStart = false;
 
         [SerializeField]
         private string startType;
@@ -108,6 +112,9 @@ namespace Merlin
             {
                 System.Type thisType = System.Type.GetType($"{startType}, UnityEngine");
                 instances.Add(thisType, this);
+
+                if (disableOnStart)
+                    gameObject.SetActive(false);
             }
         }
 
