@@ -141,6 +141,14 @@ namespace Merlin
 
             var emsColor = mat.GetColor("_EmissionColor");
             memberCreator.CreateColorMember("Emission Color", mat, mainColor, false, true, emsGroup, "_EmissionColor");
+
+            var baseTiling = mat.mainTextureScale;
+            memberCreator.CreateVectorMember("Tiling", mat, baseTiling, group, "")
+                .OnValueChanged.AddListener(value => shaderModifier.SetBaseTiling(mat, value));
+
+            var baseOffset = mat.mainTextureOffset;
+            memberCreator.CreateVectorMember("Offset", mat, baseOffset, group, "")
+                .OnValueChanged.AddListener(value => shaderModifier.SetBaseOffset(mat, value));
         }
 
         private void InspectAllMaterialProperties(Material mat)
@@ -203,12 +211,12 @@ namespace Merlin
                 }
             }
 
-            var matrixProps = mat.GetPropertyNames(MaterialPropertyType.Matrix);
-            foreach (string prop in matrixProps)
-            {
-                var value = mat.GetMatrix(prop);
-                memberCreator.CreateMatrixMember(prop, mat, value, group, prop);
-            }
+            //var matrixProps = mat.GetPropertyNames(MaterialPropertyType.Matrix);
+            //foreach (string prop in matrixProps)
+            //{
+            //    var value = mat.GetMatrix(prop);
+            //    memberCreator.CreateMatrixMember(prop, mat, value, group, prop);
+            //}
         }
 
         public void SaveAsset()

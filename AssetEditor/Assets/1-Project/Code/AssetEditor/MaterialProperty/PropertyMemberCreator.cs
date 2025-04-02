@@ -11,8 +11,10 @@ namespace Merlin
 
         [SerializeField] private ColorPropertyMember colorMemberPreset;
         [SerializeField] private VectorPropertyMember vectorMemberPreset;
-        [SerializeField] private MatrixPropertyMember matrixMemberPreset;
+
+        //[SerializeField] private MatrixPropertyMember matrixMemberPreset;
         [SerializeField] private BoolPropertyMember boolMemberPreset;
+
         [SerializeField] private EnumPropertyMember enumMemberPreset;
 
         [SerializeField] private PropertyGroupMember groupMemberPreset;
@@ -27,7 +29,7 @@ namespace Merlin
             numMemberPreset.gameObject.SetActive(false);
             colorMemberPreset.gameObject.SetActive(false);
             vectorMemberPreset.gameObject.SetActive(false);
-            matrixMemberPreset.gameObject.SetActive(false);
+            //matrixMemberPreset.gameObject.SetActive(false);
             boolMemberPreset.gameObject.SetActive(false);
             enumMemberPreset.gameObject.SetActive(false);
 
@@ -151,7 +153,7 @@ namespace Merlin
             return member;
         }
 
-        public VectorPropertyMember CreateVectorMember(string label, Material mat, Vector4 value, Transform parent, string propName)
+        public VectorPropertyMember CreateVectorMember(string label, Material mat, Vector2 value, Transform parent, string propName)
         {
             var member = BindOrInstantiate(vectorMemberPreset.transform, parent).GetComponent<VectorPropertyMember>();
             member.Initialize(label, mat, value, propName);
@@ -160,14 +162,14 @@ namespace Merlin
             return member;
         }
 
-        public MatrixPropertyMember CreateMatrixMember(string label, Material mat, Matrix4x4 value, Transform parent, string propName)
-        {
-            var member = Instantiate(matrixMemberPreset, parent);
-            member.Initialize(mat, propName, value);
-            member.gameObject.SetActive(true);
+        //public MatrixPropertyMember CreateMatrixMember(string label, Material mat, Matrix4x4 value, Transform parent, string propName)
+        //{
+        //    var member = Instantiate(matrixMemberPreset, parent);
+        //    member.Initialize(mat, propName, value);
+        //    member.gameObject.SetActive(true);
 
-            return member;
-        }
+        //    return member;
+        //}
 
         public BoolPropertyMember CreateBoolMember(string label, Material mat, bool value, Transform parent, string propName)
         {

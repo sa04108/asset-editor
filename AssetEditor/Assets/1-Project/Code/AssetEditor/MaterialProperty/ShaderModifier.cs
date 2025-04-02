@@ -290,6 +290,18 @@ namespace Merlin
                     break;
             }
         }
+
+        public void SetBaseTiling(Material mat, Vector2 tiling)
+        {
+            mat.SetTextureScale("_BaseMap", tiling);
+            mat.SetTextureScale("_MainTex", tiling);
+        }
+
+        public void SetBaseOffset(Material mat, Vector2 offset)
+        {
+            mat.SetTextureOffset("_BaseMap", offset);
+            mat.SetTextureOffset("_MainTex", offset);
+        }
     }
 
     public class HDRPLitShaderModifier
