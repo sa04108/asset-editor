@@ -23,20 +23,6 @@ namespace Merlin
         private Transform pointer;
         private Transform lastPointerParent;
 
-        private void Start()
-        {
-            //textureMemberPreset.gameObject.SetActive(false);
-            numMemberPreset.gameObject.SetActive(false);
-            colorMemberPreset.gameObject.SetActive(false);
-            vectorMemberPreset.gameObject.SetActive(false);
-            //matrixMemberPreset.gameObject.SetActive(false);
-            boolMemberPreset.gameObject.SetActive(false);
-            enumMemberPreset.gameObject.SetActive(false);
-
-            groupMemberPreset.gameObject.SetActive(false);
-            memberGroupPreset.gameObject.SetActive(false);
-        }
-
         // 인스펙터 바인딩을 위한 포인터
         public void SetBindingPointer(Transform parent)
         {
@@ -71,7 +57,6 @@ namespace Merlin
         {
             var member = BindOrInstantiate(groupMemberPreset.transform, parent).GetComponent<PropertyGroupMember>();
             member.Initialize(title);
-            member.gameObject.SetActive(true);
 
             var memberGroup = BindOrInstantiate(memberGroupPreset, parent);
             member.Button.onClick.AddListener(() => memberGroup.gameObject.SetActive(!memberGroup.gameObject.activeSelf));
@@ -110,7 +95,6 @@ namespace Merlin
         {
             var member = BindOrInstantiate(numMemberPreset.transform, parent).GetComponent<NumberPropertyMember>();
             member.Initialize(label, mat, type, value, min, max, propName);
-            member.gameObject.SetActive(true);
 
             return member;
         }
@@ -119,7 +103,6 @@ namespace Merlin
         {
             var member = BindOrInstantiate(numMemberPreset.transform, parent).GetComponent<NumberPropertyMember>();
             member.Initialize(label, mat, type, value, propName);
-            member.gameObject.SetActive(true);
 
             return member;
         }
@@ -148,7 +131,6 @@ namespace Merlin
         {
             var member = BindOrInstantiate(colorMemberPreset.transform, parent).GetComponent<ColorPropertyMember>();
             member.Initialize(label, mat, value, hasAlpha, isHDR, propName);
-            member.gameObject.SetActive(true);
 
             return member;
         }
@@ -157,7 +139,6 @@ namespace Merlin
         {
             var member = BindOrInstantiate(vectorMemberPreset.transform, parent).GetComponent<VectorPropertyMember>();
             member.Initialize(label, mat, value, propName);
-            member.gameObject.SetActive(true);
 
             return member;
         }
@@ -175,7 +156,6 @@ namespace Merlin
         {
             var member = BindOrInstantiate(boolMemberPreset.transform, parent).GetComponent<BoolPropertyMember>();
             member.Initialize(label, mat, value, propName);
-            member.gameObject.SetActive(true);
 
             return member;
         }
@@ -184,7 +164,6 @@ namespace Merlin
         {
             var member = BindOrInstantiate(enumMemberPreset.transform, parent).GetComponent<EnumPropertyMember>();
             member.Initialize(label, mat, enumType, value, propName);
-            member.gameObject.SetActive(true);
 
             return member;
         }
