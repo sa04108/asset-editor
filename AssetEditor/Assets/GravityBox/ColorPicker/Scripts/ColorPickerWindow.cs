@@ -1,4 +1,4 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,48 +12,56 @@ namespace GravityBox.ColorPicker
         public System.Action<Color> onColorUpdated;
 
         [SerializeField]
+        private GameObject window;
+
+        [SerializeField]
         private TMP_InputField hexInputField;
+
         [SerializeField]
         private Image newColor;
+
         [SerializeField]
         private Image oldColor;
+
         [SerializeField]
         private RawImage captureContainer;
 
         [SerializeField]
         private ColorObject colorObject;
+
         [SerializeField]
         private GameObject alpha;
+
         [SerializeField]
         private GameObject hdrSettings;
 
         private bool _showHDR;
         private bool _showAlpha;
 
-        public bool showHDR 
+        public bool showHDR
         {
-            get => _showHDR; 
-            set 
+            get => _showHDR;
+            set
             {
-                _showHDR = value; 
-                colorObject.isHDR = value; 
-                hdrSettings.SetActive(value); 
+                _showHDR = value;
+                colorObject.isHDR = value;
+                hdrSettings.SetActive(value);
             }
         }
 
-        public bool showAlpha 
+        public bool showAlpha
         {
-            get => _showAlpha; 
-            set 
+            get => _showAlpha;
+            set
             {
                 _showAlpha = value;
                 colorObject.hasAlpha = value;
-                alpha.SetActive(value); 
+                alpha.SetActive(value);
             }
         }
 
         /// <summary>
-        /// RGB color is a little slower because of conversion, 
+        /// RGB color is a little slower because of conversion,
         /// so if you need HSV value actually, get it directly from property below
         /// </summary>
         public Color Color
@@ -70,6 +78,7 @@ namespace GravityBox.ColorPicker
 
         private void OnEnable()
         {
+            window.transform.position = Input.mousePosition;
             UpdateColorsAndText(true);
 
             colorObject.onColorChanged += OnColorChanged;
@@ -83,7 +92,7 @@ namespace GravityBox.ColorPicker
 
             onColorUpdated = null;
         }
-       
+
         public void Show(Color rgb, bool hasAlpha, bool isHDR)
         {
             showAlpha = hasAlpha;

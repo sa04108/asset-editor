@@ -15,7 +15,7 @@ public class Test : MonoBehaviour
     {
         var matJson = MaterialSerializer.Serialize(srcMat);
         File.WriteAllText($"{Application.dataPath}/mat.json", matJson);
-        MaterialSerializer.Deserialize(dstMat, matJson);
+        MaterialSerializer.Apply(dstMat, matJson);
     }
 
     [ContextMenu("Copy As Binary")]
@@ -23,6 +23,6 @@ public class Test : MonoBehaviour
     {
         var matBin = MaterialSerializer.SerializeBinary(srcMat);
         File.WriteAllBytes($"{Application.dataPath}/mat.bin", matBin);
-        MaterialSerializer.DeserializeBinary(dstMat, matBin);
+        MaterialSerializer.ApplyBinary(dstMat, matBin);
     }
 }

@@ -277,6 +277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 814bee164f7e7414da4122b20a7d5748, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  window: {fileID: 7034695414992644378}
   hexInputField: {fileID: 3014727001018469492}
   newColor: {fileID: 3923998324758681486}
   oldColor: {fileID: 3923998324737010082}
@@ -298,7 +299,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dragArea: {fileID: 224927338707183120}
   dragObject: {fileID: 7034695414992644379}
-  topOnDrag: 1
+  topOnDrag: 0
 --- !u!114 &6185555591559728857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,7 +315,7 @@ MonoBehaviour:
   autoClose: 1
   closeButton: {fileID: 5074108952514444793}
   graphicRaycaster: {fileID: 542129955171528177}
-  windowObject: {fileID: 7034695414992644378}
+  windowObject: {fileID: 1289064834997724}
 --- !u!1 &1416055046246622
 GameObject:
   m_ObjectHideFlags: 0
@@ -10232,7 +10233,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -412, y: -15}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 460}
   m_Pivot: {x: 1, y: 1}
 --- !u!225 &7034695414992644380

@@ -13,12 +13,12 @@ namespace Merlin
 {
     public enum eAssetBuildExitCode
     {
+        Others = -1,
         Success = 0,
         Argument = 101,
         InvalidOperation = 102,
         FileIO = 103,
-        NullRef = 104,
-        Other = 199
+        NullRef = 104
     }
 
     public class AddressableMenu : AssetPostprocessor
@@ -82,7 +82,7 @@ namespace Merlin
             catch (Exception)
             {
                 Debug.LogError($"[Addressables] {buildResult.Error}");
-                exitCode = eAssetBuildExitCode.Other;
+                exitCode = eAssetBuildExitCode.Others;
             }
 
             return (int)exitCode;

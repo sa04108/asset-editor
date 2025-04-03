@@ -40,6 +40,9 @@ namespace Merlin
 
         private void CloseOnClickOutside(InputAction.CallbackContext context)
         {
+            if (!windowObject.activeSelf)
+                return;
+
             Vector2 clickPosition = Mouse.current.position.ReadValue();
 
             // 클릭 위치를 기준으로 PointerEventData 생성

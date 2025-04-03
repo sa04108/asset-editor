@@ -126,7 +126,7 @@ namespace Merlin
         /// <summary>
         /// JSON 데이터를 Material에 적용하여 역직렬화합니다.
         /// </summary>
-        public static void Deserialize(Material mat, string json)
+        public static void Apply(Material mat, string json)
         {
             MaterialData data = JsonUtility.FromJson<MaterialData>(json);
 
@@ -206,10 +206,12 @@ namespace Merlin
                             case ShaderPropertyType.Color:
                                 sPropType = eMaterialPropertyType.Color;
                                 break;
+
                             case ShaderPropertyType.Float:
                             case ShaderPropertyType.Range:
                                 sPropType = eMaterialPropertyType.Number;
                                 break;
+
                             default:
                                 sPropType = eMaterialPropertyType.Nothing;
                                 break;
@@ -226,6 +228,7 @@ namespace Merlin
                                 writer.Write(col.b);
                                 writer.Write(col.a);
                                 break;
+
                             case eMaterialPropertyType.Number:
                                 writer.Write(mat.GetFloat(propName));
                                 break;
@@ -288,7 +291,7 @@ namespace Merlin
         /// <summary>
         /// 바이너리 데이터를 읽어 Material에 변경점을 적용합니다.
         /// </summary>
-        public static void DeserializeBinary(Material mat, byte[] data)
+        public static void ApplyBinary(Material mat, byte[] data)
         {
             using (MemoryStream ms = new MemoryStream(data))
             {
@@ -318,6 +321,7 @@ namespace Merlin
                                 float a = reader.ReadSingle();
                                 mat.SetColor(propName, new Color(r, g, b, a));
                                 break;
+
                             case eMaterialPropertyType.Number:
                                 float f = reader.ReadSingle();
                                 mat.SetFloat(propName, f);
