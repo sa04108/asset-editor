@@ -137,7 +137,7 @@ namespace Merlin
             var metallicGroup = memberCreator.CreateSubGroup(workflowMember,
                 value => value == (int)eShaderWorkflowMode.Metallic,
                 inputGroup,
-                workflowMode == (int)eShaderWorkflowMode.Metallic);
+                workflowMode == (int)eShaderWorkflowMode.Metallic, true);
 
             var metallicDegree = mat.GetFloat("_Metallic");
             Vector2 rangeMetallic = mat.shader.GetPropertyRangeLimits(shaderPropIdx["_Metallic"]);

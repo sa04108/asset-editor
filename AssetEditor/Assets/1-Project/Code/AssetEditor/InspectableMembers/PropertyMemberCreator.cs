@@ -31,9 +31,14 @@ namespace Merlin
             return memberGroup;
         }
 
-        public Transform CreateSubGroup<T>(MaterialPropertyMember<T> baseMember, Func<T, bool> setActive, Transform parent, bool unfoldOnStart = true)
+        public Transform CreateSubGroup<T>(MaterialPropertyMember<T> baseMember, Func<T, bool> setActive, Transform parent, bool unfoldOnStart = true, bool sameAsParentLevel = false)
         {
             var memberGroup = Instantiate(memberSubGroupPreset, parent).gameObject;
+            if (sameAsParentLevel)
+            {
+                memberGroup.GetComponent<VerticalLayoutGroup>().padding.left = 0;
+            }
+
             memberGroup.SetActive(unfoldOnStart);
             baseMember.OnValueChanged.AddListener(value =>
             {
