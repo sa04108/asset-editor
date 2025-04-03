@@ -45,6 +45,7 @@ SpriteAtlas:
     - 07d9b9f4a995b0745a064ecffeb2fd48: 21300000
     - 180583371558a6041a2ce1776cb0dcf3: 21300000
     - 438b94f7a2277024fb48a8596ac6724d: 21300000
+    - fe5e4eb8261aa0a41a88177170226e19: 21300000
     - 85aa693b804e47c4ea543c7c9a2f9f03: 21300000
     - 17cb345b357defc48a2cb6d44dd906a5: 21300000
     - 16d578bb67708d542b86ccf21b889d16: 21300000
@@ -62,6 +63,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 07d9b9f4a995b0745a064ecffeb2fd48, type: 3}
   - {fileID: 21300000, guid: 180583371558a6041a2ce1776cb0dcf3, type: 3}
   - {fileID: 21300000, guid: 438b94f7a2277024fb48a8596ac6724d, type: 3}
+  - {fileID: 21300000, guid: fe5e4eb8261aa0a41a88177170226e19, type: 3}
   - {fileID: 21300000, guid: 85aa693b804e47c4ea543c7c9a2f9f03, type: 3}
   - {fileID: 21300000, guid: 17cb345b357defc48a2cb6d44dd906a5, type: 3}
   - {fileID: 21300000, guid: 16d578bb67708d542b86ccf21b889d16, type: 3}
@@ -78,6 +80,7 @@ SpriteAtlas:
   - ColorBox
   - SeperateLine
   - CheckMark
+  - shader
   - RangeEllipse
   - VectorBox
   - EnumBox

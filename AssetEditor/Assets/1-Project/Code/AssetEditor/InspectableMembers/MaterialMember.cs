@@ -9,7 +9,6 @@ namespace Merlin
     {
         [SerializeField] private TMP_Text label;
         [SerializeField] private Button button;
-        private Material mat;
 
         [HideInInspector]
         public UnityEvent<Material> OnClick;
@@ -17,7 +16,6 @@ namespace Merlin
         public void Initialize(string label, Material mat)
         {
             this.label.text = $"{label}";
-            this.mat = mat;
 
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() => OnClick.Invoke(mat));
