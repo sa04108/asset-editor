@@ -29,10 +29,6 @@ namespace Merlin
             return matDict.Keys.ToArray();
         }
 
-        public void Save()
-        {
-        }
-
         public void Reset()
         {
             foreach (var matPair in matDict)

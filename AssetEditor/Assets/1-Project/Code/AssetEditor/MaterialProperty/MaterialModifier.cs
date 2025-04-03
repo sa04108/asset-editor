@@ -59,10 +59,12 @@ namespace Merlin
             if (mode == eShaderWorkflowMode.Specular)
             {
                 mat.EnableKeyword("_SPECULAR_SETUP");
+                mat.EnableKeyword("_METALLICSPECGLOSSMAP");
             }
             else if (mode == eShaderWorkflowMode.Metallic)
             {
                 mat.DisableKeyword("_SPECULAR_SETUP");
+                mat.DisableKeyword("_METALLICSPECGLOSSMAP");
             }
         }
 
