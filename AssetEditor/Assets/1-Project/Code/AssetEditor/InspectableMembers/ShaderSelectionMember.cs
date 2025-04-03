@@ -17,6 +17,7 @@ namespace Merlin
 
         private void Start()
         {
+            dropDown.value = 1; // 처음에 값이 안바뀌는 문제로 인해 추가
             dropDown.onValueChanged.AddListener(OnSelected);
             gameObject.SetActive(false);
         }
