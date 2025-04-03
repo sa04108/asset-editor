@@ -6,17 +6,13 @@ namespace Merlin
 {
     public class PropertyMemberCreator : MonoBehaviour
     {
-        //[SerializeField] private TexturePropertyMember textureMemberPreset;
+        [SerializeField] private MaterialMember materialMemberPreset;
+        [SerializeField] private TexturePropertyMember textureMemberPreset;
         [SerializeField] private NumberPropertyMember numMemberPreset;
-
         [SerializeField] private ColorPropertyMember colorMemberPreset;
         [SerializeField] private VectorPropertyMember vectorMemberPreset;
-
-        //[SerializeField] private MatrixPropertyMember matrixMemberPreset;
         [SerializeField] private BoolPropertyMember boolMemberPreset;
-
         [SerializeField] private EnumPropertyMember enumMemberPreset;
-
         [SerializeField] private PropertyGroupMember groupMemberPreset;
         [SerializeField] private Transform memberGroupPreset;
 
@@ -59,7 +55,7 @@ namespace Merlin
             member.Initialize(title);
 
             var memberGroup = BindOrInstantiate(memberGroupPreset, parent);
-            member.Button.onClick.AddListener(() => memberGroup.gameObject.SetActive(!memberGroup.gameObject.activeSelf));
+            member.OnClick.AddListener(() => memberGroup.gameObject.SetActive(!memberGroup.gameObject.activeSelf));
             memberGroup.gameObject.SetActive(unfoldOnStart);
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(parent.GetComponent<RectTransform>());
@@ -67,29 +63,37 @@ namespace Merlin
             return memberGroup;
         }
 
-        public Transform CreateSubGroup<T>(MaterialPropertyMember<T> parentMember, Func<T, bool> setActive, bool unfoldOnStart = true)
+        public Transform CreateSubGroup<T>(MaterialPropertyMember<T> baseMember, Func<T, bool> setActive, Transform parent, bool unfoldOnStart = true)
         {
-            var memberGroup = BindOrInstantiate(memberGroupPreset, parentMember.transform.parent).gameObject;
+            var memberGroup = BindOrInstantiate(memberGroupPreset, parent).gameObject;
             memberGroup.SetActive(unfoldOnStart);
-            parentMember.OnValueChanged.AddListener(value =>
+            baseMember.OnValueChanged.AddListener(value =>
             {
                 memberGroup.SetActive(setActive(value));
-                LayoutRebuilder.ForceRebuildLayoutImmediate(parentMember.transform.parent.GetComponent<RectTransform>());
+                LayoutRebuilder.ForceRebuildLayoutImmediate(parent.GetComponent<RectTransform>());
             });
 
-            LayoutRebuilder.ForceRebuildLayoutImmediate(parentMember.transform.parent.GetComponent<RectTransform>());
+            LayoutRebuilder.ForceRebuildLayoutImmediate(parent.GetComponent<RectTransform>());
 
             return memberGroup.transform;
         }
 
-        //public TexturePropertyMember CreateTexturePropertyMember(string label, Material mat, Texture value, Transform parent, string propName)
-        //{
-        //    var member = BindOrInstantiate(textureMemberPreset.transform, parent).GetComponent<TexturePropertyMember>();
-        //    member.Initialize(label, mat, value, propName);
-        //    member.gameObject.SetActive(true);
+        public MaterialMember CreateMaterialMember(string label, Material mat, Transform parent)
+        {
+            var member = Instantiate(materialMemberPreset, parent);
+            member.Initialize(label, mat);
 
-        //    return member;
-        //}
+            return member;
+        }
+
+        public TexturePropertyMember CreateTexturePropertyMember(string label, Material mat, Texture value, Transform parent, string propName)
+        {
+            var member = BindOrInstantiate(textureMemberPreset.transform, parent).GetComponent<TexturePropertyMember>();
+            member.Initialize(label, mat, value, propName);
+            member.gameObject.SetActive(true);
+
+            return member;
+        }
 
         private NumberPropertyMember CreateNumberMember(string label, Material mat, MaterialPropertyType type, float value, float min, float max, Transform parent, string propName)
         {
@@ -142,15 +146,6 @@ namespace Merlin
 
             return member;
         }
-
-        //public MatrixPropertyMember CreateMatrixMember(string label, Material mat, Matrix4x4 value, Transform parent, string propName)
-        //{
-        //    var member = Instantiate(matrixMemberPreset, parent);
-        //    member.Initialize(mat, propName, value);
-        //    member.gameObject.SetActive(true);
-
-        //    return member;
-        //}
 
         public BoolPropertyMember CreateBoolMember(string label, Material mat, bool value, Transform parent, string propName)
         {

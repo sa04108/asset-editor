@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Merlin
@@ -9,7 +10,8 @@ namespace Merlin
         [SerializeField]
         private Button button;
 
-        public Button Button => button;
+        [HideInInspector]
+        public UnityEvent OnClick => button.onClick;
 
         [SerializeField]
         private TMP_Text title;
@@ -17,6 +19,8 @@ namespace Merlin
         public void Initialize(string title)
         {
             this.title.text = $"{title}";
+
+            button.onClick.RemoveAllListeners();
         }
     }
 }

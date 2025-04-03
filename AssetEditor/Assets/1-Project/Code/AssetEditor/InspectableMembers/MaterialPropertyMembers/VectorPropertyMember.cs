@@ -41,7 +41,8 @@ namespace Merlin
                 CurrentValue = currVec;
                 inputField.SetTextWithoutNotify(fResult.ToString());
 
-                mat.SetVector(propertyName, CurrentValue);
+                if (!string.IsNullOrEmpty(propertyName))
+                    mat.SetVector(propertyName, CurrentValue);
             }
             else // 빈 값 입력 포함
             {

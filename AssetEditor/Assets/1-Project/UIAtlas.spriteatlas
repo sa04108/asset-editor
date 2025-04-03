@@ -51,6 +51,7 @@ SpriteAtlas:
     - 1ccc548c1d4e6fc48b9e74eefbf16dbb: 21300000
     - 7eade2fc7ef4c6948ba5cf14be42bc25: 21300000
     - 2600c6fc475c6114e8e4564c23d6c37e: 21300000
+    - 83cddddd85ca0464083d2b16bfa342de: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 4f9a52f0b980b6148a30038905e8c32b, type: 3}
@@ -67,6 +68,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1ccc548c1d4e6fc48b9e74eefbf16dbb, type: 3}
   - {fileID: 21300000, guid: 7eade2fc7ef4c6948ba5cf14be42bc25, type: 3}
   - {fileID: 21300000, guid: 2600c6fc475c6114e8e4564c23d6c37e, type: 3}
+  - {fileID: 21300000, guid: 83cddddd85ca0464083d2b16bfa342de, type: 3}
   m_PackedSpriteNamesToIndex:
   - Dropdown
   - X
@@ -82,6 +84,7 @@ SpriteAtlas:
   - BoolBox
   - NumberBox
   - RangeBox
+  - material
   m_RenderDataMap: {}
   m_Tag: UIAtlas
   m_IsVariant: 0

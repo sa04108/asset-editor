@@ -12,7 +12,7 @@ namespace Merlin
         [SerializeField] private Sprite numberBox;
         [SerializeField] private Sprite rangeBox;
 
-        MaterialPropertyType type;
+        private MaterialPropertyType type;
 
         private void Start()
         {
@@ -89,6 +89,9 @@ namespace Merlin
         private void SetValue(float value)
         {
             CurrentValue = value;
+
+            if (string.IsNullOrEmpty(propertyName))
+                return;
 
             if (type == MaterialPropertyType.Float)
             {

@@ -30,7 +30,9 @@ namespace Merlin
         private void OnSelected(int value)
         {
             CurrentValue = value;
-            mat.SetInt(propertyName, CurrentValue);
+
+            if (!string.IsNullOrEmpty(propertyName))
+                mat.SetInt(propertyName, CurrentValue);
         }
 
         public override void UpdateUI()

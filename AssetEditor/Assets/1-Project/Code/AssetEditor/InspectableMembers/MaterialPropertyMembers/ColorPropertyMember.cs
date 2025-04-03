@@ -22,7 +22,8 @@ namespace Merlin
         {
             CurrentValue = color;
 
-            mat.SetColor(propertyName, color);
+            if (!string.IsNullOrEmpty(propertyName))
+                mat.SetColor(propertyName, color);
         }
 
         public override void UpdateUI()

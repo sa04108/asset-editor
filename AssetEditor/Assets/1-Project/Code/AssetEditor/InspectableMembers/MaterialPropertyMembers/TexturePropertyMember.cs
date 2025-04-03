@@ -16,7 +16,9 @@ namespace Merlin
                 {
                     CurrentValue = tex;
                     texProp.SetTextureIcon(tex);
-                    mat.SetTexture(propName, tex);
+
+                    if (!string.IsNullOrEmpty(propName))
+                        mat.SetTexture(propName, tex);
                 });
             });
 

@@ -24,7 +24,9 @@ namespace Merlin
         {
             checkMark.SetActive(!checkMark.activeSelf);
             CurrentValue = checkMark.activeSelf;
-            mat.SetInt(propertyName, CurrentValue ? 1 : 0);
+
+            if (!string.IsNullOrEmpty(propertyName))
+                mat.SetInt(propertyName, CurrentValue ? 1 : 0);
         }
 
         public override void UpdateUI()

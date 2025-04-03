@@ -10,6 +10,9 @@ namespace Merlin
     public class AssetInspector : MonoBehaviour
     {
         [SerializeField]
+        private Transform materialParent;
+
+        [SerializeField]
         private Transform memberParent;
 
         [SerializeField]
@@ -23,22 +26,30 @@ namespace Merlin
 
         private void Start()
         {
-            ClearMembers();
+            ClearMembers(materialParent);
+            ClearMembers(memberParent);
             resetButton.onClick.AddListener(ResetAsset);
         }
 
-        private void ClearMembers()
+        private void ClearMembers(Transform parent)
         {
-            for (int i = memberParent.childCount - 1; i >= 0; i--)
+            for (int i = parent.childCount - 1; i >= 0; i--)
             {
-                Destroy(memberParent.GetChild(i).gameObject);
+                Destroy(parent.GetChild(i).gameObject);
             }
         }
 
         public void LoadModel(GameObject go)
         {
+            ClearMembers(materialParent);
+
             modifier = new(go);
-            AssetWindow.Show(go.transform, modifier.GetSharedMaterials(), InspectMaterialProperties);
+            var materials = modifier.GetSharedMaterials();
+            foreach (var material in materials)
+            {
+                memberCreator.CreateMaterialMember(material.name, material, materialParent)
+                    .OnClick.AddListener(InspectMaterialProperties);
+            }
         }
 
         private void InspectMaterialProperties(Material mat)
@@ -61,19 +72,20 @@ namespace Merlin
                 shaderPropIdx.Add(mat.shader.GetPropertyName(i), i);
             }
 
-            var group = memberCreator.CreateGroupMember("Lit Options", memberParent);
+            var optionGroup = memberCreator.CreateGroupMember("Surface Options", memberParent);
             var shaderModifier = new URPLitShaderModifier();
 
             var workflowMode = mat.GetInt("_WorkflowMode");
-            var workflowMember = memberCreator.CreateEnumMember("Workflow Mode", mat, typeof(eShaderWorkflowMode), workflowMode, group, "");
+            var workflowMember = memberCreator.CreateEnumMember("Workflow Mode", mat, typeof(eShaderWorkflowMode), workflowMode, optionGroup, "");
             workflowMember.OnValueChanged.AddListener(value => shaderModifier.SetWorkflowMode(mat, (eShaderWorkflowMode)value));
 
             var surfaceType = mat.GetInt("_Surface");
-            var surfaceMember = memberCreator.CreateEnumMember("Surface Type", mat, typeof(eShaderSurfaceType), surfaceType, group, "");
+            var surfaceMember = memberCreator.CreateEnumMember("Surface Type", mat, typeof(eShaderSurfaceType), surfaceType, optionGroup, "");
             surfaceMember.OnValueChanged.AddListener(value => shaderModifier.SetSurfaceType(mat, (eShaderSurfaceType)value));
 
             var blendGroup = memberCreator.CreateSubGroup(surfaceMember,
                 value => value == (int)eShaderSurfaceType.Transparent,
+                optionGroup,
                 surfaceType == (int)eShaderSurfaceType.Transparent);
 
             var blend = mat.GetInt("_Blend");
@@ -81,14 +93,14 @@ namespace Merlin
                 .OnValueChanged.AddListener(value => shaderModifier.SetBlendMode(mat, (eBlendMode)value));
 
             var renderFace = mat.GetInt("_Cull");
-            memberCreator.CreateEnumMember("Render Face", mat, typeof(eShaderRenderFace), renderFace, group, "")
+            memberCreator.CreateEnumMember("Render Face", mat, typeof(eShaderRenderFace), renderFace, optionGroup, "")
                 .OnValueChanged.AddListener(value => shaderModifier.SetRenderFace(mat, (eShaderRenderFace)value));
 
             var alphaCliping = mat.GetInt("_AlphaClip");
-            var alphaClipMember = memberCreator.CreateBoolMember("Alpha Clipping", mat, alphaCliping == 1 ? true : false, group, "");
+            var alphaClipMember = memberCreator.CreateBoolMember("Alpha Clipping", mat, alphaCliping == 1 ? true : false, optionGroup, "");
             alphaClipMember.OnValueChanged.AddListener(value => shaderModifier.SetAlphaClipping(mat, value));
 
-            var alphaClipGroup = memberCreator.CreateSubGroup(alphaClipMember, value => value, alphaCliping == 1 ? true : false);
+            var alphaClipGroup = memberCreator.CreateSubGroup(alphaClipMember, value => value, optionGroup, alphaCliping == 1 ? true : false);
 
             var alphaCutoff = mat.GetFloat("_Cutoff");
             Vector2 rangeCutoff = mat.shader.GetPropertyRangeLimits(shaderPropIdx["_Cutoff"]);
@@ -96,7 +108,7 @@ namespace Merlin
                 .OnValueChanged.AddListener(value => shaderModifier.SetAlphaCutoff(mat, value));
 
             var receiveShadows = mat.GetInt("_ReceiveShadows");
-            memberCreator.CreateBoolMember("Receive Shadows", mat, receiveShadows == 1 ? true : false, group, "")
+            memberCreator.CreateBoolMember("Receive Shadows", mat, receiveShadows == 1 ? true : false, optionGroup, "")
                 .OnValueChanged.AddListener(value => shaderModifier.SetReceiveShadows(mat, value));
 
             //var mainTex = mat.GetTexture("_BaseMap");
@@ -106,8 +118,11 @@ namespace Merlin
             //var metallicTex = mat.GetTexture("_MetallicGlossMap");
             //memberCreator.CreateTexturePropertyMember("Metallic Map", mat, metallicTex, group, "_MetallicGlossMap");
 
+            var inputGroup = memberCreator.CreateGroupMember("Surface Inputs", memberParent);
+
             var metallicGroup = memberCreator.CreateSubGroup(workflowMember,
                 value => value == (int)eShaderWorkflowMode.Metallic,
+                inputGroup,
                 workflowMode == (int)eShaderWorkflowMode.Metallic);
 
             var metallicDegree = mat.GetFloat("_Metallic");
@@ -116,27 +131,27 @@ namespace Merlin
 
             var smoothness = mat.GetFloat("_Smoothness");
             Vector2 rangeSmoothness = mat.shader.GetPropertyRangeLimits(shaderPropIdx["_Smoothness"]);
-            memberCreator.CreateFloatMember("Smoothness", mat, smoothness, rangeSmoothness.x, rangeSmoothness.y, group, "_Smoothness");
+            memberCreator.CreateFloatMember("Smoothness", mat, smoothness, rangeSmoothness.x, rangeSmoothness.y, inputGroup, "_Smoothness");
 
             //var bumpText = mat.GetTexture("_BumpMap");
             //memberCreator.CreateTexturePropertyMember("Normal Map", mat, bumpText, group, "")
             //    .OnValueChanged.AddListener(value => shaderModifier.SetTextureMap(mat, eShaderTextureMap.NormalMap, value));
 
             var mainColor = mat.GetColor("_BaseColor");
-            memberCreator.CreateColorMember("Base Color", mat, mainColor, true, false, group, "_BaseColor");
+            memberCreator.CreateColorMember("Base Color", mat, mainColor, true, false, inputGroup, "_BaseColor");
 
             var bumpScale = mat.GetFloat("_BumpScale");
-            memberCreator.CreateFloatMember("Normal Scale", mat, bumpScale, group, "_BumpScale");
+            memberCreator.CreateFloatMember("Normal Scale", mat, bumpScale, inputGroup, "_BumpScale");
 
             //var maskTex = mat.GetTexture("_DetailMask");
             //memberCreator.CreateTexturePropertyMember("Mask", mat, maskTex, group, "")
             //    .OnValueChanged.AddListener(value => shaderModifier.SetTextureMap(mat, eShaderTextureMap.DetailMaskMap, value));
 
             var emsEnable = mat.globalIlluminationFlags != (MaterialGlobalIlluminationFlags)4;
-            var emsEnableMember = memberCreator.CreateBoolMember("Emission", mat, emsEnable, group, "");
+            var emsEnableMember = memberCreator.CreateBoolMember("Emission", mat, emsEnable, inputGroup, "");
             emsEnableMember.OnValueChanged.AddListener(value => shaderModifier.SetEmission(mat, value));
 
-            var emsGroup = memberCreator.CreateSubGroup(emsEnableMember, value => value, emsEnable);
+            var emsGroup = memberCreator.CreateSubGroup(emsEnableMember, value => value, inputGroup, emsEnable);
 
             var emsColor = mat.GetColor("_EmissionColor");
             memberCreator.CreateColorMember("Emission Color", mat, mainColor, false, true, emsGroup, "_EmissionColor");
@@ -150,17 +165,17 @@ namespace Merlin
             //    .OnValueChanged.AddListener(value => shaderModifier.SetTextureMap(mat, eShaderTextureMap.EmissionMap, value));
 
             var baseTiling = mat.mainTextureScale;
-            memberCreator.CreateVectorMember("Tiling", mat, baseTiling, group, "")
+            memberCreator.CreateVectorMember("Tiling", mat, baseTiling, inputGroup, "")
                 .OnValueChanged.AddListener(value => shaderModifier.SetBaseTiling(mat, value));
 
             var baseOffset = mat.mainTextureOffset;
-            memberCreator.CreateVectorMember("Offset", mat, baseOffset, group, "")
+            memberCreator.CreateVectorMember("Offset", mat, baseOffset, inputGroup, "")
                 .OnValueChanged.AddListener(value => shaderModifier.SetBaseOffset(mat, value));
         }
 
         private void InspectAllMaterialProperties(Material mat)
         {
-            ClearMembers();
+            ClearMembers(memberParent);
 
             ShaderPropertyIndex shaderPropIdx = new();
             for (int i = 0; i < mat.shader.GetPropertyCount(); i++)
