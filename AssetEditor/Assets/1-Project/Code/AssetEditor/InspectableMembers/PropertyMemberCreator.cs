@@ -15,6 +15,7 @@ namespace Merlin
         [SerializeField] private EnumPropertyMember enumMemberPreset;
         [SerializeField] private PropertyGroupMember groupMemberPreset;
         [SerializeField] private Transform memberGroupPreset;
+        [SerializeField] private Transform memberSubGroupPreset;
 
         public Transform CreateGroupMember(string title, Transform parent, bool unfoldOnStart = true)
         {
@@ -32,7 +33,7 @@ namespace Merlin
 
         public Transform CreateSubGroup<T>(MaterialPropertyMember<T> baseMember, Func<T, bool> setActive, Transform parent, bool unfoldOnStart = true)
         {
-            var memberGroup = Instantiate(memberGroupPreset, parent).gameObject;
+            var memberGroup = Instantiate(memberSubGroupPreset, parent).gameObject;
             memberGroup.SetActive(unfoldOnStart);
             baseMember.OnValueChanged.AddListener(value =>
             {

@@ -521,7 +521,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 8, y: -70}
-  m_SizeDelta: {x: -16, y: 40}
+  m_SizeDelta: {x: -16, y: 50}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &1395472701542699726
 GameObject:
@@ -629,8 +629,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 8, y: -55}
-  m_SizeDelta: {x: -16, y: -110}
+  m_AnchoredPosition: {x: 8, y: -60}
+  m_SizeDelta: {x: -16, y: -120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4657428995795549971
 CanvasRenderer:
@@ -1803,7 +1803,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -2, y: -1}
-  m_SizeDelta: {x: -4, y: -12}
+  m_SizeDelta: {x: -4, y: -22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8103227821293228829
 MonoBehaviour:
@@ -2178,6 +2178,7 @@ MonoBehaviour:
   enumMemberPreset: {fileID: 8298820990271557714, guid: dce579bf67bffcd478c872e3ea8374d5, type: 3}
   groupMemberPreset: {fileID: 7254349793034447607, guid: 7017a89d18c83684bbe18999a5f3e92d, type: 3}
   memberGroupPreset: {fileID: 8064573824903751633, guid: d4db063c09b0aeb4fad0f8e6134d0ae7, type: 3}
+  memberSubGroupPreset: {fileID: 8064573824903751633, guid: c407e6a01817fee43bfa587b4d8f54cd, type: 3}
 --- !u!1 &6380652807808730446
 GameObject:
   m_ObjectHideFlags: 0
