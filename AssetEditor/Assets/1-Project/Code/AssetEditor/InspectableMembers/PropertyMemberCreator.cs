@@ -26,7 +26,7 @@ namespace Merlin
             lastPointerParent = parent;
         }
 
-        private Transform BindOrInstantiate(Transform prefab, Transform parent)
+        private T BindOrInstantiate<T>(T prefab, Transform parent) where T : Component
         {
             if (lastPointerParent == parent.parent)
             {
@@ -39,7 +39,7 @@ namespace Merlin
 
             lastPointerParent = parent;
 
-            var aliveMember = pointer;
+            var aliveMember = pointer?.GetComponent<T>();
             if (aliveMember == null)
             {
                 aliveMember = Instantiate(prefab, parent);
@@ -51,7 +51,7 @@ namespace Merlin
 
         public Transform CreateGroupMember(string title, Transform parent, bool unfoldOnStart = true)
         {
-            var member = BindOrInstantiate(groupMemberPreset.transform, parent).GetComponent<PropertyGroupMember>();
+            var member = BindOrInstantiate(groupMemberPreset, parent);
             member.Initialize(title);
 
             var memberGroup = BindOrInstantiate(memberGroupPreset, parent);
@@ -88,7 +88,7 @@ namespace Merlin
 
         public TexturePropertyMember CreateTexturePropertyMember(string label, Material mat, Texture value, Transform parent, string propName)
         {
-            var member = BindOrInstantiate(textureMemberPreset.transform, parent).GetComponent<TexturePropertyMember>();
+            var member = BindOrInstantiate(textureMemberPreset, parent);
             member.Initialize(label, mat, value, propName);
             member.gameObject.SetActive(true);
 
@@ -97,7 +97,7 @@ namespace Merlin
 
         private NumberPropertyMember CreateNumberMember(string label, Material mat, MaterialPropertyType type, float value, float min, float max, Transform parent, string propName)
         {
-            var member = BindOrInstantiate(numMemberPreset.transform, parent).GetComponent<NumberPropertyMember>();
+            var member = BindOrInstantiate(numMemberPreset, parent);
             member.Initialize(label, mat, type, value, min, max, propName);
 
             return member;
@@ -105,7 +105,7 @@ namespace Merlin
 
         private NumberPropertyMember CreateNumberMember(string label, Material mat, MaterialPropertyType type, float value, Transform parent, string propName)
         {
-            var member = BindOrInstantiate(numMemberPreset.transform, parent).GetComponent<NumberPropertyMember>();
+            var member = BindOrInstantiate(numMemberPreset, parent);
             member.Initialize(label, mat, type, value, propName);
 
             return member;
@@ -133,7 +133,7 @@ namespace Merlin
 
         public ColorPropertyMember CreateColorMember(string label, Material mat, Color value, bool hasAlpha, bool isHDR, Transform parent, string propName)
         {
-            var member = BindOrInstantiate(colorMemberPreset.transform, parent).GetComponent<ColorPropertyMember>();
+            var member = BindOrInstantiate(colorMemberPreset, parent);
             member.Initialize(label, mat, value, hasAlpha, isHDR, propName);
 
             return member;
@@ -141,7 +141,7 @@ namespace Merlin
 
         public VectorPropertyMember CreateVectorMember(string label, Material mat, Vector2 value, Transform parent, string propName)
         {
-            var member = BindOrInstantiate(vectorMemberPreset.transform, parent).GetComponent<VectorPropertyMember>();
+            var member = BindOrInstantiate(vectorMemberPreset, parent);
             member.Initialize(label, mat, value, propName);
 
             return member;
@@ -149,7 +149,7 @@ namespace Merlin
 
         public BoolPropertyMember CreateBoolMember(string label, Material mat, bool value, Transform parent, string propName)
         {
-            var member = BindOrInstantiate(boolMemberPreset.transform, parent).GetComponent<BoolPropertyMember>();
+            var member = BindOrInstantiate(boolMemberPreset, parent);
             member.Initialize(label, mat, value, propName);
 
             return member;
@@ -157,7 +157,7 @@ namespace Merlin
 
         public EnumPropertyMember CreateEnumMember(string label, Material mat, Type enumType, int value, Transform parent, string propName)
         {
-            var member = BindOrInstantiate(enumMemberPreset.transform, parent).GetComponent<EnumPropertyMember>();
+            var member = BindOrInstantiate(enumMemberPreset, parent);
             member.Initialize(label, mat, enumType, value, propName);
 
             return member;
