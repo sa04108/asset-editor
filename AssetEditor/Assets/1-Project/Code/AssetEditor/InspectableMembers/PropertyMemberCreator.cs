@@ -135,13 +135,5 @@ namespace Merlin
 
             return member;
         }
-
-        private Transform GetChild(Transform parent, int sibIndex)
-        {
-            if (sibIndex >= parent.childCount)
-                return null;
-            else
-                return parent.GetChild(sibIndex);
-        }
     }
 }
