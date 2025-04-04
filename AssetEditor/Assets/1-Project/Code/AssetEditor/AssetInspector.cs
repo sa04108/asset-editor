@@ -54,6 +54,7 @@ namespace Merlin
 
         public void LoadModel(GameObject go)
         {
+            shaderSelector.gameObject.SetActive(false);
             ClearMembers(materialParent);
             ClearMembers(memberParent);
 
