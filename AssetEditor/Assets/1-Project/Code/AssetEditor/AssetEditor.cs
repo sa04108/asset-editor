@@ -1,9 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
-using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.AddressableAssets.ResourceLocators;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -16,44 +12,26 @@ namespace Merlin
         [SerializeField]
         private string assetPath;
 
+        private Vector3 assetPivot;
+
         [Header("Links")]
         [SerializeField]
         private Transform assetParent;
 
-        [SerializeField]
-        private Transform buttonParent;
-
-        [SerializeField]
-        private Button buttonPreset;
-
         [Header("Options")]
-        [SerializeField]
-        private Vector3 assetPivot = Vector3.zero;
-
         [SerializeField]
         private float rotationSpeed = 5.0f;
 
         [SerializeField]
         private float zoomSpeed = 10.0f;
 
-        private Button downloadButton;
+        [SerializeField]
+        private Button loadButton;
 
         private void Start()
         {
             inspector = GetComponent<AssetInspector>();
-            Addressables.InitializeAsync().Completed += _ =>
-            {
-                IResourceLocator locator = _.Result;
-
-                CreateButton($"Load")
-                    .onClick.AddListener(() => LoadModel());
-
-                //CreateButton($"Check For Update")
-                //    .onClick.AddListener(() => CheckForUpdate(locator.Keys));
-
-                //downloadButton = CreateButton($"Check For Download");
-                //downloadButton.onClick.AddListener(() => CheckForDownload(locator.Keys));
-            };
+            loadButton.onClick.AddListener(() => LoadModel());
         }
 
         private void Update()
@@ -117,67 +95,6 @@ namespace Merlin
 
                 inspector.LoadModel(go);
             };
-        }
-
-        private string GetBundleNameFromPath(string key)
-        {
-            var split = key.Split('/');
-
-            foreach (var part in split)
-            {
-                if (part.StartsWith("__"))
-                    return part;
-            }
-
-            return null;
-        }
-
-        private void CheckForUpdate(IEnumerable<object> keys)
-        {
-            Addressables.CheckForCatalogUpdates()
-            .Completed += _ =>
-            {
-                if (_.Result.Count > 0)
-                {
-                    Debug.Log("Catalog Updated");
-                    Addressables.UpdateCatalogs(_.Result)
-                    .Completed += _ =>
-                    {
-                        var keys = _.Result.SelectMany(locator => locator.Keys);
-                        downloadButton.onClick.RemoveAllListeners();
-                        downloadButton.onClick.AddListener(() => CheckForDownload(keys));
-                    };
-                }
-                else
-                {
-                    Debug.Log("Catalog is the latest version");
-                }
-            };
-        }
-
-        private void CheckForDownload(IEnumerable<object> keys)
-        {
-            Addressables.GetDownloadSizeAsync(keys)
-            .Completed += _ =>
-            {
-                if (_.Result > 0)
-                {
-                    Debug.Log($"Total Download Size: {_.Result}");
-                }
-                else
-                {
-                    Debug.Log("All asset is the latest version");
-                }
-            };
-        }
-
-        private Button CreateButton(string text)
-        {
-            var button = Instantiate(buttonPreset, buttonParent);
-            button.gameObject.SetActive(true);
-            button.GetComponentInChildren<TMP_Text>().text = text;
-
-            return button;
         }
     }
 }

@@ -33,6 +33,7 @@ namespace Merlin
         {
             foreach (var matPair in matDict)
             {
+                matPair.Key.shader = matPair.Value.shader;
                 // 현재 sharedMaterial로 초기 material 값을 복사
                 matPair.Key.CopyPropertiesFromMaterial(matPair.Value);
             }
