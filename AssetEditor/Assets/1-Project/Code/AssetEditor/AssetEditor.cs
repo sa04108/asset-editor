@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
@@ -9,14 +10,17 @@ namespace Merlin
     {
         private AssetInspector inspector;
 
-        [SerializeField]
-        private string assetPath;
-
         private Vector3 assetPivot;
 
         [Header("Links")]
         [SerializeField]
         private Transform assetParent;
+
+        [SerializeField]
+        private TMP_InputField assetKeyInputField;
+
+        [SerializeField]
+        private Button loadButton;
 
         [Header("Options")]
         [SerializeField]
@@ -24,9 +28,6 @@ namespace Merlin
 
         [SerializeField]
         private float zoomSpeed = 10.0f;
-
-        [SerializeField]
-        private Button loadButton;
 
         private void Start()
         {
@@ -80,20 +81,24 @@ namespace Merlin
 
         private void LoadModel()
         {
-            Addressables.LoadAssetAsync<GameObject>(assetPath)
+            Addressables.InitializeAsync()
             .Completed += _ =>
             {
-                var go = _.Result;
-                for (int i = assetParent.childCount - 1; i >= 0; i--)
+                Addressables.LoadAssetAsync<GameObject>(assetKeyInputField.text)
+                .Completed += _ =>
                 {
-                    Destroy(assetParent.GetChild(i).gameObject);
-                }
+                    var go = _.Result;
+                    for (int i = assetParent.childCount - 1; i >= 0; i--)
+                    {
+                        Destroy(assetParent.GetChild(i).gameObject);
+                    }
 
-                var instance = Instantiate(go, assetParent);
-                assetPivot = instance.transform.position;
-                Camera.main.transform.LookAt(assetPivot);
+                    var instance = Instantiate(go, assetParent);
+                    assetPivot = instance.transform.position;
+                    Camera.main.transform.LookAt(assetPivot);
 
-                inspector.LoadModel(go);
+                    inspector.LoadModel(go);
+                };
             };
         }
     }
