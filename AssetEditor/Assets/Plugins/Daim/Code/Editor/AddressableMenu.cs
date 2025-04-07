@@ -15,10 +15,10 @@ namespace Merlin
     {
         Others = -1,
         Success = 0,
-        Argument = 101,
-        InvalidOperation = 102,
-        FileIO = 103,
-        NullRef = 104
+        NoAsset = 1,
+        CompileError = 2,
+        UnsupportedFileType = 3,
+        PathNotFound = 4
     }
 
     public class AddressableMenu : AssetPostprocessor
@@ -28,7 +28,7 @@ namespace Merlin
             get
             {
                 var settings = AddressableAssetSettingsDefaultObject.Settings;
-                var path = settings.profileSettings.GetValueById(settings.activeProfileId, settings.RemoteCatalogBuildPath.Id).Replace("\\[BuildTarget]", "\\");
+                var path = settings.profileSettings.GetValueById(settings.activeProfileId, settings.RemoteCatalogBuildPath.Id).Replace("[BuildTarget]", "");
 
                 return path;
             }
@@ -37,16 +37,51 @@ namespace Merlin
         [MenuItem("Addressables/Build", false, 0)]
         public static int Build()
         {
-            AddressablesPlayerBuildResult buildResult = new();
+            Debug.Log("[Addressables] Build Start");
+            AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+            AddressablesPlayerBuildResult buildResult;
             eAssetBuildExitCode exitCode = eAssetBuildExitCode.Success;
 
             try
             {
-                AddressableAssetSettings.BuildPlayerContent(out buildResult);
+                if (CanUpdateBuild(settings, out var contentPath))
+                {
+                    buildResult = ContentUpdateScript.BuildContentUpdate(settings, contentPath);
+                }
+                else
+                {
+                    AddressableAssetSettings.BuildPlayerContent(out buildResult);
+                }
+
+                if (buildResult.LocationCount == 0)
+                {
+                    Debug.LogWarning($"[Addressables] Build Error: {buildResult.Error}");
+                    exitCode = eAssetBuildExitCode.Others;
+
+                    if (string.IsNullOrEmpty(buildResult.Error))
+                    {
+                        exitCode = eAssetBuildExitCode.NoAsset;
+                    }
+                    else if (buildResult.Error.Contains("SBP ErrorError"))
+                    {
+                        exitCode = eAssetBuildExitCode.CompileError;
+                    }
+                    else if (buildResult.Error.Contains("unsupported file type"))
+                    {
+                        exitCode = eAssetBuildExitCode.UnsupportedFileType;
+                    }
+                    else if (buildResult.Error.Contains("not find a part of the path"))
+                    {
+                        exitCode = eAssetBuildExitCode.PathNotFound;
+                    }
+
+                    throw new InvalidOperationException();
+                }
+
                 Debug.Log("[Addressables] Assets build completed");
-                Debug.Log($"[Addressables] Build duration: {buildResult.Duration}");
+                Debug.Log($"[Addressables] Build duration: {buildResult.Duration}s");
                 Debug.Log($"[Addressables] Location count: {buildResult.LocationCount}");
-                StringBuilder sb = new("[Addressables] Bundle List\n");
+                StringBuilder sb = new("[Addressables] Bundle List: ");
                 foreach (var bundleResult in buildResult.AssetBundleBuildResults)
                 {
                     sb.AppendLine(bundleResult.FilePath);
@@ -59,33 +94,24 @@ namespace Merlin
                 Debug.Log($"[Addressables] Load File Path {path}");
 #endif
             }
-            catch (ArgumentException)
-            {
-                Debug.LogError($"[Addressables] {buildResult.Error}");
-                exitCode = eAssetBuildExitCode.Argument;
-            }
             catch (InvalidOperationException)
             {
-                Debug.LogError($"[Addressables] {buildResult.Error}");
-                exitCode = eAssetBuildExitCode.InvalidOperation;
+                Debug.LogError($"[Addressables] Exception of type '{exitCode}' was thrown.");
             }
-            catch (IOException)
+            catch (Exception e)
             {
-                Debug.LogError($"[Addressables] {buildResult.Error}");
-                exitCode = eAssetBuildExitCode.FileIO;
-            }
-            catch (NullReferenceException)
-            {
-                Debug.LogError($"[Addressables] {buildResult.Error}");
-                exitCode = eAssetBuildExitCode.NullRef;
-            }
-            catch (Exception)
-            {
-                Debug.LogError($"[Addressables] {buildResult.Error}");
+                Debug.LogError($"[Addressables] {e}: {e?.Message}");
                 exitCode = eAssetBuildExitCode.Others;
             }
 
+            Debug.Log($"[Addressables] exit code: {(int)exitCode}");
             return (int)exitCode;
+        }
+
+        private static bool CanUpdateBuild(AddressableAssetSettings settings, out string contentFilePath)
+        {
+            contentFilePath = Path.Combine(settings.ContentStateBuildPath, "addressables_content_state.bin");
+            return File.Exists(contentFilePath);
         }
 
         [MenuItem("Addressables/Clean Build", false, 0)]
@@ -152,6 +178,9 @@ namespace Merlin
             if (!autoAssign)
                 return;
 
+            if (importedAssets.Length == 0)
+                return;
+
             // Addressable Asset Settings 가져오기
             AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
             if (settings == null)
@@ -169,6 +198,10 @@ namespace Merlin
             // 임포트된 에셋 중 폴더 이름이 "__"로 시작하는 경우 자동 지정
             foreach (string assetPath in importedAssets)
             {
+                // Addressable 경로인 경우에 한하여 적용
+                if (!assetPath.StartsWith("Assets/Addressable/"))
+                    continue;
+
                 // 에셋 경로의 상위 폴더 이름 확인
                 string assetFolder = Path.GetDirectoryName(assetPath);
                 if (string.IsNullOrEmpty(assetFolder))
