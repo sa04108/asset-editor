@@ -10,9 +10,6 @@ namespace Merlin
     public class AssetInspector : MonoBehaviour
     {
         [SerializeField]
-        private ShaderSelectionMember shaderSelector;
-
-        [SerializeField]
         private Transform materialParent;
 
         [SerializeField]
@@ -27,19 +24,10 @@ namespace Merlin
         private AssetModifier modifier;
         private IMaterialPropertyMember[] materialProperties;
 
-        private string[] shaderOptions =
-        {
-            "Universal Render Pipeline/Lit",
-            "Universal Render Pipeline/Unlit"
-        };
-
         private void Start()
         {
             ClearMembers(materialParent);
             ClearMembers(memberParent);
-
-            shaderSelector.Initialize(shaderOptions);
-            shaderSelector.OnShaderChanged.AddListener(InspectMaterial);
 
             resetButton.onClick.AddListener(ResetAsset);
         }
@@ -54,7 +42,6 @@ namespace Merlin
 
         public void LoadModel(GameObject go)
         {
-            shaderSelector.gameObject.SetActive(false);
             ClearMembers(materialParent);
             ClearMembers(memberParent);
 
@@ -69,12 +56,11 @@ namespace Merlin
 
         private void InspectMaterial(Material mat)
         {
-            shaderSelector.SetMaterial(mat);
             ClearMembers(memberParent);
 
-            if (mat.shader.name == shaderOptions[0])
+            if (mat.shader.name == "Universal Render Pipeline/Lit")
                 InspectLitMaterialProperties(mat);
-            else if (mat.shader.name == shaderOptions[1])
+            else if (mat.shader.name == "Universal Render Pipeline/Unlit")
                 InspectUnlitMaterialProperties(mat);
             else
                 InspectAllMaterialProperties(mat);
