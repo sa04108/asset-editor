@@ -22,6 +22,9 @@ namespace Merlin
         [SerializeField]
         private Button loadButton;
 
+        [SerializeField]
+        private GameObject loading;
+
         [Header("Options")]
         [SerializeField]
         private float rotationSpeed = 5.0f;
@@ -81,6 +84,7 @@ namespace Merlin
 
         private void LoadModel()
         {
+            loading.SetActive(true);
             Addressables.InitializeAsync()
             .Completed += _ =>
             {
@@ -98,6 +102,7 @@ namespace Merlin
                     Camera.main.transform.LookAt(assetPivot);
 
                     inspector.LoadModel(go);
+                    loading.SetActive(false);
                 };
             };
         }
