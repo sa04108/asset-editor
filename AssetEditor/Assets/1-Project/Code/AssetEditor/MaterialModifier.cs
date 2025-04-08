@@ -41,9 +41,9 @@ namespace Merlin
 
     public enum eEmissionGlobalIllumination
     {
+        None,
         Realtime,
-        Baked,
-        None
+        Baked
     }
 
     public class URPLitShaderModifier
@@ -250,43 +250,17 @@ namespace Merlin
         {
             if (enable)
             {
-                MaterialGlobalIlluminationFlags giFlag = mat.globalIlluminationFlags;
-                eEmissionGlobalIllumination emsMode;
-                if (giFlag == (MaterialGlobalIlluminationFlags)1)
-                    emsMode = eEmissionGlobalIllumination.Realtime;
-                else if (giFlag == (MaterialGlobalIlluminationFlags)6)
-                    emsMode = eEmissionGlobalIllumination.Baked;
-                else
-                    emsMode = eEmissionGlobalIllumination.None;
-
-                SetEmissionMode(mat, emsMode);
+                mat.EnableKeyword("_EMISSION");
             }
             else
             {
                 mat.DisableKeyword("_EMISSION");
-                mat.globalIlluminationFlags = (MaterialGlobalIlluminationFlags)4;
             }
         }
 
         public void SetEmissionMode(Material mat, eEmissionGlobalIllumination mode)
         {
-            switch (mode)
-            {
-                case eEmissionGlobalIllumination.Realtime:
-                    mat.EnableKeyword("_EMISSION");
-                    mat.globalIlluminationFlags = (MaterialGlobalIlluminationFlags)1;
-                    break;
-
-                case eEmissionGlobalIllumination.Baked:
-                    mat.DisableKeyword("_EMISSION");
-                    mat.globalIlluminationFlags = (MaterialGlobalIlluminationFlags)6;
-                    break;
-
-                case eEmissionGlobalIllumination.None:
-                    mat.EnableKeyword("_EMISSION");
-                    mat.globalIlluminationFlags = 0;
-                    break;
-            }
+            mat.globalIlluminationFlags = (MaterialGlobalIlluminationFlags)mode;
         }
 
         public void SetBaseColor(Material mat, Color color)
