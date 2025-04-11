@@ -1,4 +1,4 @@
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
@@ -15,9 +15,6 @@ namespace Merlin
         [Header("Links")]
         [SerializeField]
         private Transform assetParent;
-
-        [SerializeField]
-        private TMP_InputField assetKeyInputField;
 
         [SerializeField]
         private Button loadButton;
@@ -88,7 +85,21 @@ namespace Merlin
             Addressables.InitializeAsync()
             .Completed += _ =>
             {
-                Addressables.LoadAssetAsync<GameObject>(assetKeyInputField.text)
+                var keys = _.Result.Keys;
+                List<string> modelKeys = new();
+                foreach (var key in keys)
+                {
+                    string keyStr = key as string;
+                    if (keyStr == null)
+                        continue;
+
+                    if (keyStr.EndsWith(".prefab"))
+                    {
+                        modelKeys.Add(keyStr);
+                    }
+                }
+
+                Addressables.LoadAssetAsync<GameObject>(modelKeys[0])
                 .Completed += _ =>
                 {
                     var go = _.Result;
