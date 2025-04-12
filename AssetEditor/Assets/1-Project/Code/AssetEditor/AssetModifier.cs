@@ -1,40 +1,44 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Merlin
 {
     public class AssetModifier
     {
-        private Dictionary<Material, Material> matDict = new();
+        private List<Material> sharedMaterials = new();
+        private List<Material> originalMaterials = new();
 
         public AssetModifier(GameObject go)
         {
             Renderer[] renderers = go.GetComponentsInChildren<Renderer>();
+            HashSet<int> matHashes = new();
 
             foreach (Renderer renderer in renderers)
             {
                 var mat = renderer.sharedMaterial;
+                var matHash = mat.GetHashCode();
 
-                if (mat == null || matDict.ContainsKey(mat))
+                if (mat == null || matHashes.Contains(matHash))
                     continue;
 
+                matHashes.Add(matHash);
                 var originalMat = new Material(mat);
-                matDict.Add(mat, originalMat);
+                sharedMaterials.Add(mat);
+                originalMaterials.Add(originalMat);
             }
         }
 
         public Material[] GetSharedMaterials()
         {
-            return matDict.Keys.ToArray();
+            return sharedMaterials.ToArray();
         }
 
         public void Reset()
         {
-            foreach (var matPair in matDict)
+            for (int i = 0; i < sharedMaterials.Count; i++)
             {
                 // 현재 sharedMaterial로 초기 material 값을 복사
-                matPair.Key.CopyPropertiesFromMaterial(matPair.Value);
+                sharedMaterials[i].CopyPropertiesFromMaterial(originalMaterials[i]);
             }
         }
     }

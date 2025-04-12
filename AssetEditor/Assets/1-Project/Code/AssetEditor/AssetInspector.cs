@@ -1,33 +1,40 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Merlin
 {
-    using ShaderPropertyIndex = Dictionary<string, int>;
-
     public class AssetInspector : MonoBehaviour
     {
-        [SerializeField]
-        private Transform materialParent;
+        [Header("Links")]
+        [SerializeField] private Transform materialParent;
+        [SerializeField] private MaterialMember materialMemberPreset;
+        [SerializeField] private Button resetButton;
 
-        [SerializeField]
-        private Transform memberParent;
-
-        [SerializeField]
-        private PropertyMemberCreator memberCreator;
-
-        [SerializeField]
-        private Button resetButton;
+        [Header("Inspectable Members")]
+        [SerializeField] private InspectableMember workflowModeMember;
+        [SerializeField] private InspectableMember surfaceMember;
+        [SerializeField] private InspectableMember blendMember;
+        [SerializeField] private InspectableMember renderFaceMember;
+        [SerializeField] private InspectableMember alphaClippingMember;
+        [SerializeField] private InspectableMember alphaCutoffMember;
+        [SerializeField] private InspectableMember receiveShadowsMember;
+        [SerializeField] private InspectableMember metallicMember;
+        [SerializeField] private InspectableMember smoothnessMember;
+        [SerializeField] private InspectableMember baseColorMember;
+        [SerializeField] private InspectableMember normalScaleMember;
+        [SerializeField] private InspectableMember emissionMember;
+        [SerializeField] private InspectableMember emissionColorMember;
+        [SerializeField] private InspectableMember emissionFlagMember;
+        [SerializeField] private InspectableMember baseTilingMember;
+        [SerializeField] private InspectableMember baseOffsetMember;
 
         private AssetModifier modifier;
-        private IMaterialPropertyMember[] materialProperties;
 
         private void Start()
         {
             ClearMembers(materialParent);
-            ClearMembers(memberParent);
 
             resetButton.onClick.AddListener(ResetAsset);
         }
@@ -43,263 +50,182 @@ namespace Merlin
         public void LoadModel(GameObject go)
         {
             ClearMembers(materialParent);
-            ClearMembers(memberParent);
 
             modifier = new(go);
             var materials = modifier.GetSharedMaterials();
             foreach (var material in materials)
             {
-                memberCreator.CreateMaterialMember(material.name, material, materialParent)
-                    .OnClick.AddListener(InspectMaterial);
+                var member = Instantiate(materialMemberPreset, materialParent);
+                member.Initialize(material.name, material);
+                member.OnClick.AddListener(InspectMaterial);
             }
         }
 
         private void InspectMaterial(Material mat)
         {
-            ClearMembers(memberParent);
-
             if (mat.shader.name == "Universal Render Pipeline/Lit")
+            {
                 InspectLitMaterialProperties(mat);
-            else if (mat.shader.name == "Universal Render Pipeline/Unlit")
-                InspectUnlitMaterialProperties(mat);
+            }
             else
-                InspectAllMaterialProperties(mat);
+            {
+                Debug.LogWarning($"Shader {mat.shader.name} for current material is not supported");
+            }
         }
 
         private void InspectLitMaterialProperties(Material mat)
         {
-            ShaderPropertyIndex shaderPropIdx = new();
+            Dictionary<string, int> shaderPropIdx = new();
             for (int i = 0; i < mat.shader.GetPropertyCount(); i++)
             {
                 shaderPropIdx.Add(mat.shader.GetPropertyName(i), i);
             }
-
-            var optionGroup = memberCreator.CreateGroupMember("Surface Options", memberParent);
-            var matModifier = new URPLitShaderModifier();
 
             var workflowMode = mat.GetInt("_WorkflowMode");
-            var workflowMember = memberCreator.CreateEnumMember("Workflow Mode", mat, typeof(eShaderWorkflowMode), workflowMode, optionGroup, null);
-            workflowMember.OnValueChanged.AddListener(value => matModifier.SetWorkflowMode(mat, (eShaderWorkflowMode)value));
+            metallicMember.gameObject.SetActive(workflowMode == (int)eShaderWorkflowMode.Metallic);
+            BindEnum(workflowModeMember, workflowMode, value =>
+            {
+                URPLitShaderModifier.SetWorkflowMode(mat, (eShaderWorkflowMode)value);
+                metallicMember.gameObject.SetActive(value == (int)eShaderWorkflowMode.Metallic);
+            });
 
             var surfaceType = mat.GetInt("_Surface");
-            var surfaceMember = memberCreator.CreateEnumMember("Surface Type", mat, typeof(eShaderSurfaceType), surfaceType, optionGroup, null);
-            surfaceMember.OnValueChanged.AddListener(value => matModifier.SetSurfaceType(mat, (eShaderSurfaceType)value));
-
-            var blendGroup = memberCreator.CreateSubGroup(surfaceMember,
-                value => value == (int)eShaderSurfaceType.Transparent,
-                optionGroup,
-                surfaceType == (int)eShaderSurfaceType.Transparent);
+            blendMember.transform.parent.gameObject.SetActive(surfaceType == (int)eShaderSurfaceType.Transparent);
+            BindEnum(surfaceMember, surfaceType, value =>
+            {
+                URPLitShaderModifier.SetSurfaceType(mat, (eShaderSurfaceType)value);
+                blendMember.transform.parent.gameObject.SetActive(value == (int)eShaderSurfaceType.Transparent);
+            });
 
             var blend = mat.GetInt("_Blend");
-            memberCreator.CreateEnumMember("Blending Mode", mat, typeof(eBlendMode), blend, blendGroup, null)
-                .OnValueChanged.AddListener(value => matModifier.SetBlendMode(mat, (eBlendMode)value));
+            BindEnum(blendMember, blend, value => URPLitShaderModifier.SetBlendMode(mat, (eBlendMode)value));
 
             var renderFace = mat.GetInt("_Cull");
-            memberCreator.CreateEnumMember("Render Face", mat, typeof(eShaderRenderFace), renderFace, optionGroup, null)
-                .OnValueChanged.AddListener(value => matModifier.SetRenderFace(mat, (eShaderRenderFace)value));
+            BindEnum(renderFaceMember, renderFace, value => URPLitShaderModifier.SetRenderFace(mat, (eShaderRenderFace)value));
 
-            var alphaCliping = mat.GetInt("_AlphaClip");
-            var alphaClipMember = memberCreator.CreateBoolMember("Alpha Clipping", mat, alphaCliping == 1, optionGroup, null);
-            alphaClipMember.OnValueChanged.AddListener(value => matModifier.SetAlphaClipping(mat, value));
-
-            var alphaClipGroup = memberCreator.CreateSubGroup(alphaClipMember, value => value, optionGroup, alphaCliping == 1);
+            var alphaClipping = mat.GetInt("_AlphaClip");
+            alphaCutoffMember.transform.parent.gameObject.SetActive(alphaClipping == 1);
+            BindBool(alphaClippingMember, alphaClipping == 1, value =>
+            {
+                URPLitShaderModifier.SetAlphaClipping(mat, value);
+                alphaCutoffMember.transform.parent.gameObject.SetActive(value);
+            });
 
             var alphaCutoff = mat.GetFloat("_Cutoff");
-            Vector2 rangeCutoff = mat.shader.GetPropertyRangeLimits(shaderPropIdx["_Cutoff"]);
-            memberCreator.CreateFloatMember("Threshold", mat, alphaCutoff, rangeCutoff.x, rangeCutoff.y, alphaClipGroup, "_Cutoff");
+            BindFloat(alphaCutoffMember, alphaCutoff, value => mat.SetFloat("_Cutoff", value));
 
             var receiveShadows = mat.GetInt("_ReceiveShadows");
-            memberCreator.CreateBoolMember("Receive Shadows", mat, receiveShadows == 1, optionGroup, null)
-                .OnValueChanged.AddListener(value => matModifier.SetReceiveShadows(mat, value));
+            BindBool(receiveShadowsMember, receiveShadows == 1, value => URPLitShaderModifier.SetReceiveShadows(mat, value));
 
-            //var mainTex = mat.GetTexture("_BaseMap");
-            //memberCreator.CreateTexturePropertyMember("Base Map", mat, mainTex, group, "")
-            //    .OnValueChanged.AddListener(value => shaderModifier.SetTextureMap(mat, eShaderTextureMap.BaseMap, value));
-
-            //var metallicTex = mat.GetTexture("_MetallicGlossMap");
-            //memberCreator.CreateTexturePropertyMember("Metallic Map", mat, metallicTex, group, "_MetallicGlossMap");
-
-            var inputGroup = memberCreator.CreateGroupMember("Surface Inputs", memberParent);
-
-            var metallicGroup = memberCreator.CreateSubGroup(workflowMember,
-                value => value == (int)eShaderWorkflowMode.Metallic,
-                inputGroup,
-                workflowMode == (int)eShaderWorkflowMode.Metallic, true);
-
-            var metallicDegree = mat.GetFloat("_Metallic");
-            Vector2 rangeMetallic = mat.shader.GetPropertyRangeLimits(shaderPropIdx["_Metallic"]);
-            memberCreator.CreateFloatMember("Metallic", mat, metallicDegree, rangeMetallic.x, rangeMetallic.y, metallicGroup, "_Metallic");
+            var metallic = mat.GetFloat("_Metallic");
+            BindFloat(metallicMember, metallic, value => mat.SetFloat("_Metallic", value));
 
             var smoothness = mat.GetFloat("_Smoothness");
-            Vector2 rangeSmoothness = mat.shader.GetPropertyRangeLimits(shaderPropIdx["_Smoothness"]);
-            memberCreator.CreateFloatMember("Smoothness", mat, smoothness, rangeSmoothness.x, rangeSmoothness.y, inputGroup, "_Smoothness");
-
-            //var bumpText = mat.GetTexture("_BumpMap");
-            //memberCreator.CreateTexturePropertyMember("Normal Map", mat, bumpText, group, "")
-            //    .OnValueChanged.AddListener(value => shaderModifier.SetTextureMap(mat, eShaderTextureMap.NormalMap, value));
+            BindFloat(smoothnessMember, smoothness, value => mat.SetFloat("_Smoothness", value));
 
             var baseColor = mat.GetColor("_BaseColor");
-            memberCreator.CreateColorMember("Base Color", mat, baseColor, true, false, inputGroup, null)
-                .OnValueChanged.AddListener(value => matModifier.SetBaseColor(mat, value));
+            BindColor(baseColorMember, baseColor, value => URPLitShaderModifier.SetBaseColor(mat, value));
 
-            var bumpScale = mat.GetFloat("_BumpScale");
-            memberCreator.CreateFloatMember("Normal Scale", mat, bumpScale, inputGroup, "_BumpScale");
+            var normalScale = mat.GetFloat("_BumpScale");
+            BindFloat(normalScaleMember, normalScale, value => mat.SetFloat("_BumpScale", value));
 
-            //var maskTex = mat.GetTexture("_DetailMask");
-            //memberCreator.CreateTexturePropertyMember("Mask", mat, maskTex, group, "")
-            //    .OnValueChanged.AddListener(value => shaderModifier.SetTextureMap(mat, eShaderTextureMap.DetailMaskMap, value));
-
-            var emsEnable = mat.globalIlluminationFlags != (MaterialGlobalIlluminationFlags)4;
-            var emsEnableMember = memberCreator.CreateBoolMember("Emission", mat, emsEnable, inputGroup, null);
-            emsEnableMember.OnValueChanged.AddListener(value => matModifier.SetEmission(mat, value));
-
-            var emsGroup = memberCreator.CreateSubGroup(emsEnableMember, value => value, inputGroup, emsEnable);
+            var emsEnable = mat.IsKeywordEnabled("_EMISSION");
+            emissionColorMember.transform.parent.gameObject.SetActive(emsEnable);
+            BindBool(emissionMember, emsEnable, value =>
+            {
+                URPLitShaderModifier.SetEmission(mat, value);
+                emissionColorMember.transform.parent.gameObject.SetActive(value);
+            });
 
             var emsColor = mat.GetColor("_EmissionColor");
-            memberCreator.CreateColorMember("Emission Color", mat, baseColor, false, true, emsGroup, "_EmissionColor");
+            BindColor(emissionColorMember, emsColor, value => mat.SetColor("_EmissionColor", value));
 
             var emsGIFlag = mat.globalIlluminationFlags;
-            memberCreator.CreateEnumMember("Emission Global Illumination", mat, typeof(eEmissionGlobalIllumination), (int)emsGIFlag, emsGroup, null)
-                .OnValueChanged.AddListener(value => matModifier.SetEmissionMode(mat, (eEmissionGlobalIllumination)value));
-
-            //var emsTex = mat.GetTexture("_EmissionMap");
-            //memberCreator.CreateTexturePropertyMember("Emission Map", mat, emsTex, emsGroup, "")
-            //    .OnValueChanged.AddListener(value => shaderModifier.SetTextureMap(mat, eShaderTextureMap.EmissionMap, value));
+            BindEnum(emissionFlagMember, (int)emsGIFlag, value => URPLitShaderModifier.SetEmissionMode(mat, (eEmissionGlobalIllumination)value));
 
             var baseTiling = mat.mainTextureScale;
-            memberCreator.CreateVectorMember("Tiling", mat, baseTiling, inputGroup, null)
-                .OnValueChanged.AddListener(value => matModifier.SetBaseTiling(mat, value));
+            BindVector(baseTilingMember, baseTiling, value => URPLitShaderModifier.SetBaseTiling(mat, value));
 
             var baseOffset = mat.mainTextureOffset;
-            memberCreator.CreateVectorMember("Offset", mat, baseOffset, inputGroup, null)
-                .OnValueChanged.AddListener(value => matModifier.SetBaseOffset(mat, value));
+            BindVector(baseOffsetMember, baseOffset, value => URPLitShaderModifier.SetBaseOffset(mat, value));
         }
 
-        private void InspectUnlitMaterialProperties(Material mat)
+        public void BindBool(InspectableMember member, bool value, UnityAction<bool> onValueChanged)
         {
-            ShaderPropertyIndex shaderPropIdx = new();
-            for (int i = 0; i < mat.shader.GetPropertyCount(); i++)
+            member.CheckButton.onClick.RemoveAllListeners();
+            member.CheckButton.onClick.AddListener(() =>
             {
-                shaderPropIdx.Add(mat.shader.GetPropertyName(i), i);
-            }
-
-            var optionGroup = memberCreator.CreateGroupMember("Surface Options", memberParent);
-            var matModifier = new URPUnlitShaderModifier();
-
-            var surfaceType = mat.GetInt("_Surface");
-            var surfaceMember = memberCreator.CreateEnumMember("Surface Type", mat, typeof(eShaderSurfaceType), surfaceType, optionGroup, null);
-            surfaceMember.OnValueChanged.AddListener(value => matModifier.SetSurfaceType(mat, (eShaderSurfaceType)value));
-
-            var blendGroup = memberCreator.CreateSubGroup(surfaceMember,
-                value => value == (int)eShaderSurfaceType.Transparent,
-                optionGroup,
-                surfaceType == (int)eShaderSurfaceType.Transparent);
-
-            var blend = mat.GetInt("_Blend");
-            memberCreator.CreateEnumMember("Blending Mode", mat, typeof(eBlendMode), blend, blendGroup, null)
-                .OnValueChanged.AddListener(value => matModifier.SetBlendMode(mat, (eBlendMode)value));
-
-            var renderFace = mat.GetInt("_Cull");
-            memberCreator.CreateEnumMember("Render Face", mat, typeof(eShaderRenderFace), renderFace, optionGroup, null)
-                .OnValueChanged.AddListener(value => matModifier.SetRenderFace(mat, (eShaderRenderFace)value));
-
-            var alphaCliping = mat.GetInt("_AlphaClip");
-            var alphaClipMember = memberCreator.CreateBoolMember("Alpha Clipping", mat, alphaCliping == 1, optionGroup, null);
-            alphaClipMember.OnValueChanged.AddListener(value => matModifier.SetAlphaClipping(mat, value));
-
-            var alphaClipGroup = memberCreator.CreateSubGroup(alphaClipMember, value => value, optionGroup, alphaCliping == 1);
-
-            var alphaCutoff = mat.GetFloat("_Cutoff");
-            Vector2 rangeCutoff = mat.shader.GetPropertyRangeLimits(shaderPropIdx["_Cutoff"]);
-            memberCreator.CreateFloatMember("Threshold", mat, alphaCutoff, rangeCutoff.x, rangeCutoff.y, alphaClipGroup, "_Cutoff");
-
-            var inputGroup = memberCreator.CreateGroupMember("Surface Inputs", memberParent);
-
-            var baseColor = mat.GetColor("_BaseColor");
-            memberCreator.CreateColorMember("Base Color", mat, baseColor, true, false, inputGroup, null)
-                .OnValueChanged.AddListener(value => matModifier.SetBaseColor(mat, value));
-
-            var baseTiling = mat.mainTextureScale;
-            memberCreator.CreateVectorMember("Tiling", mat, baseTiling, inputGroup, null)
-                .OnValueChanged.AddListener(value => matModifier.SetBaseTiling(mat, value));
-
-            var baseOffset = mat.mainTextureOffset;
-            memberCreator.CreateVectorMember("Offset", mat, baseOffset, inputGroup, null)
-                .OnValueChanged.AddListener(value => matModifier.SetBaseOffset(mat, value));
+                member.CheckMark.SetActive(!member.CheckMark.activeSelf);
+                onValueChanged.Invoke(member.CheckMark.activeSelf);
+            });
+            member.CheckMark.SetActive(value);
         }
 
-        private void InspectAllMaterialProperties(Material mat)
+        public void BindColor(InspectableMember member, Color value, UnityAction<Color> onValueChanged)
         {
-            ShaderPropertyIndex shaderPropIdx = new();
-            for (int i = 0; i < mat.shader.GetPropertyCount(); i++)
+            member.ColorButton.onColorUpdated.RemoveAllListeners();
+            member.ColorButton.color = value;
+            member.ColorButton.onColorUpdated.AddListener(onValueChanged);
+        }
+
+        public void BindEnum(InspectableMember member, int value, UnityAction<int> onValueChanged)
+        {
+            member.DropDown.onValueChanged.RemoveAllListeners();
+            member.DropDown.value = value;
+            member.DropDown.onValueChanged.AddListener(onValueChanged);
+        }
+
+        public void BindFloat(InspectableMember member, float value, UnityAction<float> onValueChanged)
+        {
+            member.NumberInputField.onEndEdit.RemoveAllListeners();
+            member.NumberInputField.text = value.ToString();
+            member.NumberInputField.onEndEdit.AddListener(input =>
             {
-                shaderPropIdx.Add(mat.shader.GetPropertyName(i), i);
-            }
+                float value = float.Parse(input);
+                if (member.Slider.gameObject.activeSelf)
+                {
+                    value = Mathf.Clamp(value, member.Slider.minValue, member.Slider.maxValue);
+                }
 
-            var group = memberCreator.CreateGroupMember("Options", memberParent);
+                member.NumberInputField.SetTextWithoutNotify(value.ToString());
+                onValueChanged.Invoke(value);
+            });
 
-            //var textureProps = mat.GetTexturePropertyNames();
-            //foreach (string prop in textureProps)
-            //{
-            //    var tex = mat.GetTexture(prop);
-            //    memberCreator.CreateTexturePropertyMember(prop, mat, tex, group, prop);
-            //}
-
-            var floatProps = mat.GetPropertyNames(MaterialPropertyType.Float);
-            foreach (string prop in floatProps)
+            if (member.Slider.gameObject.activeSelf)
             {
-                var value = mat.GetFloat(prop);
-                if (shaderPropIdx.ContainsKey(prop) &&
-                    mat.shader.GetPropertyType(shaderPropIdx[prop]) == UnityEngine.Rendering.ShaderPropertyType.Range)
+                member.Slider.onValueChanged.RemoveAllListeners();
+                member.Slider.value = value;
+                member.Slider.onValueChanged.AddListener(value =>
                 {
-                    Vector2 rangeVec = mat.shader.GetPropertyRangeLimits(shaderPropIdx[prop]);
-                    float min = rangeVec.x;
-                    float max = rangeVec.y;
-                    memberCreator.CreateFloatMember(prop, mat, value, min, max, group, prop);
-                }
-                else
-                {
-                    memberCreator.CreateFloatMember(prop, mat, value, group, prop);
-                }
+                    member.NumberInputField.SetTextWithoutNotify(value.ToString());
+                    onValueChanged.Invoke(value);
+                });
             }
+        }
 
-            var intProps = mat.GetPropertyNames(MaterialPropertyType.Int);
-            foreach (string prop in intProps)
+        public void BindVector(InspectableMember member, Vector2 value, UnityAction<Vector2> onValueChanged)
+        {
+            member.VectorValue = value;
+
+            for (int i = 0; i < 2; i++)
             {
-                var value = mat.GetInteger(prop);
-                memberCreator.CreateIntMember(prop, mat, value, group, prop);
-            }
-
-            var vecProps = mat.GetPropertyNames(MaterialPropertyType.Vector);
-            foreach (string prop in vecProps)
-            {
-                var value = mat.GetVector(prop);
-                if (shaderPropIdx.ContainsKey(prop) &&
-                    mat.shader.GetPropertyType(shaderPropIdx[prop]) == UnityEngine.Rendering.ShaderPropertyType.Color)
+                int captured = i;
+                member.VectorInputFields[i].onEndEdit.RemoveAllListeners();
+                member.VectorInputFields[i].text = value[i].ToString();
+                member.VectorInputFields[i].onEndEdit.AddListener(input =>
                 {
-                    bool isHDR = mat.shader.GetPropertyFlags(shaderPropIdx[prop]) == UnityEngine.Rendering.ShaderPropertyFlags.HDR;
-                    memberCreator.CreateColorMember(prop, mat, value, true, isHDR, group, prop);
-                }
-                else
-                {
-                    memberCreator.CreateVectorMember(prop, mat, value, group, prop);
-                }
-            }
+                    float value = float.Parse(input.ToString());
+                    member.VectorValue[captured] = value;
 
-            //var matrixProps = mat.GetPropertyNames(MaterialPropertyType.Matrix);
-            //foreach (string prop in matrixProps)
-            //{
-            //    var value = mat.GetMatrix(prop);
-            //    memberCreator.CreateMatrixMember(prop, mat, value, group, prop);
-            //}
+                    member.VectorInputFields[captured].SetTextWithoutNotify(value.ToString());
+                    onValueChanged.Invoke(member.VectorValue);
+                });
+            }
         }
 
         public void ResetAsset()
         {
             modifier?.Reset();
-
-            materialProperties = memberParent.GetComponentsInChildren<IMaterialPropertyMember>();
-            materialProperties?.ToList().ForEach(prop => prop.UpdateUI());
         }
     }
 }

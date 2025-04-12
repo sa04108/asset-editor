@@ -1,4 +1,0 @@
-interface IMaterialPropertyMember
-{
-    void UpdateUI();
-}
