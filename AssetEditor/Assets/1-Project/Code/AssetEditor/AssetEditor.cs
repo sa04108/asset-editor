@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
@@ -82,39 +83,56 @@ namespace Merlin
         private void LoadModel()
         {
             loading.SetActive(true);
-            Addressables.InitializeAsync()
+            Addressables.CheckForCatalogUpdates()
             .Completed += _ =>
             {
-                var keys = _.Result.Keys;
-                List<string> modelKeys = new();
-                foreach (var key in keys)
+                if (_.Result.Count > 0)
                 {
-                    string keyStr = key as string;
-                    if (keyStr == null)
-                        continue;
-
-                    if (keyStr.EndsWith(".prefab"))
+                    Addressables.UpdateCatalogs(_.Result)
+                    .Completed += _ =>
                     {
-                        modelKeys.Add(keyStr);
-                    }
+                        var keys = _.Result.SelectMany(locator => locator.Keys);
+                        LoadAsset(keys);
+                    };
+                }
+                else
+                {
+                    var keys = Addressables.ResourceLocators.SelectMany(locator => locator.Keys);
+                    LoadAsset(keys);
+                }
+            };
+        }
+
+        private void LoadAsset(IEnumerable<object> keys)
+        {
+            List<string> modelKeys = new();
+            foreach (var key in keys)
+            {
+                string keyStr = key as string;
+                if (keyStr == null)
+                    continue;
+
+                if (keyStr.EndsWith(".prefab"))
+                {
+                    modelKeys.Add(keyStr);
+                }
+            }
+
+            Addressables.LoadAssetAsync<GameObject>(modelKeys[0])
+            .Completed += _ =>
+            {
+                var go = _.Result;
+                for (int i = assetParent.childCount - 1; i >= 0; i--)
+                {
+                    Destroy(assetParent.GetChild(i).gameObject);
                 }
 
-                Addressables.LoadAssetAsync<GameObject>(modelKeys[0])
-                .Completed += _ =>
-                {
-                    var go = _.Result;
-                    for (int i = assetParent.childCount - 1; i >= 0; i--)
-                    {
-                        Destroy(assetParent.GetChild(i).gameObject);
-                    }
+                var instance = Instantiate(go, assetParent);
+                assetPivot = instance.transform.position;
+                Camera.main.transform.LookAt(assetPivot);
 
-                    var instance = Instantiate(go, assetParent);
-                    assetPivot = instance.transform.position;
-                    Camera.main.transform.LookAt(assetPivot);
-
-                    inspector.LoadModel(go);
-                    loading.SetActive(false);
-                };
+                inspector.LoadModel(go);
+                loading.SetActive(false);
             };
         }
     }
