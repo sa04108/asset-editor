@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace Merlin
 {
+    /// <summary>
+    /// Inspect 되는 Material 버튼
+    /// </summary>
     public class MaterialMember : MonoBehaviour
     {
         [SerializeField] private TMP_Text label;
@@ -18,6 +21,7 @@ namespace Merlin
         {
             button.onClick.AddListener(() =>
             {
+                // 부모 transform을 순회하면서 자기 자신인지 확인하며 선택 효과 출력
                 foreach (Transform member in transform.parent)
                 {
                     if (member == transform)
@@ -36,6 +40,7 @@ namespace Merlin
             this.mat = mat;
         }
 
+        // 선택 시 효과
         private void Select()
         {
             var color = button.image.color;
@@ -43,6 +48,7 @@ namespace Merlin
             button.image.color = color;
         }
 
+        // 다른 material 선택 시 효과
         private void Deselect()
         {
             var color = button.image.color;

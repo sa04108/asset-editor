@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 namespace Merlin
 {
+    /// <summary>
+    /// 웹 API를 통해 에셋을 가져오고 씬에서의 UI 및 사용자 조작을 구성합니다.
+    /// </summary>
     public class AssetEditor : MonoBehaviour
     {
         private AssetInspector inspector;
@@ -41,6 +44,7 @@ namespace Merlin
             OnMouseInput();
         }
 
+        // 마우스 입력을 받아 처리
         private void OnMouseInput()
         {
             var cameraTransform = Camera.main.transform;
@@ -60,6 +64,7 @@ namespace Merlin
                 cameraTransform.RotateAround(assetPivot, cameraTransform.right, -vertical);
             }
 
+            // 커서가 UI위에 있는 경우에는 무시
             if (EventSystem.current?.IsPointerOverGameObject() ?? true)
                 return;
 
@@ -80,14 +85,19 @@ namespace Merlin
             }
         }
 
+        // 모델(에셋)을 불러옵니다.
         private void LoadModel()
         {
+            // 로딩 아이콘 활성화(화면 중앙 표시)
             loading.SetActive(true);
+            // 런타임에 카탈로그가 업데이트되어 있는지 확인합니다.
+            // 업데이트 되었다면 새로운 버전의 에셋을 다운로드 받습니다.
             Addressables.CheckForCatalogUpdates()
             .Completed += _ =>
             {
                 if (_.Result.Count > 0)
                 {
+                    // 카탈로그를 업데이트합니다.
                     Addressables.UpdateCatalogs(_.Result)
                     .Completed += _ =>
                     {
@@ -97,6 +107,7 @@ namespace Merlin
                 }
                 else
                 {
+                    // 카탈로그가 변경되지 않은 경우 기존 카탈로그를 통해 에셋을 불러옵니다.
                     var keys = Addressables.ResourceLocators.SelectMany(locator => locator.Keys);
                     LoadAsset(keys);
                 }
@@ -105,7 +116,8 @@ namespace Merlin
 
         private void LoadAsset(IEnumerable<object> keys)
         {
-            List<string> modelKeys = new();
+            // Addressable로 prefab을 하나 찾습니다.
+            string assetKey = null;
             foreach (var key in keys)
             {
                 string keyStr = key as string;
@@ -114,24 +126,36 @@ namespace Merlin
 
                 if (keyStr.EndsWith(".prefab"))
                 {
-                    modelKeys.Add(keyStr);
+                    assetKey = keyStr;
                 }
             }
 
-            Addressables.LoadAssetAsync<GameObject>(modelKeys[0])
+            // prefab을 찾지 못한 경우 종료
+            if (string.IsNullOrEmpty(assetKey))
+            {
+                loading.SetActive(false);
+                Debug.Log("Could not find prefab asset.");
+                return;
+            }
+
+            Addressables.LoadAssetAsync<GameObject>(assetKey)
             .Completed += _ =>
             {
                 var go = _.Result;
+                // 기존에 로드된 에셋이 있다면 제거합니다.
                 for (int i = assetParent.childCount - 1; i >= 0; i--)
                 {
                     Destroy(assetParent.GetChild(i).gameObject);
                 }
 
                 var instance = Instantiate(go, assetParent);
+                // 카메라가 바라보기 위한 에셋의 중심 피벗 설정
                 assetPivot = instance.transform.position;
                 Camera.main.transform.LookAt(assetPivot);
 
+                // 에셋의 material을 inspect하도록 요청
                 inspector.LoadModel(go);
+                // 로딩 표시 해제
                 loading.SetActive(false);
             };
         }

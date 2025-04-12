@@ -3,9 +3,14 @@ using UnityEngine;
 
 namespace Merlin
 {
+    /// <summary>
+    /// 에셋의 변경점을 보관하고 초기화 기능을 수행
+    /// </summary>
     public class AssetModifier
     {
+        // 변경점이 기록되는 material 목록
         private List<Material> sharedMaterials = new();
+        // 초기 상태의 material 목록
         private List<Material> originalMaterials = new();
 
         public AssetModifier(GameObject go)
@@ -18,6 +23,7 @@ namespace Merlin
                 var mat = renderer.sharedMaterial;
                 var matHash = mat.GetHashCode();
 
+                // material hash를 통해 같은 material을 이미 등록했다면 무시
                 if (mat == null || matHashes.Contains(matHash))
                     continue;
 

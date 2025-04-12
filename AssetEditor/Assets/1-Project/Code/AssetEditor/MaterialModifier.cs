@@ -29,16 +29,6 @@ namespace Merlin
         Front
     }
 
-    public enum eShaderTextureMap
-    {
-        BaseMap,
-        MetallicMap,
-        NormalMap,
-        OcclusionMap,
-        EmissionMap,
-        DetailMaskMap
-    }
-
     public enum eEmissionGlobalIllumination
     {
         None,
@@ -46,6 +36,9 @@ namespace Merlin
         Baked
     }
 
+    /// <summary>
+    /// Universal Render Pipeline/Lit 셰이더를 가진 material 수정
+    /// </summary>
     public static class URPLitShaderModifier
     {
         public static void SetWorkflowMode(Material mat, eShaderWorkflowMode mode)
@@ -201,47 +194,11 @@ namespace Merlin
             }
         }
 
-        public static void SetTextureMap(Material mat, eShaderTextureMap map, Texture tex = null)
-        {
-            switch (map)
-            {
-                case eShaderTextureMap.BaseMap:
-                    mat.SetTexture("_BaseMap", tex);
-                    mat.SetTexture("_MainTex", tex);
-                    break;
-
-                case eShaderTextureMap.MetallicMap:
-                    mat.SetTexture("_MetallicGlossMap", tex);
-
-                    if (tex != null)
-                        mat.EnableKeyword("_METALLICSPECGLOSSMAP");
-                    else
-                        mat.DisableKeyword("_METALLICSPECGLOSSMAP");
-                    break;
-
-                case eShaderTextureMap.NormalMap:
-                    mat.SetTexture("_BumpMap", tex);
-                    break;
-
-                case eShaderTextureMap.OcclusionMap:
-                    mat.SetTexture("_OcclusionMap", tex);
-
-                    if (tex != null)
-                        mat.EnableKeyword("_OCCLUSIONMAP");
-                    else
-                        mat.DisableKeyword("_OCCLUSIONMAP");
-                    break;
-
-                case eShaderTextureMap.EmissionMap:
-                    mat.SetTexture("_EmissionMap", tex);
-                    break;
-
-                case eShaderTextureMap.DetailMaskMap:
-                    mat.SetTexture("_DetailMask", tex);
-                    break;
-            }
-        }
-
+        // TODO: 현재는 키워드로 판별하고 있지만 추후 수정 필요
+        // Web에서는 처음부터 _EMISSION 키워드가 없는 material에 대해
+        // emission color가 보여지지 않는 문제가 있어
+        // 에셋 빌드 전에 _EMISSION 키워드를 할당하는 작업 필요
+        // 빌드된 환경에서 로그 확인 결과 _EMISSION 키워드가 material에 포함은 되지만 색이 바뀌는 모습이 보이지 않음
         public static void SetEmission(Material mat, bool enable)
         {
             if (enable)

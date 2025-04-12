@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace Merlin
 {
+    /// <summary>
+    /// 에셋의 material property를 나열하고 사용자가 수정할 수 있도록 UI를 구성합니다.
+    /// </summary>
     public class AssetInspector : MonoBehaviour
     {
         [Header("Links")]
@@ -32,6 +35,7 @@ namespace Merlin
         [SerializeField] private MaterialPropertyMember baseOffsetMember;
 
         private AssetModifier modifier;
+        private Material selectedMaterial;
 
         private void Start()
         {
@@ -53,10 +57,13 @@ namespace Merlin
         {
             ClearMembers(materialParent);
 
+            // asset modifier를 만듭니다.
+            // asset modifier는 material 변경점을 저장하고 초기화 기능을 가지는 객체입니다.
             modifier = new(go);
             var materials = modifier.GetSharedMaterials();
             foreach (var material in materials)
             {
+                // 각각의 shared material을 인스펙터에 표시합니다.
                 var member = Instantiate(materialMemberPreset, materialParent);
                 member.Initialize(material.name, material);
                 member.OnClick.AddListener(InspectMaterial);
@@ -65,27 +72,31 @@ namespace Merlin
 
         private void InspectMaterial(Material mat)
         {
+            selectedMaterial = mat;
+
+            // 현재 Inspect 가능한 shader는 URP Lit 뿐입니다.
             if (mat.shader.name == "Universal Render Pipeline/Lit")
             {
                 InspectLitMaterialProperties(mat);
             }
             else
             {
+                // 이외의 shader는 표시하지 않습니다.
                 Debug.LogWarning($"Shader {mat.shader.name} for current material is not supported");
             }
         }
 
+        /// <summary>
+        /// URP Lit Shader에 대해 각 material property들을 인스펙터에 표시합니다.
+        /// 각각의 Bind함수를 통해 이미 scene에 배치된 member에 값을 바인딩합니다.
+        /// </summary>
+        /// <param name="mat"></param>
         private void InspectLitMaterialProperties(Material mat)
         {
-            Dictionary<string, int> shaderPropIdx = new();
-            for (int i = 0; i < mat.shader.GetPropertyCount(); i++)
-            {
-                shaderPropIdx.Add(mat.shader.GetPropertyName(i), i);
-            }
-
             content.SetActive(true);
 
             var workflowMode = mat.GetInt("_WorkflowMode");
+            // Metallic은 Workflow Mode가 metallic일 때 활성화
             metallicMember.gameObject.SetActive(workflowMode == (int)eShaderWorkflowMode.Metallic);
             BindEnum(workflowModeMember, workflowMode, value =>
             {
@@ -94,6 +105,7 @@ namespace Merlin
             });
 
             var surfaceType = mat.GetInt("_Surface");
+            // Blending Mode는 Surface Type이 Transparent일 때 활성화
             blendMember.gameObject.SetActive(surfaceType == (int)eShaderSurfaceType.Transparent);
             BindEnum(surfaceMember, surfaceType, value =>
             {
@@ -108,6 +120,7 @@ namespace Merlin
             BindEnum(renderFaceMember, renderFace, value => URPLitShaderModifier.SetRenderFace(mat, (eShaderRenderFace)value));
 
             var alphaClipping = mat.GetInt("_AlphaClip");
+            // Threshold는 Alpha Clip이 켜질 때만 활성화
             alphaCutoffMember.gameObject.SetActive(alphaClipping == 1);
             BindBool(alphaClippingMember, alphaClipping == 1, value =>
             {
@@ -134,6 +147,7 @@ namespace Merlin
             BindFloat(normalScaleMember, normalScale, value => mat.SetFloat("_BumpScale", value));
 
             var emsEnable = mat.IsKeywordEnabled("_EMISSION");
+            // Emission Color 및 GI Flag는 Emission이 켜질 때만 활성화
             emissionColorMember.gameObject.SetActive(emsEnable);
             emissionFlagMember.gameObject.SetActive(emsEnable);
             BindBool(emissionMember, emsEnable, value =>
@@ -229,9 +243,15 @@ namespace Merlin
             }
         }
 
+        // asset modifier를 통해 에셋을 초기상태로 되돌립니다.
+        // 현재는 material만 되돌립니다.
         public void ResetAsset()
         {
             modifier?.Reset();
+
+            // 현재 선택된 material이 있다면 초기화된 material로 다시 inspect
+            if (selectedMaterial != null)
+                InspectMaterial(selectedMaterial);
         }
     }
 }

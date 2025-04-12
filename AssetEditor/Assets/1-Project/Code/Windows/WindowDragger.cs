@@ -3,13 +3,18 @@ using UnityEngine.EventSystems;
 
 namespace Merlin
 {
+    /// <summary>
+    /// 현재 창의 상단을 잡고 끌어 드래그해주는 기능
+    /// </summary>
     public class WindowDragger : UIBehaviour, IPointerDownHandler, IDragHandler
     {
         [Header("Resources")]
+        // 창을 드래그하면서 벗어나지 못하게 하는 공간
         [SerializeField] private RectTransform dragArea;
-
+        // 드래그 되는 창 오브젝트
         [SerializeField] private RectTransform dragObject;
 
+        // 창 드래그 시작시 가장 앞에 위치시킬 지 여부
         [Header("Settings")]
         [SerializeField] private bool topOnDrag = true;
 
@@ -64,6 +69,7 @@ namespace Merlin
         public void OnPointerDown(PointerEventData data)
         {
             originalPanelLocalPosition = DragObjectInternal.localPosition;
+            // 창 내부 클릭 시 현재 포인터 위치 저장 (창 상단 포함)
             RectTransformUtility.ScreenPointToLocalPointInRectangle(DragAreaInternal, data.position, data.pressEventCamera, out originalLocalPointerPosition);
             gameObject.transform.SetAsLastSibling();
             if (topOnDrag == true) { dragObject.transform.SetAsLastSibling(); }
@@ -75,10 +81,13 @@ namespace Merlin
 
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(DragAreaInternal, data.position, data.pressEventCamera, out localPointerPosition))
             {
+                // 처음 클릭한 지점과의 델타 벡터 저장
                 Vector3 offsetToOriginal = localPointerPosition - originalLocalPointerPosition;
+                // 델타 벡터만큼 창의 위치를 이동
                 DragObjectInternal.localPosition = originalPanelLocalPosition + offsetToOriginal;
             }
 
+            // 창이 영역을 벗어나지 않도록 제한
             ClampToArea();
         }
 
