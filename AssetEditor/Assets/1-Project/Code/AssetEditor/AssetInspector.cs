@@ -10,31 +10,33 @@ namespace Merlin
         [Header("Links")]
         [SerializeField] private Transform materialParent;
         [SerializeField] private MaterialMember materialMemberPreset;
+        [SerializeField] private GameObject content;
         [SerializeField] private Button resetButton;
 
         [Header("Inspectable Members")]
-        [SerializeField] private InspectableMember workflowModeMember;
-        [SerializeField] private InspectableMember surfaceMember;
-        [SerializeField] private InspectableMember blendMember;
-        [SerializeField] private InspectableMember renderFaceMember;
-        [SerializeField] private InspectableMember alphaClippingMember;
-        [SerializeField] private InspectableMember alphaCutoffMember;
-        [SerializeField] private InspectableMember receiveShadowsMember;
-        [SerializeField] private InspectableMember metallicMember;
-        [SerializeField] private InspectableMember smoothnessMember;
-        [SerializeField] private InspectableMember baseColorMember;
-        [SerializeField] private InspectableMember normalScaleMember;
-        [SerializeField] private InspectableMember emissionMember;
-        [SerializeField] private InspectableMember emissionColorMember;
-        [SerializeField] private InspectableMember emissionFlagMember;
-        [SerializeField] private InspectableMember baseTilingMember;
-        [SerializeField] private InspectableMember baseOffsetMember;
+        [SerializeField] private MaterialPropertyMember workflowModeMember;
+        [SerializeField] private MaterialPropertyMember surfaceMember;
+        [SerializeField] private MaterialPropertyMember blendMember;
+        [SerializeField] private MaterialPropertyMember renderFaceMember;
+        [SerializeField] private MaterialPropertyMember alphaClippingMember;
+        [SerializeField] private MaterialPropertyMember alphaCutoffMember;
+        [SerializeField] private MaterialPropertyMember receiveShadowsMember;
+        [SerializeField] private MaterialPropertyMember metallicMember;
+        [SerializeField] private MaterialPropertyMember smoothnessMember;
+        [SerializeField] private MaterialPropertyMember baseColorMember;
+        [SerializeField] private MaterialPropertyMember normalScaleMember;
+        [SerializeField] private MaterialPropertyMember emissionMember;
+        [SerializeField] private MaterialPropertyMember emissionColorMember;
+        [SerializeField] private MaterialPropertyMember emissionFlagMember;
+        [SerializeField] private MaterialPropertyMember baseTilingMember;
+        [SerializeField] private MaterialPropertyMember baseOffsetMember;
 
         private AssetModifier modifier;
 
         private void Start()
         {
             ClearMembers(materialParent);
+            content.SetActive(false);
 
             resetButton.onClick.AddListener(ResetAsset);
         }
@@ -81,6 +83,8 @@ namespace Merlin
                 shaderPropIdx.Add(mat.shader.GetPropertyName(i), i);
             }
 
+            content.SetActive(true);
+
             var workflowMode = mat.GetInt("_WorkflowMode");
             metallicMember.gameObject.SetActive(workflowMode == (int)eShaderWorkflowMode.Metallic);
             BindEnum(workflowModeMember, workflowMode, value =>
@@ -90,11 +94,11 @@ namespace Merlin
             });
 
             var surfaceType = mat.GetInt("_Surface");
-            blendMember.transform.parent.gameObject.SetActive(surfaceType == (int)eShaderSurfaceType.Transparent);
+            blendMember.gameObject.SetActive(surfaceType == (int)eShaderSurfaceType.Transparent);
             BindEnum(surfaceMember, surfaceType, value =>
             {
                 URPLitShaderModifier.SetSurfaceType(mat, (eShaderSurfaceType)value);
-                blendMember.transform.parent.gameObject.SetActive(value == (int)eShaderSurfaceType.Transparent);
+                blendMember.gameObject.SetActive(value == (int)eShaderSurfaceType.Transparent);
             });
 
             var blend = mat.GetInt("_Blend");
@@ -104,11 +108,11 @@ namespace Merlin
             BindEnum(renderFaceMember, renderFace, value => URPLitShaderModifier.SetRenderFace(mat, (eShaderRenderFace)value));
 
             var alphaClipping = mat.GetInt("_AlphaClip");
-            alphaCutoffMember.transform.parent.gameObject.SetActive(alphaClipping == 1);
+            alphaCutoffMember.gameObject.SetActive(alphaClipping == 1);
             BindBool(alphaClippingMember, alphaClipping == 1, value =>
             {
                 URPLitShaderModifier.SetAlphaClipping(mat, value);
-                alphaCutoffMember.transform.parent.gameObject.SetActive(value);
+                alphaCutoffMember.gameObject.SetActive(value);
             });
 
             var alphaCutoff = mat.GetFloat("_Cutoff");
@@ -130,11 +134,13 @@ namespace Merlin
             BindFloat(normalScaleMember, normalScale, value => mat.SetFloat("_BumpScale", value));
 
             var emsEnable = mat.IsKeywordEnabled("_EMISSION");
-            emissionColorMember.transform.parent.gameObject.SetActive(emsEnable);
+            emissionColorMember.gameObject.SetActive(emsEnable);
+            emissionFlagMember.gameObject.SetActive(emsEnable);
             BindBool(emissionMember, emsEnable, value =>
             {
                 URPLitShaderModifier.SetEmission(mat, value);
-                emissionColorMember.transform.parent.gameObject.SetActive(value);
+                emissionColorMember.gameObject.SetActive(value);
+                emissionFlagMember.gameObject.SetActive(value);
             });
 
             var emsColor = mat.GetColor("_EmissionColor");
@@ -150,7 +156,7 @@ namespace Merlin
             BindVector(baseOffsetMember, baseOffset, value => URPLitShaderModifier.SetBaseOffset(mat, value));
         }
 
-        public void BindBool(InspectableMember member, bool value, UnityAction<bool> onValueChanged)
+        public void BindBool(MaterialPropertyMember member, bool value, UnityAction<bool> onValueChanged)
         {
             member.CheckButton.onClick.RemoveAllListeners();
             member.CheckButton.onClick.AddListener(() =>
@@ -161,25 +167,25 @@ namespace Merlin
             member.CheckMark.SetActive(value);
         }
 
-        public void BindColor(InspectableMember member, Color value, UnityAction<Color> onValueChanged)
+        public void BindColor(MaterialPropertyMember member, Color value, UnityAction<Color> onValueChanged)
         {
             member.ColorButton.onColorUpdated.RemoveAllListeners();
             member.ColorButton.color = value;
             member.ColorButton.onColorUpdated.AddListener(onValueChanged);
         }
 
-        public void BindEnum(InspectableMember member, int value, UnityAction<int> onValueChanged)
+        public void BindEnum(MaterialPropertyMember member, int value, UnityAction<int> onValueChanged)
         {
             member.DropDown.onValueChanged.RemoveAllListeners();
             member.DropDown.value = value;
             member.DropDown.onValueChanged.AddListener(onValueChanged);
         }
 
-        public void BindFloat(InspectableMember member, float value, UnityAction<float> onValueChanged)
+        public void BindFloat(MaterialPropertyMember member, float value, UnityAction<float> onValueChanged)
         {
-            member.NumberInputField.onEndEdit.RemoveAllListeners();
-            member.NumberInputField.text = value.ToString();
-            member.NumberInputField.onEndEdit.AddListener(input =>
+            member.FloatInputField.onEndEdit.RemoveAllListeners();
+            member.FloatInputField.text = value.ToString();
+            member.FloatInputField.onEndEdit.AddListener(input =>
             {
                 float value = float.Parse(input);
                 if (member.Slider.gameObject.activeSelf)
@@ -187,7 +193,7 @@ namespace Merlin
                     value = Mathf.Clamp(value, member.Slider.minValue, member.Slider.maxValue);
                 }
 
-                member.NumberInputField.SetTextWithoutNotify(value.ToString());
+                member.FloatInputField.SetTextWithoutNotify(value.ToString());
                 onValueChanged.Invoke(value);
             });
 
@@ -197,13 +203,13 @@ namespace Merlin
                 member.Slider.value = value;
                 member.Slider.onValueChanged.AddListener(value =>
                 {
-                    member.NumberInputField.SetTextWithoutNotify(value.ToString());
+                    member.FloatInputField.SetTextWithoutNotify(value.ToString());
                     onValueChanged.Invoke(value);
                 });
             }
         }
 
-        public void BindVector(InspectableMember member, Vector2 value, UnityAction<Vector2> onValueChanged)
+        public void BindVector(MaterialPropertyMember member, Vector2 value, UnityAction<Vector2> onValueChanged)
         {
             member.VectorValue = value;
 
